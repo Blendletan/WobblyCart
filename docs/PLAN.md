@@ -1,5 +1,9 @@
 # Wobbly Cart: proposed build plan
 
+## Current priority: manual-push mechanics approval
+
+The user's 2026-11-05 direction supersedes the staged execution plan below. Build and iterate the stationary-start, manually pushed, four-swivelling-caster demo first. Include basic test corners and rough-ground fixtures to assess handling. Do not advance to levels, scoring, progression, or release until the user approves the mechanics and requests the next work. The authoritative current requirements are at the top of `SPEC.md`.
+
 Build plan, 2026-11-05. The user approved starting this plan with Stage 0. Read alongside `SPEC.md`; layout, timing, and intended feel have been incorporated there. Later-stage proposals remain subject to their measurement and playtest gates. `STATE.md` records implementation progress.
 
 ## Agreed direction
@@ -102,4 +106,4 @@ These checks do not establish every portal's current content or AI policy. Reche
 
 ## Next implementation
 
-Complete Stage 0 and its checks, then hand off the runnable scaffold. Stage 1 introduces the wobble simulation and Feel Lab, where the numerical protocol and the remaining control questions must be resolved.
+Hand off the manual-push handling demo and collect feedback on push effort, stopping distance, reversing, caster alignment, turning, and one-wheel impacts. Adjust those mechanics before discussing levels or the former stage roadmap.

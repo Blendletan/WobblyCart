@@ -1,11 +1,11 @@
 # State
 
-- Stage 0 complete; user-requested wobble correction implemented 2026-11-05. Full Stage 1 remains in progress.
-- Done: pure 240 Hz van der Pol/yaw dynamics, A/B/C parameters, immediate seeded oscillation, braking damping, and temporary practice rails.
-- Done: independently articulated front-left caster with pivot/fork/tire, larger basket, caster close-up, actual heading rotation, and bounded 14 Hz presentation rattle.
-- Verification: all 24 Node tests pass, including frozen reference table and all eight simulation requirements; original tolerances retained. Measurement protocol is in `docs/WOBBLE-PROTOCOL.md`.
-- Budget: 14 initial-load files; 32,874 bytes uncompressed; no external runtime resources. Local preview responds with HTTP 200.
-- Browser limitation: live inspection stopped because Computer Use does not support URL-policy enforcement for this Windows browser. Updated browser harness is available but has not been run on this revision.
-- Historical Stage 0 browser measurements (60 fps / 18 checks) do not validate the new animation; physical phone/multitouch checks remain outstanding.
-- Next: visually verify the updated motion, finish Feel Lab controls/trace/scripted-player UI and rhythm audio, then obtain human preset playtests. No preset is user-selected yet.
-- Hazards, full collisions/scoring, progression, and deployment remain later stages.
+- Current scope: manual-push handling demo; the user must approve movement before level/full-game design resumes.
+- Done: stationary start; W/Up push, S/Down pull backwards, A/D turn, Space hold still, R reset; equivalent holdable pointer/touch controls.
+- Done: pure 240 Hz planar trolley body, momentum, four independently swivelling casters, signed tire rolling, physical bad-caster flutter, and individual ground contacts.
+- Done: open handling area with test corner walls, ridges, and a pothole; camera follows real position in both axes. No automatic forward motion or progression.
+- Verification: 35 Node tests pass, including the full app wired to DOM/canvas doubles, four-caster behavior, reversal, wall contact, per-wheel impacts, and unchanged historical oscillator regressions.
+- Budget: 16 initial-load files; 47,023 bytes uncompressed; local preview responds with HTTP 200.
+- Frozen golden tree remains `6f325ab866e7d9ef69cc31752c4624d63a4408ca`; those targets cover the historical oscillator, not the new manual model.
+- Not verified: this revision's live browser layout/performance, physical multitouch, and human feel. Prior Computer Use attempt was blocked by unsupported Windows browser URL-policy enforcement. Updated `/tools/qa.html` is ready for browser checks.
+- Next: user tries the demo and gives handling feedback; tune pushing, coasting, stopping, reversing, caster response, turns, and impacts. Defer level design and full-game systems.

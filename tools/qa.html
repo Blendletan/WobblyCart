@@ -10,7 +10,7 @@
   pre { white-space: pre-wrap; }
 </style>
 <h1>Wobbly Cart browser checks</h1>
-<p>Local development tool. Uses a real embedded game, keyboard events, layout checks, and a 10-second frame-cadence sample. Touch capture is covered separately by unit tests and manual device checks.</p>
+<p>Manual-push sandbox checks: stationary start, driving controls, four swivels, pause, reset, layout, and a 10-second frame-cadence sample. Physical multitouch and handling feel still need playtesting.</p>
 <button id="run">Run browser checks</button><button id="desktop">Desktop preview</button><button id="portrait">Portrait preview</button>
 <pre id="report" role="status">Ready.</pre>
 <iframe id="preview" title="Game preview" width="960" height="540" src="../index.html"></iframe>
@@ -41,34 +41,35 @@
       let bounds = find('stage').getBoundingClientRect();
       check(Math.abs(bounds.width / bounds.height - 16 / 9) < .001, 'desktop stage is 16:9');
       check(find('game').width >= 960, 'canvas backing store is initialized');
-      const distance = Number(find('distance').textContent);
       await wait(500);
-      check(Number(find('distance').textContent) > distance, 'game starts moving without a menu');
-      const swivelAngles = [];
-      for (let i = 0; i < 20; i++) { await wait(100); swivelAngles.push(parseInt(find('wheel-angle').textContent, 10)); }
-      check(Math.min(...swivelAngles) < -5 && Math.max(...swivelAngles) > 5, 'caster swings both ways without player input');
-      key('KeyD', true); await wait(200);
+      check(Number(find('speed').textContent) === 0, 'trolley waits for the player to push');
+      key('KeyW', true); await wait(1000);
+      check(Number(find('speed').textContent) > .5, 'W pushes the trolley from rest');
+      key('KeyD', true); await wait(500);
       check(find('steer-right').dataset.held === 'true', 'keyboard steering reaches live controls');
-      // Hold to settle at the new 3.3 m/s brake target, within the original 3.4 m/s check.
-      key('KeyD', false); key('Space', true); await wait(3600);
-      check(Number(find('speed').textContent) < 3.4, 'Ease off reduces speed');
+      for (let i = 0; i < 4; i++) check(Math.abs(parseInt(find(`caster-${i}`).textContent, 10)) > 1, `caster ${i + 1} swivels during the turn`);
+      key('KeyW', false); key('KeyD', false); key('Space', true); await wait(1200);
+      check(Number(find('speed').textContent) < .1, 'Space brings the trolley to rest');
       check(find('brake').dataset.held === 'true', 'brake held state is visible');
-      check(Number(find('wobble-level').value) < .1, 'braking damps the caster oscillation');
+      key('Space', false); key('KeyS', true); await wait(800);
+      check(find('pull').dataset.held === 'true' && find('brake').dataset.held === 'false', 'S pulls backwards rather than braking');
       key('KeyP', true); key('KeyP', false); await wait(200);
       check(!find('pause-overlay').hidden, 'P opens pause dialog');
-      const pausedDistance = find('distance').textContent;
+      const pausedSpeed = find('speed').textContent;
       await wait(500);
-      check(find('distance').textContent === pausedDistance, 'distance stays fixed while paused');
-      check(find('brake').dataset.held === 'false', 'pause clears held input');
-      find('resume').click(); key('Space', false); await wait(500);
+      check(find('speed').textContent === pausedSpeed, 'state stays fixed while paused');
+      check(find('pull').dataset.held === 'false', 'pause clears held input');
+      find('resume').click(); key('KeyS', false); await wait(500);
       check(find('pause-overlay').hidden, 'resume returns to play');
       win.dispatchEvent(new win.Event('blur')); await wait(100);
       check(!find('pause-overlay').hidden, 'window blur pauses');
       find('resume').click();
+      find('reset').click(); await wait(300);
+      check(Number(find('speed').textContent) === 0, 'reset parks the trolley at the start');
       size(390, 844); await wait(200);
       bounds = find('stage').getBoundingClientRect();
       check(bounds.width === 390 && bounds.height === 844, 'portrait fills the viewport');
-      for (const id of ['pause', 'steer-left', 'brake', 'steer-right']) {
+      for (const id of ['pause', 'push', 'pull', 'steer-left', 'brake', 'steer-right', 'reset']) {
         const box = find(id).getBoundingClientRect();
         check(box.width >= 44 && box.height >= 44 && box.x >= 0 && box.right <= 390 && box.bottom <= 844, `${id} touch target is visible and at least 44 px`);
       }

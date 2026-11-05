@@ -2,9 +2,11 @@ const LEFT = new Set(['ArrowLeft', 'KeyA']);
 const RIGHT = new Set(['ArrowRight', 'KeyD']);
 const BRAKE = new Set(['ArrowDown', 'KeyS', 'Space']);
 const PAUSE = new Set(['Escape', 'KeyP']);
+const PUSH = new Set(['ArrowUp', 'KeyW']);
+const PULL = new Set(['ArrowDown', 'KeyS']);
 
 /** Raw digital intent. Smoothing happens once per simulation tick. */
-export function createInputState() {
+export function createInputState({ manualPush = false } = {}) {
   const keys = new Set();
   const pointers = new Map();
   return {
@@ -15,14 +17,20 @@ export function createInputState() {
       const values = [...pointers.values()];
       const left = [...LEFT].some(code => keys.has(code)) || values.includes('left');
       const right = [...RIGHT].some(code => keys.has(code)) || values.includes('right');
-      const brake = [...BRAKE].some(code => keys.has(code)) || values.includes('brake');
-      return { steer: Number(right) - Number(left), brake };
+      const brake = [...(manualPush ? ['Space'] : BRAKE)].some(code => keys.has(code)) || values.includes('brake');
+      const result = { steer: Number(right) - Number(left), brake };
+      if (manualPush) {
+        const forward = [...PUSH].some(code => keys.has(code)) || values.includes('push');
+        const backward = [...PULL].some(code => keys.has(code)) || values.includes('pull');
+        result.push = Number(forward) - Number(backward);
+      }
+      return result;
     },
   };
 }
 
 /** Bind DOM input at the boundary; return cleanup for replacing a game session. */
-export function bindInput({ target, canvas, buttons, state, onPause, onInput, isPaused }) {
+export function bindInput({ target, canvas, buttons, state, onPause, onInput, isPaused, canvasSteering = true }) {
   const cleanup = [];
   const listen = (element, event, handler) => {
     element.addEventListener(event, handler);
@@ -34,7 +42,7 @@ export function bindInput({ target, canvas, buttons, state, onPause, onInput, is
       if (!event.repeat) onPause();
       return;
     }
-    if (![...LEFT, ...RIGHT, ...BRAKE].includes(event.code) || isPaused()) return;
+    if (![...LEFT, ...RIGHT, ...BRAKE, ...PUSH].includes(event.code) || isPaused()) return;
     if (event.code === 'Space' && event.target?.tagName === 'BUTTON') return;
     event.preventDefault();
     state.key(event.code, true);
@@ -56,7 +64,7 @@ export function bindInput({ target, canvas, buttons, state, onPause, onInput, is
       listen(element, name, event => state.pointer(event.pointerId, null));
     }
   };
-  bindPointer(canvas, event => {
+  if (canvasSteering) bindPointer(canvas, event => {
     const rect = canvas.getBoundingClientRect();
     return event.clientX - rect.left < rect.width / 2 ? 'left' : 'right';
   });

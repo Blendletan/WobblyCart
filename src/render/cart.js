@@ -1,6 +1,7 @@
 import { palette as p } from '../content/palette.js';
 import { activeParams } from '../sim/params.js';
 import { cancelableAmplitude } from '../sim/cart.js';
+import { casterMounts } from '../content/sandbox.js';
 
 /** Separate from the physics: a small high-frequency chassis shudder. */
 export function bodyRattle(state, parameters = activeParams) {
@@ -56,4 +57,21 @@ export function drawCart(c, basket, state, scale) {
   drawCaster(c, -.34 * scale, .42 * scale, 0, .6 * scale, false, state.y);
   drawCaster(c, .34 * scale, .42 * scale, 0, .6 * scale, false, state.y);
   c.drawImage(basket, -.45 * scale, -.57 * scale, .9 * scale, 1.2 * scale);
+}
+
+/** Four genuine swivels. Each tire's tread uses its own signed rolling distance. */
+export function drawTrolley(c, basket, state, scale, inspection = false) {
+  c.save();
+  if (!inspection) c.rotate(state.heading);
+  c.fillStyle = p.shadow; c.beginPath(); c.ellipse(.07 * scale, .13 * scale, .5 * scale, .7 * scale, 0, 0, Math.PI * 2); c.fill();
+  for (let i = 0; i < casterMounts.length; i++) {
+    const mount = casterMounts[i], wheel = state.wheels[i];
+    // Heading is removed in the inspection view so it shows the bearing relative to the basket.
+    drawCaster(c, mount.x * scale, -mount.y * scale, wheel.angle - state.heading, .72 * scale, mount.bad, wheel.roll);
+  }
+  const heave = state.wheels.reduce((sum, wheel) => sum + wheel.height, 0) / 4;
+  const lean = (state.wheels[0].height + state.wheels[2].height - state.wheels[1].height - state.wheels[3].height) * .12;
+  c.save(); c.rotate(lean); c.translate(0, -heave * scale * .3);
+  c.drawImage(basket, -.43 * scale, -.57 * scale, .86 * scale, 1.2 * scale);
+  c.restore(); c.restore();
 }

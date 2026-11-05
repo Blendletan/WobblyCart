@@ -1,8 +1,7 @@
 import { createFixedStepper } from './core/loop.js';
 import { bindInput, createInputState } from './core/input.js';
-import { createCart, stepPracticeCart, cancelableAmplitude } from './sim/cart.js';
-import { activeParams as params } from './sim/params.js';
-import { createScene } from './render/scene.js';
+import { createTrolley, stepTrolley, angleDifference } from './sim/trolley.js';
+import { createSandboxScene } from './render/sandbox.js';
 import { stageSize } from './render/layout.js';
 import { createDevAdapter } from './platform/dev.js';
 
@@ -12,18 +11,18 @@ const canvas = element('game');
 const overlay = element('pause-overlay');
 const pauseButton = element('pause');
 const resumeButton = element('resume');
-const controls = { left: element('steer-left'), right: element('steer-right'), brake: element('brake') };
-const input = createInputState();
+const controls = { left: element('steer-left'), right: element('steer-right'), push: element('push'), pull: element('pull'), brake: element('brake') };
+const input = createInputState({ manualPush: true });
 const platform = createDevAdapter();
 await platform.init();
-let current = createCart();
+let current = createTrolley();
 let previous = current;
 let paused = false;
 let hasStarted = false;
-const scene = createScene(canvas);
+const scene = createSandboxScene(canvas);
 const stepper = createFixedStepper(dt => {
   previous = current;
-  current = stepPracticeCart(current, input.sample(), dt);
+  current = stepTrolley(current, input.sample(), dt);
 });
 
 function setPaused(value) {
@@ -35,17 +34,28 @@ function setPaused(value) {
   overlay.hidden = !paused;
   canvas.inert = paused;
   pauseButton.inert = paused;
+  element('reset').inert = paused;
   Object.values(controls).forEach(button => { button.inert = paused; });
   if (paused) { platform.gameplayStop(); resumeButton.focus({ preventScroll: true }); }
   else { if (hasStarted) platform.gameplayStart(); canvas.focus({ preventScroll: true }); }
 }
 bindInput({
   target: window, canvas, buttons: controls, state: input,
+  canvasSteering: false,
   onPause: () => setPaused(!paused), isPaused: () => paused,
   onInput: () => { hasStarted = true; platform.gameplayStart(); },
 });
 pauseButton.addEventListener('click', () => setPaused(true));
 resumeButton.addEventListener('click', () => setPaused(false));
+function resetTrolley() {
+  input.clear(); current = createTrolley(); previous = current;
+  stepper.resetClock(); platform.gameplayStop(); hasStarted = false;
+  canvas.focus({ preventScroll: true });
+}
+element('reset').addEventListener('click', resetTrolley);
+window.addEventListener('keydown', event => {
+  if (event.code === 'KeyR' && !event.repeat && !paused) { event.preventDefault(); resetTrolley(); }
+});
 window.addEventListener('blur', () => setPaused(true));
 document.addEventListener('visibilitychange', () => { if (document.hidden) setPaused(true); });
 overlay.addEventListener('keydown', event => {
@@ -65,17 +75,15 @@ function frame(now) {
   scene.draw(previous, current, alpha);
   if (now - lastHudTime >= 100) {
     const intent = input.sample();
-    element('distance').textContent = String(Math.floor(current.y));
-    element('speed').textContent = current.v.toFixed(1);
-    element('pace-bar').style.transform = `scaleX(${Math.min(1, current.v / params.startSpeed)})`;
-    const amplitude = Math.hypot(current.w, current.q / (2 * Math.PI * params.frequency));
-    element('pace-label').textContent = intent.brake ? 'Settling the wheel' : amplitude > .025 ? 'Catch the rhythm' : 'Rolling along';
-    element('wheel-status').textContent = intent.brake ? 'Damping the shimmy' : 'Front-left caster';
-    element('wheel-angle').textContent = `${Math.round(current.w * 180 / Math.PI)}°`;
-    element('wobble-level').value = Math.min(1, amplitude / cancelableAmplitude(params));
+    const speed = Math.hypot(current.vx, current.vy);
+    element('speed').textContent = speed.toFixed(1);
+    element('motion-status').textContent = intent.brake ? 'Holding it steady' : intent.push < 0 ? 'Pulling backwards' : intent.push > 0 ? 'Pushing' : speed > .05 ? 'Coasting — Space to stop' : 'Hold W or ↑ to push';
+    for (let i = 0; i < 4; i++) element(`caster-${i}`).textContent = `${Math.round(angleDifference(current.wheels[i].angle, current.heading) * 180 / Math.PI)}°`;
     controls.brake.dataset.held = String(intent.brake);
     controls.left.dataset.held = String(intent.steer < 0);
     controls.right.dataset.held = String(intent.steer > 0);
+    controls.push.dataset.held = String(intent.push > 0);
+    controls.pull.dataset.held = String(intent.push < 0);
     lastHudTime = now;
   }
   requestAnimationFrame(frame);

@@ -1,5 +1,15 @@
 # Decisions
 
+## Current direction — 2026-11-05
+
+- User explicitly replaced automatic forward travel with player-driven pushing. W/Up pushes, S/Down pulls, A/D turns at the handle, Space stops, and R resets. The trolley starts stationary.
+- All four casters swivel independently with alignment lag and signed tire rolling. A planar body model combines handle forces, momentum, caster friction, and per-wheel impacts. The defective caster's 7.5 Hz flutter affects its real wheel angle and contact force; it is not a cosmetic body shake.
+- Keep the old oscillator code and frozen reference fixtures unchanged in meaning for regression history. New manual handling behavior has separate tests; passing historical references does not validate the new handling model.
+- A small open test area, an L-shaped wall, two ridges, and a pothole are fixtures for judging movement. The user will decide when mechanics are satisfactory; levels and full-game design are deferred.
+- No-input camera motion is removed. A north-up camera follows actual trolley position in both axes so forward, sideways, and reverse movement remain visible.
+
+## Earlier decisions
+
 | Date | Decision | Reason |
 | --- | --- | --- |
 | 2026-11-05 | Begin with Stage 0; keep the engineering baseline in vanilla JS/Canvas. | User approved starting the plan to prove steering before pursuing release. |

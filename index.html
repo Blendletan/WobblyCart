@@ -4,40 +4,33 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f3efe4">
-  <meta name="description" content="A little cart. An open aisle. Take it for a spin.">
-  <title>Wobbly Cart</title>
+  <meta name="description" content="Four swivelling wheels. One troublesome trolley. Find the feel in a free practice space.">
+  <title>Wobbly Cart · Handling playground</title>
   <link rel="icon" href="./assets/cart.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <main id="stage" aria-label="Wobbly Cart game">
-    <canvas id="game" aria-label="Top-down cart in a practice aisle. Use left and right arrows or A and D to steer. Hold Space, S, or Down to ease off." tabindex="0"></canvas>
-    <header class="intro panel">
-      <p class="eyebrow"><span class="dot"></span> TAKE IT FOR A SPIN</p>
-      <h1>Wobbly<br><span>Cart.</span></h1>
-      <p class="tagline">One bad wheel.<br>Find its rhythm.</p>
-      <div class="aisle-label"><span>01</span><div>PRACTICE AISLE<br><small>Make yourself at home.</small></div></div>
-    </header>
-    <section class="readout panel" aria-label="Run information">
-      <p class="eyebrow">THE LITTLE RUN</p>
-      <div class="distance"><output id="distance">0</output><span>m</span></div>
-      <p class="distance-label">AND COUNTING</p>
-      <div class="speed-row"><span>PACE</span><strong><output id="speed">5.2</output> <small>m/s</small></strong></div>
-      <div class="pace-track"><div id="pace-bar"></div></div>
-      <p id="pace-label">Rolling along</p>
-      <div class="wheel-detail"><p class="eyebrow">THE TROUBLEMAKER</p><div class="caster-space" aria-hidden="true"></div><p><span id="wheel-status">Front-left caster</span><output id="wheel-angle">0°</output></p><meter id="wobble-level" min="0" max="1" value="0" aria-label="Wobble intensity"></meter></div>
-    </section>
-    <button id="pause" class="pause-button" type="button" aria-label="Pause game"><span aria-hidden="true">Ⅱ</span></button>
-    <div class="touch-controls" aria-label="Driving controls">
-      <button id="steer-left" class="steer-button" type="button" aria-label="Steer left">←</button>
-      <button id="brake" type="button" aria-label="Hold to ease off">Ease off <span>HOLD</span></button>
-      <button id="steer-right" class="steer-button" type="button" aria-label="Steer right">→</button>
-    </div>
-    <div class="instructions"><p><kbd>←</kbd> <kbd>→</kbd><span>Counter-steer</span></p><p><kbd>Space</kbd><span>Settle the wheel</span></p><p><kbd>P</kbd><span>Take a breather</span></p></div>
-    <section id="pause-overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title" hidden>
-      <div class="pause-card"><span class="eyebrow">NO RUSH</span><h2 id="pause-title">Parked for a moment.</h2><p>Your cart will be right here.</p><button id="resume" type="button">Keep rolling <span aria-hidden="true">→</span></button><small>Esc or P to resume</small></div>
-    </section>
-    <noscript>This cart needs JavaScript enabled to roll.</noscript>
+  <main id="stage" aria-label="Shopping trolley handling playground">
+    <canvas id="game" tabindex="0" aria-label="Shopping trolley playground. W or Up to push, S or Down to pull backwards, A and D or Left and Right to turn, Space to stop."></canvas>
+    <header class="intro"><div><span class="eyebrow">THE HANDLING PLAYGROUND</span><h1>Wobbly <span>Cart.</span></h1></div><p>Four swivelling wheels.<br>One mind of its own.</p></header>
+    <div id="playfield" aria-hidden="true"></div>
+    <aside class="readout" aria-label="Trolley controls and status">
+      <div class="status-head"><span class="eyebrow">TAKE YOUR TIME</span><button id="pause" type="button" aria-label="Pause game">Ⅱ</button></div>
+      <div class="speed-row"><output id="speed">0.0</output><span>m/s</span></div>
+      <p id="motion-status" role="status">Hold W or ↑ to push</p>
+      <section class="caster-detail" aria-label="Four caster directions"><p class="eyebrow">ALL FOUR SWIVEL</p><div class="caster-space" aria-hidden="true"></div><div class="wheel-readouts"><span>FL <output id="caster-0">0°</output></span><span>FR <output id="caster-1">0°</output></span><span>RL <output id="caster-2">0°</output></span><span>RR <output id="caster-3">0°</output></span></div><small>The red caster is the awkward one.</small></section>
+      <div class="control-group"><p class="eyebrow">HOLD TO MOVE</p><div id="drive-controls" aria-label="Movement controls">
+        <button id="push" type="button" aria-label="Push forward"><strong>↑</strong><small>Push</small></button>
+        <button id="steer-left" type="button" aria-label="Turn left"><strong>←</strong><small>Left</small></button>
+        <button id="pull" type="button" aria-label="Pull backwards"><strong>↓</strong><small>Back</small></button>
+        <button id="steer-right" type="button" aria-label="Turn right"><strong>→</strong><small>Right</small></button>
+        <button id="brake" type="button" aria-label="Hold to stop"><strong>Stop</strong><small>Space</small></button>
+      </div><p class="key-hint">WASD / arrows · Space to stop</p></div>
+      <button id="reset" type="button">↺ Reset trolley <kbd>R</kbd></button>
+    </aside>
+    <p class="sandbox-note">Take your time. Find the feel.</p>
+    <section id="pause-overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title" hidden><div class="pause-card"><span class="eyebrow">NO RUSH</span><h2 id="pause-title">Parked for a moment.</h2><p>Your trolley will be right here.</p><button id="resume" type="button">Back to the trolley →</button><small>Esc or P to resume</small></div></section>
+    <noscript>Enable JavaScript to try the trolley.</noscript>
   </main>
   <script type="module" src="./src/main.js"></script>
 </body>

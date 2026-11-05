@@ -2,6 +2,20 @@
 
 Nov 1, 2026 · @Robert
 
+## Current scope override — manual-push handling demo (2026-11-05)
+
+The user has changed the core design. The current task is a mechanics demo, and this section supersedes the automatic forward movement, endless-scrolling course, and one-bad-front-wheel-only implementation assumptions below.
+
+- Start at rest. W/Up applies forward pushing force at the handle; S/Down pulls backwards; A/D or Left/Right turn the trolley by moving the handle; Space holds it still. Releasing the push lets it coast and lose momentum. Equivalent holdable touch buttons support combined inputs.
+- All four wheels are 360-degree swivelling casters. Each has its own bearing orientation, alignment lag, tire rolling distance, and ground contact. Reversing makes the forks turn around. One caster remains more prone to flutter.
+- Movement is a planar rigid-body approximation with momentum, per-wheel rolling resistance and sideways grip, and forces at the handle. The camera tracks actual movement in both axes and remains still when the trolley is stationary.
+- The flat handling area contains only a few test fixtures: open space, an L-shaped wall, low ridges, and a pothole. Each wheel encounters rough ground separately, with speed-dependent impacts that can alter caster alignment and twist the trolley. These are handling fixtures, not designed levels or progression.
+- R or Reset trolley returns to a stationary starting pose. There is no score, timer, completion condition, forced speed ramp, or automatic restart.
+- The new manual model uses `trolleyParams` in `src/sim/params.js`. The earlier oscillator implementation and immutable `tests/golden` remain historical reference regressions; they are not a claim that the new four-caster model reproduces that single-wheel model.
+- Acceptance of movement feel belongs to the user. Hold level design, full game systems, release work, and the prior staged roadmap until the user is happy with the mechanics and asks to proceed.
+
+The original design remains below as background for later discussion.
+
 ## How to use this document
 
 Save this doc as `docs/SPEC.md` in an empty repo, add the rules below as `AGENTS.md`, and give Codex one stage at a time.

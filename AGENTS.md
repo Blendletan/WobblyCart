@@ -4,6 +4,7 @@
 
 - Read `docs/SPEC.md` and `STATE.md` before working. The spec is the source of truth; read the sections named by the requested build stage.
 - Implement only the stage or task requested. The build runs from Stage 0 (Scaffold) through Stage 7 (Optional growth features); do not start later stages automatically.
+- Current user direction supersedes that roadmap: iterate a manual-push demo with four swivelling casters and a few handling fixtures. Do not build levels, progression, or release systems until the user approves the mechanics and requests them. Read the current-scope override at the top of `docs/SPEC.md`.
 - Use the defaults in the spec's "Your tasks and open decisions" table unless the user changes them. If the spec is silent, choose the simplest option, record it in `DECISIONS.md`, and continue.
 - Scaffold, tools, and tests are introduced by the build stages. Do not assume a command exists before its stage creates it.
 
