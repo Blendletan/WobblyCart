@@ -1,8 +1,44 @@
-# Wobbly Cart: proposed build plan
+# Wobbly Cart: build plan
 
-## Current priority: manual-push mechanics approval
+## Current priority: a complete shopping trip
 
-The user's 2026-11-05 direction supersedes the staged execution plan below. Build and iterate the stationary-start, manually pushed, four-swivelling-caster demo first. Include basic test corners and rough-ground fixtures to assess handling. Do not advance to levels, scoring, progression, or release until the user approves the mechanics and requests the next work. The authoritative current requirements are at the top of `SPEC.md`.
+2026-11-05: the user accepted the manual-push premise and requested a commercial game direction. The new milestones below supersede the old endless-run roadmap. The authoritative requirements are at the top of [SPEC.md](SPEC.md); commercial reasoning and current portal sources are in [COMMERCIAL-PLAN.md](COMMERCIAL-PLAN.md).
+
+### C1 — five-trip playable slice (next implementation)
+
+Deliver a complete loop: manually push, collect the list, navigate the shop, stop at checkout, see a receipt, and select Next/Retry. Use the five trips described in the commercial plan. The shipping opening should be gentler than the present playground, which remains available for comparison.
+
+Implementation order within this milestone:
+
+1. Add named manual-handling profiles in `src/sim/params.js` and data-only trip layouts in `src/content`. Record tuning changes. Keep geometry and surface difficulty independently controllable.
+2. Add a pure trip simulation around `stepTrolley`: pickup bays, once-only collection, condition, active timer, checkout, stamps, restart/recovery, and explicit impact events. No shelf polling should repeatedly damage stationary cargo.
+3. Render shelves, goods and checkout clearly; add a shopping-list HUD and receipt. Add minimal procedural sound and mute/reduced-motion settings. Preserve immediate play and pause behaviour.
+4. Save progression and independent stamps through the existing platform wrapper. Implement version/migration and corrupt-save fallback. Local playtest events can be manually exported without networking.
+5. Add and compare the touch thumb pad; retain keyboard and button controls. Implement five authored trips with validated reachable pickups, clear recovery poses, and a traversable checkout approach.
+
+Automated gate: all existing tests pass; add deterministic trip replay, pickup/checkout eligibility, once-only impact damage, active-time accounting, recovery/stamp restrictions, progression, save migration/fallback, and actual app-flow checks. Validate each layout and exercise successful routes using the real dynamics. Test rendering as read-only. Preserve the golden tree. Run `node --test`, `node tools/budget.mjs`, and relevant live QA. Do not create an endless-course bot merely to satisfy a superseded requirement.
+
+Human gate: five unguided new players, including physical phone users. Record first pickup/checkout and independent continuation/retry choices. Aim for 4/5 opening completions without help and 3/5 choosing more play; these are internal qualitative checks, not portal thresholds. Test on Android and iPhone, verify first playable frame within 3 seconds and 60 fps target/30 floor. The existing browser-tool restriction may require manual checks, which must remain honestly outstanding.
+
+### C2 — release candidate (after C1 evidence)
+
+Build up to 18 authored trips in three settings, six cosmetic finishes and saved cosmetic tokens. Add a daily challenge using already-validated layouts and a UTC-date/content-version selection made outside the pure simulation. Keep the daily's care/speed conditions fixed and rewards cosmetic. Add no backend, multiplayer or native wrapper.
+
+Prepare portable self/portal packages with root `index.html`, relative resources, only the requested SDK, and no development files. Produce actual screenshots, cover variants and a 15–25 second gameplay capture. Re-run device, storage, pause, full campaign and budget checks. All trips require human balancing; content count is not evidence of quality.
+
+The polished C1 build can support a private pitch before C2 is complete, with its implementation status stated accurately. A public portal trial should contain enough varied, tested content for its engagement metrics to be meaningful.
+
+### C3 — selected portal test and monetization
+
+Follow the release order in the commercial plan. Prepare the specific submission build and metadata before requesting publication or agreement acceptance. Capture the selected portal's current SDK documentation in `docs/sdk/`, then implement only its adapter and required features. Basic Launch on CrazyGames requires no ad integration; Poki's testing requirements differ and must be checked before its test.
+
+For a monetized build, implement eligible result-screen ads and one optional cosmetic reward. Prove exactly-once reward delivery, failure/timeout handling, pause/mute, input clearing and balanced gameplay start/stop events. SDK errors and unsupported ads must never block Next/Retry. A licensed Coolmath version uses its required SDK and removes our ad offers and external links.
+
+Gate: actual portal acceptance and measured playtime/retention/conversion, followed by real earnings if monetization is enabled. Do not label Basic Launch as revenue. Record offer terms and actual dashboard results rather than assumed percentages. Add a second channel only when incremental reach justifies maintenance and distribution rights permit it.
+
+At every implementation handoff, update `STATE.md`, record tested/untested decisions in `TUNING.md`, run all applicable checks and commit. Keep the preserved golden tree hash. Stop after two failures of the same stage check and record the blocker as required by `AGENTS.md`.
+
+## Historical roadmap — superseded by C1–C3
 
 Build plan, 2026-11-05. The user approved starting this plan with Stage 0. Read alongside `SPEC.md`; layout, timing, and intended feel have been incorporated there. Later-stage proposals remain subject to their measurement and playtest gates. `STATE.md` records implementation progress.
 
@@ -104,6 +140,6 @@ These are calculations from the proposed parameters, not measured playtest resul
 
 These checks do not establish every portal's current content or AI policy. Recheck the chosen target's full requirements before submission.
 
-## Next implementation
+## Historical handoff
 
-Hand off the manual-push handling demo and collect feedback on push effort, stopping distance, reversing, caster alignment, turning, and one-wheel impacts. Adjust those mechanics before discussing levels or the former stage roadmap.
+The manual-push handling demo was handed off and the user accepted its premise. Continue with C1 above, using the user's warning that the current strength is almost too much. The historical endless-run milestones and bot thresholds are not the next implementation.

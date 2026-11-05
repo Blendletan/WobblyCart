@@ -2,19 +2,37 @@
 
 Nov 1, 2026 · @Robert
 
-## Current scope override — manual-push handling demo (2026-11-05)
+## Current direction — commercial shopping challenges (2026-11-05)
 
-The user has changed the core design. The current task is a mechanics demo, and this section supersedes the automatic forward movement, endless-scrolling course, and one-bad-front-wheel-only implementation assumptions below.
+The user accepted the manual-push mechanic as a basis for a game, described the current handling as almost too much, and asked for a commercially viable game direction and release options. The mechanics-only approval gate is satisfied for proceeding with design. Final tuning, touch usability and commercial appeal remain unproven.
 
-- Start at rest. W/Up applies forward pushing force at the handle; S/Down pulls backwards; A/D or Left/Right turn the trolley by moving the handle; Space holds it still. Releasing the push lets it coast and lose momentum. Equivalent holdable touch buttons support combined inputs.
-- All four wheels are 360-degree swivelling casters. Each has its own bearing orientation, alignment lag, tire rolling distance, and ground contact. Reversing makes the forks turn around. One caster remains more prone to flutter.
-- Movement is a planar rigid-body approximation with momentum, per-wheel rolling resistance and sideways grip, and forces at the handle. The camera tracks actual movement in both axes and remains still when the trolley is stationary.
-- The flat handling area contains only a few test fixtures: open space, an L-shaped wall, low ridges, and a pothole. Each wheel encounters rough ground separately, with speed-dependent impacts that can alter caster alignment and twist the trolley. These are handling fixtures, not designed levels or progression.
-- R or Reset trolley returns to a stationary starting pose. There is no score, timer, completion condition, forced speed ramp, or automatic restart.
-- The new manual model uses `trolleyParams` in `src/sim/params.js`. The earlier oscillator implementation and immutable `tests/golden` remain historical reference regressions; they are not a claim that the new four-caster model reproduces that single-wheel model.
-- Acceptance of movement feel belongs to the user. Hold level design, full game systems, release work, and the prior staged roadmap until the user is happy with the mechanics and asks to proceed.
+This section supersedes the original automatic travel, endless course, scoring, progression and stage sequence below. [COMMERCIAL-PLAN.md](COMMERCIAL-PLAN.md) records the recommended product and researched distribution options; [PLAN.md](PLAN.md) defines the new milestones. Recommendations are not claims that the user has playtested the proposed levels.
 
-The original design remains below as background for later discussion.
+### Core requirements retained
+
+- Start stationary and let the player push. W/Up applies forward force at the handle, S/Down pulls backwards, A/D or arrows turn, and Space stops. Release to coast. No automatic speed schedule.
+- All four casters swivel independently, with their own alignment, rolling distance and contact with bumps/potholes. One caster is more prone to flutter. The camera follows actual movement in both axes.
+- Keep the pure deterministic manual model and existing architecture, zero runtime dependencies, 240 Hz loop, size/performance budgets, storage wrapper and immutable golden fixtures. The historical single-wheel oscillator is a separate regression reference.
+- Keep the present handling playground available for comparisons. Put named difficulty profiles and all numeric simulation tuning in `src/sim/params.js`; log before/after changes in `TUNING.md`.
+
+### Recommended first game loop
+
+- Five authored shopping trips for the next playable slice, introducing pushing/stopping, corners, uneven ground, fragile shopping, then a combined route. Start gentler than the playground. Exact settings require a new playtest.
+- A trip starts directly in the scene with a pictorial shopping list. Collect each listed item once by slowing within its marked pickup bay; finish by stopping within checkout after collecting the complete list. Simulated dwell/speed thresholds belong in `params.js`.
+- Track delivered items, elapsed active simulation ticks and shopping condition. Meaningful wall or ground impacts can reduce condition once per impact event. Minor contact is forgiving. Damaged goods still count toward delivery, so care mistakes cannot prevent completion.
+- Award three independently saved stamps: delivery, care, speed. Delivery alone unlocks the next trip. Care is a condition threshold; speed is a per-trip time target. They can be earned on separate attempts. Timer starts on the first movement input, excludes pauses/results/ads, and is optional for progression.
+- Checkout produces a receipt with the result and immediate Next/Retry choices. Restart is free and returns to a stationary spawn. A free explicit recovery returns to a validated safe pose, preserves collected items and elapsed time, and makes that attempt ineligible for care/speed stamps.
+- Test a two-axis held thumb pad plus Stop against the current touch buttons. It must preserve explicit pushing and reversal, and work with keyboard/mouse alternatives. Device usability is a human check.
+- Persist completed trips, stamps, settings and best eligible results through the platform storage wrapper using a versioned schema. Guard corrupted values and unavailable storage. Keep collected-item state and per-attempt condition in the simulation.
+- Bring forward enough procedural art, pickup/impact feedback and synthesized sound to judge a complete loop. UI should communicate shopping and checkout instead of physics diagnostics.
+
+### Scope and release boundaries
+
+The current planning task changes documents only; the playable build remains the handling playground. C1 is the next implementation milestone. Expand toward at most 18 trips, cosmetics and a daily challenge only after the complete-loop test supports it. Do not treat the former numbered stages as automatic work orders.
+
+The proposed revenue routes are portal advertising and non-exclusive licensing. Preserve the private Poki/Coolmath pitch option before public distribution. Keep progression and recovery free; any rewarded ad grants an optional cosmetic benefit. No portal integration until its current SDK reference is in `docs/sdk/`; use the chosen portal's pacing rules rather than the original generic ad timers.
+
+The remaining document is historical design/reference material. Its numerical reference fixtures and engineering constraints remain useful where not superseded; its release facts must be checked against the dated commercial plan and current portal requirements.
 
 ## How to use this document
 

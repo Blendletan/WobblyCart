@@ -1,6 +1,8 @@
 # Wobbly Cart
 
-A mechanics playground for an awkward shopping trolley. It starts at rest: push it, stop it, back it up, and steer it around a test corner. All four casters swivel independently; low ridges and a pothole affect individual wheels. There is no timer, score, or level progression. The user will approve the handling before full-game design resumes.
+A mechanics playground for an awkward shopping trolley. It starts at rest: push it, stop it, back it up, and steer it around a test corner. All four casters swivel independently; low ridges and a pothole affect individual wheels. The current playable build has no timer, score, or level progression.
+
+The user has accepted the premise and requested commercial game design. The proposed next build adds five short shopping trips, pickup/checkout objectives and optional care/speed stamps. See [the commercial plan](docs/COMMERCIAL-PLAN.md) and [C1 implementation plan](docs/PLAN.md); those game systems are not implemented yet.
 
 Requires Node.js 22 or newer. No packages to install.
 
@@ -28,4 +30,4 @@ The budget checker follows the initial page's local module/style/asset graph, co
 
 The fixed loop runs at 240 Hz with at most eight steps per rendered frame. Excess elapsed time is dropped after long stalls; fractional time is retained for interpolation. Pause/resume resets the accumulator, and inputs are sampled on simulation ticks. The same tick inputs reproduce the same state independent of render cadence.
 
-See the current scope at the top of `docs/SPEC.md`, plus `docs/PLAN.md` and `STATE.md`. Browser checks are available at `/tools/qa.html`. The old single-wheel oscillator and its frozen golden tests remain for regression history; the manual model lives in `src/sim/trolley.js` and has separate behavioral tests. Physical phone checks and human handling approval remain outstanding.
+See the current scope at the top of `docs/SPEC.md`, plus `docs/PLAN.md` and `STATE.md`. Browser checks are available at `/tools/qa.html`. The old single-wheel oscillator and its frozen golden tests remain for regression history; the manual model lives in `src/sim/trolley.js` and has separate behavioral tests. Physical phone checks and final shipping tuning remain outstanding.

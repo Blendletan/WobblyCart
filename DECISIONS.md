@@ -1,11 +1,20 @@
 # Decisions
 
-## Current direction — 2026-11-05
+## Commercial direction — 2026-11-05
+
+- The user accepted the mechanic as the basis for a game, said the handling was almost too much, and asked for a revenue-oriented game direction. The mechanics-only gate is satisfied for design; this is not final tuning or device approval.
+- Recommend authored shopping trips with pickup, checkout, independent delivery/care/speed stamps and free recovery. Delivery alone advances the campaign. Begin with five trips before expanding to a proposed 18-trip release.
+- Vary wheel condition, rough ground, geometry and fragile cargo separately. Keep manual pushing and all four caster states. Preserve the present playground as a tuning reference; no numeric parameters changed in this planning task.
+- Default to low-cash-cost browser distribution. Pitch a polished unreleased slice privately to Poki/Coolmath, then choose an actual offer or CrazyGames Basic Launch. Use 21 days as our review point, not a portal promise. Do not conflate non-exclusive pitches with permission to publish while considering exclusivity.
+- Proposed monetization: licensed builds and portal ads at eligible breaks; optional cosmetic rewards only. Progression and recovery stay free. Portal shares and income must come from actual agreements/dashboard evidence.
+- Replace the old roadmap with C1–C3 in `docs/PLAN.md`; preserve historical reference tests and applicable engineering constraints. Commercial research and submission copy are prepared locally, with no publication or outreach performed.
+
+## Manual-demo decisions — 2026-11-05
 
 - User explicitly replaced automatic forward travel with player-driven pushing. W/Up pushes, S/Down pulls, A/D turns at the handle, Space stops, and R resets. The trolley starts stationary.
 - All four casters swivel independently with alignment lag and signed tire rolling. A planar body model combines handle forces, momentum, caster friction, and per-wheel impacts. The defective caster's 7.5 Hz flutter affects its real wheel angle and contact force; it is not a cosmetic body shake.
 - Keep the old oscillator code and frozen reference fixtures unchanged in meaning for regression history. New manual handling behavior has separate tests; passing historical references does not validate the new handling model.
-- A small open test area, an L-shaped wall, two ridges, and a pothole are fixtures for judging movement. The user will decide when mechanics are satisfactory; levels and full-game design are deferred.
+- A small open test area, an L-shaped wall, two ridges, and a pothole are fixtures for judging movement. Level design was held until the user's subsequent acceptance recorded above.
 - No-input camera motion is removed. A north-up camera follows actual trolley position in both axes so forward, sideways, and reverse movement remain visible.
 
 ## Earlier decisions

@@ -1,14 +1,26 @@
 # Tuning
 
-## Manual-push demo (current)
+## Commercial direction and user feedback (current)
 
 | Decision | Tested or untested | Evidence |
 | --- | --- | --- |
-| Rest until pushed, coast on release, hold to stop, pull to reverse. | Automated | Manual physics and application-wiring tests. Human feel not yet approved. |
+| Manual pushing, four casters and rough ground are a usable game premise. | User accepted premise | 2026-11-05: "we've got the idea" and "it's good"; user requested game design and revenue planning. |
+| Current difficulty is suitable for the opening. | Not approved | User said "It's almost too much"; propose gentler introductory profiles and varying difficulty dimensions by trip. |
+| Shopping trips, independent stamps and cosmetic rewards generate repeat play. | Untested proposal | `docs/COMMERCIAL-PLAN.md`; five-trip C1 slice and unguided playtest are next. |
+| Portal eligibility, audience and revenue. | Research only; no submission | Current primary sources linked in the commercial plan. No offer, portal metrics or earnings. |
+| Physical phone usability and current live browser performance. | Outstanding | Automated tests use DOM/canvas doubles; prior browser-tool restriction remains recorded in `STATE.md`. |
+
+No simulation parameters changed in this planning task. Acceptance of the concept does not select a shipping preset or validate the proposed campaign.
+
+## Manual-push demo
+
+| Decision | Tested or untested | Evidence |
+| --- | --- | --- |
+| Rest until pushed, coast on release, hold to stop, pull to reverse. | Automated; premise accepted | Manual physics and application-wiring tests. User accepts the direction; final tuning remains open. |
 | Four independent caster bearings and wheel rotations, including the rear pair. | Automated | Turning/reversal tests and renderer angle contract. |
 | Rough ground acts on each wheel and can twist the trolley. | Automated | One-wheel entry test, speed sensitivity, and once-per-entry impact checks. |
 | Wall contact permits stopping and pulling away. | Automated | Basket footprint collision test. |
-| All handling constants below. | Untuned by a person | Starting estimates for this mechanics demo; awaiting user feedback. |
+| All handling constants below. | Shipping values not selected | Starting estimates; user feedback suggests an easier opening. |
 
 ### Manual-model parameter log
 
