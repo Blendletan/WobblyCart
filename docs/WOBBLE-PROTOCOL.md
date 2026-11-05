@@ -2,6 +2,8 @@
 
 The frozen targets in `tests/golden/wobble.json` are copied from SPEC.md, not generated from the implementation. The reference parameters retain κ_dn = κ = 3. Active practice uses κ_dn = 12.
 
+Frozen tree hash from commit `e7c12b3`: `6f325ab866e7d9ef69cc31752c4624d63a4408ca`. Verify with `git rev-parse HEAD:tests/golden` after later changes.
+
 - Constant speed, 240 Hz, 30 seconds; initial w = 0.02, q = r = heading = x = y = 0.
 - Each tick samples steering from the current/prior oscillator state; then updates q, w, r using the new w, heading using the new r, and position using the new heading.
 - Reference controllers bypass player input smoothing. Human controls retain the 40 ms time constant.
