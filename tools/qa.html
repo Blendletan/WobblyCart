@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wobbly Cart browser checks</title>
+<style>
+  body { margin: 24px; background: #eee; color: #18382d; font: 15px system-ui; }
+  button { padding: 10px 18px; margin: 0 10px 12px 0; cursor: pointer; }
+  iframe { border: 0; display: block; }
+  pre { white-space: pre-wrap; }
+</style>
+<h1>Stage 0 browser checks</h1>
+<p>Local development tool. Uses a real embedded game, keyboard events, layout checks, and a 10-second frame-cadence sample. Touch capture is covered separately by unit tests and manual device checks.</p>
+<button id="run">Run browser checks</button><button id="desktop">Desktop preview</button><button id="portrait">Portrait preview</button>
+<pre id="report" role="status">Ready.</pre>
+<iframe id="preview" title="Game preview" width="960" height="540" src="../index.html"></iframe>
+<script type="module">
+  const frame = document.getElementById('preview');
+  const report = document.getElementById('report');
+  const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+  const size = (w, h) => { frame.width = w; frame.height = h; };
+  document.getElementById('desktop').onclick = () => size(960, 540);
+  document.getElementById('portrait').onclick = () => size(390, 844);
+  document.getElementById('run').onclick = async event => {
+    event.target.disabled = true;
+    report.textContent = 'Running…\n';
+    let passed = 0;
+    const check = (condition, message) => {
+      if (!condition) throw new Error(message);
+      report.textContent += `PASS ${message}\n`; passed++;
+    };
+    try {
+      size(960, 540);
+      await new Promise(resolve => { frame.onload = resolve; frame.src = '../index.html'; });
+      const win = frame.contentWindow, doc = frame.contentDocument;
+      const find = id => doc.getElementById(id);
+      const key = (code, down) => win.dispatchEvent(new win.KeyboardEvent(down ? 'keydown' : 'keyup', { code, bubbles: true, cancelable: true }));
+      if (!find('pause-overlay').hidden) find('resume').click();
+      find('game').focus();
+      await wait(200);
+      let bounds = find('stage').getBoundingClientRect();
+      check(Math.abs(bounds.width / bounds.height - 16 / 9) < .001, 'desktop stage is 16:9');
+      check(find('game').width >= 960, 'canvas backing store is initialized');
+      const distance = Number(find('distance').textContent);
+      await wait(500);
+      check(Number(find('distance').textContent) > distance, 'game starts moving without a menu');
+      key('KeyD', true); await wait(200);
+      check(find('steer-right').dataset.held === 'true', 'keyboard steering reaches live controls');
+      key('KeyD', false); key('Space', true); await wait(1600);
+      check(Number(find('speed').textContent) < 3.4, 'Ease off reduces speed');
+      check(find('brake').dataset.held === 'true', 'brake held state is visible');
+      key('KeyP', true); key('KeyP', false); await wait(200);
+      check(!find('pause-overlay').hidden, 'P opens pause dialog');
+      const pausedDistance = find('distance').textContent;
+      await wait(500);
+      check(find('distance').textContent === pausedDistance, 'distance stays fixed while paused');
+      check(find('brake').dataset.held === 'false', 'pause clears held input');
+      find('resume').click(); key('Space', false); await wait(500);
+      check(find('pause-overlay').hidden, 'resume returns to play');
+      win.dispatchEvent(new win.Event('blur')); await wait(100);
+      check(!find('pause-overlay').hidden, 'window blur pauses');
+      find('resume').click();
+      size(390, 844); await wait(200);
+      bounds = find('stage').getBoundingClientRect();
+      check(bounds.width === 390 && bounds.height === 844, 'portrait fills the viewport');
+      for (const id of ['pause', 'steer-left', 'brake', 'steer-right']) {
+        const box = find(id).getBoundingClientRect();
+        check(box.width >= 44 && box.height >= 44 && box.x >= 0 && box.right <= 390 && box.bottom <= 844, `${id} touch target is visible and at least 44 px`);
+      }
+      size(960, 540); await wait(200);
+      const intervals = [];
+      report.textContent += 'Measuring desktop frame cadence for 10 seconds…\n';
+      await new Promise(resolve => {
+        let start, last;
+        function sample(now) {
+          start ??= now;
+          if (last !== undefined) intervals.push(now - last);
+          last = now;
+          if (now - start < 10_000) win.requestAnimationFrame(sample); else resolve();
+        }
+        win.requestAnimationFrame(sample);
+      });
+      const ordered = [...intervals].sort((a, b) => a - b);
+      const fps = 1000 / (intervals.reduce((a, b) => a + b, 0) / intervals.length);
+      report.textContent += `Observed ${fps.toFixed(1)} fps; median ${ordered[Math.floor(ordered.length / 2)].toFixed(2)} ms; p95 ${ordered[Math.floor(ordered.length * .95)].toFixed(2)} ms.\n`;
+      check(fps >= 55, 'desktop preview sustains the 60 fps target (55 fps measurement floor)');
+      const resources = win.performance.getEntriesByType('resource');
+      check(resources.every(resource => new URL(resource.name).origin === location.origin), 'observed game resources are all local');
+      report.textContent += `COMPLETE: ${passed} browser checks passed.\n`;
+    } catch (error) { report.textContent += `FAIL ${error.message}\n`; }
+    finally { event.target.disabled = false; }
+  };
+</script>
+</html>

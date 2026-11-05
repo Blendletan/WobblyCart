@@ -1,0 +1,67 @@
+:root { color-scheme: light; font-family: "Trebuchet MS", "Segoe UI", sans-serif; color: #243d35; background: #dedbd0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; overscroll-behavior: none; }
+body { display: grid; place-items: center; }
+button { font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: none; user-select: none; }
+button:focus-visible, canvas:focus-visible { outline: 3px solid #c75238; outline-offset: -4px; }
+#stage { position: relative; overflow: hidden; background: #f3efe4; container-type: size; isolation: isolate; }
+#game { display: block; width: 100%; height: 100%; touch-action: none; }
+.panel { position: absolute; pointer-events: none; }
+.intro { left: 5.2%; top: 10%; width: 25%; }
+.eyebrow { font-size: clamp(9px, 1.15cqh, 14px); font-weight: 700; letter-spacing: .16em; }
+.dot { display: inline-block; width: 7px; height: 7px; margin-right: 7px; background: #68866b; border-radius: 50%; }
+h1 { margin: 6cqh 0 2.5cqh; font-size: 10.5cqh; line-height: .95; letter-spacing: -.065em; font-weight: 900; }
+h1 span { color: #c75238; }
+.tagline { font-size: max(14px, 2.3cqh); line-height: 1.6; color: #6b7566; }
+.aisle-label { display: flex; align-items: center; gap: 1.4cqh; margin-top: 10cqh; font-size: max(10px, 1.4cqh); line-height: 1.7; letter-spacing: .09em; }
+.aisle-label > span { border: 1px solid #bbc2af; border-radius: 50%; width: 5cqh; height: 5cqh; display: grid; place-items: center; font-size: 2cqh; }
+.aisle-label small { font-size: max(10px, 1.3cqh); letter-spacing: 0; color: #6b7566; }
+.readout { top: 19%; right: 5.5%; width: 20%; }
+.distance { display: flex; align-items: baseline; gap: .9cqh; margin-top: 3.5cqh; }
+.distance output { font-size: 8.2cqh; letter-spacing: -.07em; font-variant-numeric: tabular-nums; line-height: 1; }
+.distance > span { color: #7c8776; font-size: 2.6cqh; }
+.distance-label { font-size: max(9px, 1.15cqh); letter-spacing: .17em; color: #7c8776; margin: 1.1cqh 0 5cqh; }
+.speed-row { display: flex; align-items: center; justify-content: space-between; font-size: max(10px, 1.3cqh); letter-spacing: .08em; }
+.speed-row strong { font-size: 2.6cqh; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.speed-row small { font-size: max(10px, 1.4cqh); font-weight: 400; }
+.pace-track { margin-top: 1.5cqh; height: .8cqh; background: #dce0cf; border-radius: 8px; overflow: hidden; }
+#pace-bar { width: 100%; height: 100%; background: #66856b; transform-origin: left; }
+#pace-label { color: #6b7566; font-size: max(11px, 1.4cqh); }
+.instructions { margin-top: 6cqh; border-top: 1px solid #d9dccd; padding-top: 1.5cqh; }
+.instructions p { display: flex; align-items: center; gap: .6cqh; font-size: max(11px, 1.55cqh); }
+.instructions p span { margin-left: 1cqh; color: #6b7566; }
+kbd { font-family: inherit; font-size: max(10px, 1.4cqh); min-width: 2.8cqh; padding: .6cqh .8cqh; border: 1px solid #b9c1af; border-bottom-width: 2px; border-radius: 5px; text-align: center; }
+.pause-button { position: absolute; right: 4%; top: 6%; width: max(44px, 5.5cqh); height: max(44px, 5.5cqh); border: 1px solid #c5ccba; border-radius: 50%; background: #f3efe4ed; color: #243d35; font-size: 22px; }
+.touch-controls { position: absolute; bottom: 5%; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; align-items: center; }
+#brake { background: #26473b; border: 0; border-bottom: 4px solid #163428; border-radius: 15px; color: #fffbee; padding: 14px 22px; min-height: 54px; min-width: 135px; font-size: 16px; font-weight: 700; box-shadow: 0 5px 15px #243d351c; }
+#brake span { display: block; margin-top: 4px; font-size: 9px; letter-spacing: .15em; color: #b7cab7; }
+#brake[data-held="true"], #brake:active { background: #507457; border-bottom-color: #345339; }
+.steer-button { display: none; width: 52px; height: 52px; border: 1px solid #b3bda8; border-radius: 50%; background: #f3efe4eb; color: #243d35; font-size: 24px; }
+.steer-button[data-held="true"] { background: #c7d3bd; }
+.floor-note { position: absolute; bottom: 5%; left: 5.2%; font-size: max(9px, 1.15cqh); letter-spacing: .13em; color: #78816d; pointer-events: none; }
+#pause-overlay { position: absolute; inset: 0; z-index: 5; display: grid; place-items: center; background: #20392e66; backdrop-filter: blur(5px); padding: 24px; }
+#pause-overlay[hidden] { display: none; }
+.pause-card { padding: 40px; max-width: 430px; background: #f3efe4; border: 1px solid #fff8e8; border-radius: 22px; box-shadow: 0 20px 80px #142d2b33; text-align: center; }
+.pause-card h2 { font-size: 36px; line-height: 1.08; letter-spacing: -.05em; margin: 22px 0 12px; }
+.pause-card p { color: #6b7566; margin-bottom: 28px; }
+.pause-card button { border: 0; border-radius: 10px; background: #26473b; color: #fffbee; padding: 15px 24px; width: 100%; font-weight: 700; }
+.pause-card button span { float: right; }
+.pause-card small { display: block; margin-top: 16px; color: #6b7566; }
+@media (pointer: coarse) { .steer-button { display: block; } .instructions { display: none; } }
+@media (orientation: portrait) {
+  .intro { top: max(24px, env(safe-area-inset-top)); left: 24px; width: auto; }
+  .intro .eyebrow, .tagline, .aisle-label, .floor-note, .distance-label, .readout > .eyebrow, .instructions { display: none; }
+  h1 { margin: 0; font-size: clamp(30px, 9vw, 46px); line-height: .9; }
+  h1 br { display: none; } h1 span { margin-left: .12em; }
+  .readout { top: max(80px, calc(env(safe-area-inset-top) + 60px)); left: 24px; right: auto; width: 120px; padding: 10px 12px; border-radius: 12px; background: #f3efe4e8; }
+  .distance { margin-top: 0; gap: 5px; } .distance output { font-size: 36px; } .distance > span { font-size: 18px; }
+  .speed-row { margin-top: 12px; font-size: 10px; } .speed-row strong { font-size: 17px; } .speed-row small { font-size: 10px; }
+  .pace-track { height: 5px; margin-top: 8px; } #pace-label { font-size: 10px; margin: 6px 0 0; }
+  .pause-button { top: max(20px, env(safe-area-inset-top)); right: 20px; width: 44px; height: 44px; }
+  .touch-controls { bottom: max(24px, env(safe-area-inset-bottom)); width: calc(100% - 40px); justify-content: space-between; }
+  .steer-button { display: block; } #brake { min-width: 140px; }
+}
+@media (orientation: landscape) and (max-height: 480px) {
+  .touch-controls { bottom: 3%; gap: 6px; } #brake { padding: 7px 13px; min-width: 105px; min-height: 44px; font-size: 13px; } #brake span { display: none; }
+  .steer-button { width: 44px; height: 44px; } .pause-button { top: 4%; }
+}

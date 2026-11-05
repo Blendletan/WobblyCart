@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f3efe4">
+  <meta name="description" content="A little cart. An open aisle. Take it for a spin.">
+  <title>Wobbly Cart</title>
+  <link rel="icon" href="./assets/cart.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main id="stage" aria-label="Wobbly Cart game">
+    <canvas id="game" aria-label="Top-down cart in a practice aisle. Use left and right arrows or A and D to steer. Hold Space, S, or Down to ease off." tabindex="0"></canvas>
+    <header class="intro panel">
+      <p class="eyebrow"><span class="dot"></span> TAKE IT FOR A SPIN</p>
+      <h1>Wobbly<br><span>Cart.</span></h1>
+      <p class="tagline">One cart.<br>A little room to roll.</p>
+      <div class="aisle-label"><span>01</span><div>PRACTICE AISLE<br><small>Make yourself at home.</small></div></div>
+    </header>
+    <section class="readout panel" aria-label="Run information">
+      <p class="eyebrow">THE LITTLE RUN</p>
+      <div class="distance"><output id="distance">0</output><span>m</span></div>
+      <p class="distance-label">AND COUNTING</p>
+      <div class="speed-row"><span>PACE</span><strong><output id="speed">5.2</output> <small>m/s</small></strong></div>
+      <div class="pace-track"><div id="pace-bar"></div></div>
+      <p id="pace-label">Rolling along</p>
+      <div class="instructions"><p><kbd>←</kbd> <kbd>→</kbd><span>Find your line</span></p><p><kbd>Space</kbd><span>Ease off</span></p><p><kbd>P</kbd><span>Take a breather</span></p></div>
+    </section>
+    <button id="pause" class="pause-button" type="button" aria-label="Pause game"><span aria-hidden="true">Ⅱ</span></button>
+    <div class="touch-controls" aria-label="Driving controls">
+      <button id="steer-left" class="steer-button" type="button" aria-label="Steer left">←</button>
+      <button id="brake" type="button" aria-label="Hold to ease off">Ease off <span>HOLD</span></button>
+      <button id="steer-right" class="steer-button" type="button" aria-label="Steer right">→</button>
+    </div>
+    <p class="floor-note">A CLEAR AISLE. A FRESH START.</p>
+    <section id="pause-overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title" hidden>
+      <div class="pause-card"><span class="eyebrow">NO RUSH</span><h2 id="pause-title">Parked for a moment.</h2><p>Your cart will be right here.</p><button id="resume" type="button">Keep rolling <span aria-hidden="true">→</span></button><small>Esc or P to resume</small></div>
+    </section>
+    <noscript>This cart needs JavaScript enabled to roll.</noscript>
+  </main>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

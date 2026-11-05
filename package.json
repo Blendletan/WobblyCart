@@ -1,0 +1,12 @@
+{
+  "name": "wobbly-cart",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node tools/serve.mjs",
+    "test": "node --test",
+    "budget": "node tools/budget.mjs"
+  }
+}
