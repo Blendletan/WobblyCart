@@ -94,6 +94,8 @@ Speed pays and the wobble taxes it. Measured against the critical speed v\_c, th
 
 ### Run structure
 
+Practice-preview revision (2026-11-05): after feedback that the scaffold did not show caster flutter, the practice aisle now starts at 6.0 m/s with the Reference oscillator seeded at its limit-cycle amplitude. It uses the real yaw dynamics and braking damping, articulated casters, a magnified caster view, and the specified small 14 Hz presentation rattle. This overrides the practice preview's 5.2 m/s start only; the full run's speed schedule below remains a Stage 2 tuning task. Temporary forgiving rails keep the preview on screen and are excluded from numerical reference tests.
+
 A run starts the moment the page loads. The cart is already rolling at 5.2 m/s with the wobble seeded at its limit-cycle amplitude, so the first shimmy shows within 5 s. Target speed follows v\_target(d) = v0 + (v\_max − v0)(1 − e^(−d/D)) with v0 = 5.2 m/s, v\_max = 8.0 m/s and D = 200 m, and the cart's speed relaxes to it with a 0.8 s time constant. Ease off multiplies the target by 0.55 and switches on the damping term c\_b. Each item carried lowers the critical speed: v\_c(n) = 5.0 (1 − 0.012 n) m/s, with n ≤ 20. All of these are start values to tune in Feel Lab.
 
 ### Hazards and pickups

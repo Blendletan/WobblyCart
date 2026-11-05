@@ -9,7 +9,7 @@
   iframe { border: 0; display: block; }
   pre { white-space: pre-wrap; }
 </style>
-<h1>Stage 0 browser checks</h1>
+<h1>Wobbly Cart browser checks</h1>
 <p>Local development tool. Uses a real embedded game, keyboard events, layout checks, and a 10-second frame-cadence sample. Touch capture is covered separately by unit tests and manual device checks.</p>
 <button id="run">Run browser checks</button><button id="desktop">Desktop preview</button><button id="portrait">Portrait preview</button>
 <pre id="report" role="status">Ready.</pre>
@@ -44,11 +44,16 @@
       const distance = Number(find('distance').textContent);
       await wait(500);
       check(Number(find('distance').textContent) > distance, 'game starts moving without a menu');
+      const swivelAngles = [];
+      for (let i = 0; i < 20; i++) { await wait(100); swivelAngles.push(parseInt(find('wheel-angle').textContent, 10)); }
+      check(Math.min(...swivelAngles) < -5 && Math.max(...swivelAngles) > 5, 'caster swings both ways without player input');
       key('KeyD', true); await wait(200);
       check(find('steer-right').dataset.held === 'true', 'keyboard steering reaches live controls');
-      key('KeyD', false); key('Space', true); await wait(1600);
+      // Hold to settle at the new 3.3 m/s brake target, within the original 3.4 m/s check.
+      key('KeyD', false); key('Space', true); await wait(3600);
       check(Number(find('speed').textContent) < 3.4, 'Ease off reduces speed');
       check(find('brake').dataset.held === 'true', 'brake held state is visible');
+      check(Number(find('wobble-level').value) < .1, 'braking damps the caster oscillation');
       key('KeyP', true); key('KeyP', false); await wait(200);
       check(!find('pause-overlay').hidden, 'P opens pause dialog');
       const pausedDistance = find('distance').textContent;

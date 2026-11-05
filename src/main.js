@@ -1,7 +1,7 @@
 import { createFixedStepper } from './core/loop.js';
 import { bindInput, createInputState } from './core/input.js';
-import { createPlaceholder, stepPlaceholder } from './sim/placeholder.js';
-import { params } from './sim/params.js';
+import { createCart, stepPracticeCart, cancelableAmplitude } from './sim/cart.js';
+import { activeParams as params } from './sim/params.js';
 import { createScene } from './render/scene.js';
 import { stageSize } from './render/layout.js';
 import { createDevAdapter } from './platform/dev.js';
@@ -16,14 +16,14 @@ const controls = { left: element('steer-left'), right: element('steer-right'), b
 const input = createInputState();
 const platform = createDevAdapter();
 await platform.init();
-let current = createPlaceholder();
+let current = createCart();
 let previous = current;
 let paused = false;
 let hasStarted = false;
 const scene = createScene(canvas);
 const stepper = createFixedStepper(dt => {
   previous = current;
-  current = stepPlaceholder(current, input.sample(), dt);
+  current = stepPracticeCart(current, input.sample(), dt);
 });
 
 function setPaused(value) {
@@ -68,7 +68,11 @@ function frame(now) {
     element('distance').textContent = String(Math.floor(current.y));
     element('speed').textContent = current.v.toFixed(1);
     element('pace-bar').style.transform = `scaleX(${Math.min(1, current.v / params.startSpeed)})`;
-    element('pace-label').textContent = intent.brake ? 'Taking it easy' : 'Rolling along';
+    const amplitude = Math.hypot(current.w, current.q / (2 * Math.PI * params.frequency));
+    element('pace-label').textContent = intent.brake ? 'Settling the wheel' : amplitude > .025 ? 'Catch the rhythm' : 'Rolling along';
+    element('wheel-status').textContent = intent.brake ? 'Damping the shimmy' : 'Front-left caster';
+    element('wheel-angle').textContent = `${Math.round(current.w * 180 / Math.PI)}°`;
+    element('wobble-level').value = Math.min(1, amplitude / cancelableAmplitude(params));
     controls.brake.dataset.held = String(intent.brake);
     controls.left.dataset.held = String(intent.steer < 0);
     controls.right.dataset.held = String(intent.steer > 0);

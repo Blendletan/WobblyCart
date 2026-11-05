@@ -8,3 +8,5 @@
 | 2026-11-05 | Stage 0 uses constant target speed, smoothed lateral movement, and clamped aisle limits. | Makes input and rendering testable before Stage 1 dynamics and Stage 2 collisions. No placeholder motion is represented as validated wobble physics. |
 | 2026-11-05 | Keep local testing private to loopback; no publication or portal integration in Stage 0. | Release follows the later playtest gates. |
 | 2026-11-05 | SVG namespace identifiers do not count as external resource URLs. | They describe a document format and trigger no network request. |
+| 2026-11-05 | User's correction authorizes the actual wobble mechanic and caster presentation now. | Replace the live placeholder with Stage 1 dynamics and bring the small Stage 4 chassis rattle forward; do not represent the remaining Feel Lab UI or human playtests as complete. |
+| 2026-11-05 | Compare the table's near-timing column to +0.05 s; enforce the 50% improvement property separately for both signs. | The unavailable source prototype gives one combined column. Record exact measurement order and detrending in `docs/WOBBLE-PROTOCOL.md` and keep every published tolerance. |

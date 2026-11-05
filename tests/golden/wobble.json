@@ -1,0 +1,18 @@
+{
+  "description": "Frozen SPEC.md prototype targets, copied 2026-11-05. Do not regenerate from the implementation.",
+  "parameters": {
+    "frequency": 0.9, "criticalSpeed": 5, "loadFactor": 0.012, "maxItems": 20,
+    "growth": 3, "decay": 3, "amplitudeCap": 50, "brakeDamping": 4, "oilDamping": 3,
+    "yawCoupling": 60, "yawTimeConstant": 0.15, "steeringAuthority": 2.5,
+    "steeringTimeConstant": 0.04, "speedTimeConstant": 0.8, "brakeMultiplier": 0.55,
+    "startSpeed": 5.2
+  },
+  "rows": [
+    { "ratio": 0.9, "amplitude": 0.001, "none": 0.001, "perfect": 0, "near": 0, "late": 0.001 },
+    { "ratio": 1.1, "amplitude": 0.154, "none": 0.182, "perfect": 0.002, "near": 0.057, "late": 0.251 },
+    { "ratio": 1.2, "amplitude": 0.219, "none": 0.284, "perfect": 0.004, "near": 0.090, "late": 0.391 },
+    { "ratio": 1.3, "amplitude": 0.268, "none": 0.373, "perfect": 0.005, "near": 0.120, "late": 0.514 },
+    { "ratio": 1.45, "amplitude": 0.328, "none": 0.510, "perfect": 0.039, "near": 0.162, "late": 0.669 },
+    { "ratio": 1.6, "amplitude": 0.379, "none": 0.663, "perfect": 0.111, "near": 0.218, "late": 0.799 }
+  ]
+}

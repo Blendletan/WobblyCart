@@ -27,9 +27,14 @@ h1 span { color: #c75238; }
 .pace-track { margin-top: 1.5cqh; height: .8cqh; background: #dce0cf; border-radius: 8px; overflow: hidden; }
 #pace-bar { width: 100%; height: 100%; background: #66856b; transform-origin: left; }
 #pace-label { color: #6b7566; font-size: max(11px, 1.4cqh); }
-.instructions { margin-top: 6cqh; border-top: 1px solid #d9dccd; padding-top: 1.5cqh; }
+.instructions { position: absolute; left: 5.2%; bottom: 5%; width: 25%; border-top: 1px solid #d9dccd; padding-top: 1.5cqh; pointer-events: none; }
 .instructions p { display: flex; align-items: center; gap: .6cqh; font-size: max(11px, 1.55cqh); }
 .instructions p span { margin-left: 1cqh; color: #6b7566; }
+.wheel-detail { margin-top: 4cqh; border-top: 1px solid #d9dccd; padding-top: 1cqh; }
+.caster-space { height: 17cqh; }
+.wheel-detail > p:last-of-type { display: flex; justify-content: space-between; font-size: max(11px, 1.4cqh); gap: 8px; }
+#wheel-angle { font-variant-numeric: tabular-nums; color: #b44931; }
+#wobble-level { width: 100%; height: 10px; accent-color: #c75238; }
 kbd { font-family: inherit; font-size: max(10px, 1.4cqh); min-width: 2.8cqh; padding: .6cqh .8cqh; border: 1px solid #b9c1af; border-bottom-width: 2px; border-radius: 5px; text-align: center; }
 .pause-button { position: absolute; right: 4%; top: 6%; width: max(44px, 5.5cqh); height: max(44px, 5.5cqh); border: 1px solid #c5ccba; border-radius: 50%; background: #f3efe4ed; color: #243d35; font-size: 22px; }
 .touch-controls { position: absolute; bottom: 5%; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; align-items: center; }
@@ -57,6 +62,7 @@ kbd { font-family: inherit; font-size: max(10px, 1.4cqh); min-width: 2.8cqh; pad
   .distance { margin-top: 0; gap: 5px; } .distance output { font-size: 36px; } .distance > span { font-size: 18px; }
   .speed-row { margin-top: 12px; font-size: 10px; } .speed-row strong { font-size: 17px; } .speed-row small { font-size: 10px; }
   .pace-track { height: 5px; margin-top: 8px; } #pace-label { font-size: 10px; margin: 6px 0 0; }
+  .wheel-detail { display: none; }
   .pause-button { top: max(20px, env(safe-area-inset-top)); right: 20px; width: 44px; height: 44px; }
   .touch-controls { bottom: max(24px, env(safe-area-inset-bottom)); width: calc(100% - 40px); justify-content: space-between; }
   .steer-button { display: block; } #brake { min-width: 140px; }

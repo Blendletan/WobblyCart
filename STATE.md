@@ -1,11 +1,11 @@
 # State
 
-- Stage 0 complete: 2026-11-05; local Git repository initialized on `main`.
-- Done: moving cart, responsive canvas, keyboard/pointer controls, 240 Hz loop, interpolation, pause/blur handling, seeded RNG, Dev adapter, and storage fallback.
-- Done: local server, budget checker, automated tests, browser QA harness, README, and agreed Stage 0 spec clarifications.
-- Verification: `node --test` passed 15 tests; `/tools/qa.html` passed 18 browser checks.
-- Budget: 13 initial-load files; 25,483 bytes uncompressed; no external runtime resources.
-- Performance: Windows in-app browser, 960×540 game frame, 10-second sample: 60.0 fps; median frame interval 16.70 ms, p95 16.80 ms.
-- Layout: desktop 16:9 and portrait 390×844 checked in the browser; smaller/taller layout calculations covered by unit tests.
-- Not done: physical phone/multitouch validation, wobble dynamics, hazards, scoring, audio, progression, or deployment.
-- Next: Stage 1 Feel Lab; define the reference measurement protocol, reproduce the supplied results, add presets and basic rhythm cues, then obtain human playtest feedback.
+- Stage 0 complete; user-requested wobble correction implemented 2026-11-05. Full Stage 1 remains in progress.
+- Done: pure 240 Hz van der Pol/yaw dynamics, A/B/C parameters, immediate seeded oscillation, braking damping, and temporary practice rails.
+- Done: independently articulated front-left caster with pivot/fork/tire, larger basket, caster close-up, actual heading rotation, and bounded 14 Hz presentation rattle.
+- Verification: all 24 Node tests pass, including frozen reference table and all eight simulation requirements; original tolerances retained. Measurement protocol is in `docs/WOBBLE-PROTOCOL.md`.
+- Budget: 14 initial-load files; 32,874 bytes uncompressed; no external runtime resources. Local preview responds with HTTP 200.
+- Browser limitation: live inspection stopped because Computer Use does not support URL-policy enforcement for this Windows browser. Updated browser harness is available but has not been run on this revision.
+- Historical Stage 0 browser measurements (60 fps / 18 checks) do not validate the new animation; physical phone/multitouch checks remain outstanding.
+- Next: visually verify the updated motion, finish Feel Lab controls/trace/scripted-player UI and rhythm audio, then obtain human preset playtests. No preset is user-selected yet.
+- Hazards, full collisions/scoring, progression, and deployment remain later stages.

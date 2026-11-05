@@ -1,42 +1,26 @@
 import { palette as p } from '../content/palette.js';
 import { playLayout } from './layout.js';
-
-function cartSprite() {
-  const sprite = document.createElement('canvas');
-  sprite.width = 120; sprite.height = 160;
-  const c = sprite.getContext('2d');
-  const rect = (x, y, w, h, color, radius = 4) => {
-    c.fillStyle = color; c.beginPath(); c.roundRect(x, y, w, h, radius); c.fill();
-  };
-  rect(15, 20, 12, 26, p.accent); rect(93, 20, 12, 26, p.ink);
-  rect(15, 114, 12, 24, p.ink); rect(93, 114, 12, 24, p.ink);
-  c.beginPath(); c.moveTo(20, 23); c.lineTo(100, 23); c.lineTo(90, 116); c.lineTo(30, 116); c.closePath();
-  c.fillStyle = '#d4dece'; c.fill(); c.strokeStyle = p.ink; c.lineWidth = 5; c.stroke();
-  c.save(); c.clip(); c.strokeStyle = '#92a18b'; c.lineWidth = 2;
-  for (let x = 32; x < 100; x += 14) { c.beginPath(); c.moveTo(x, 27); c.lineTo(x, 114); c.stroke(); }
-  for (let y = 40; y < 115; y += 15) { c.beginPath(); c.moveTo(20, y); c.lineTo(100, y); c.stroke(); }
-  c.restore();
-  c.strokeStyle = p.ink; c.lineWidth = 5; c.beginPath(); c.moveTo(30, 116); c.lineTo(25, 142); c.lineTo(95, 142); c.lineTo(90, 116); c.stroke();
-  rect(21, 137, 78, 10, p.accent);
-  rect(35, 52, 50, 24, p.paper, 3);
-  c.fillStyle = p.ink; c.font = 'bold 11px sans-serif'; c.textAlign = 'center'; c.fillText('01', 60, 68);
-  return sprite;
-}
+import { createBasketSprite, drawCart, drawCaster, bodyRattle } from './cart.js';
 
 /** Draws a read-only interpolated state. No simulation decisions live here. */
 export function createScene(canvas) {
   const c = canvas.getContext('2d', { alpha: false });
-  const cart = cartSprite();
+  const cart = createBasketSprite();
   let width = 0, height = 0, ratio = 1;
+  let detail = { x: 0, y: 0, height: 0 };
   return {
     resize(w, h, pixelRatio = 1) {
       width = w; height = h; ratio = Math.min(2, pixelRatio);
       canvas.width = Math.round(w * ratio); canvas.height = Math.round(h * ratio);
+      const box = document.querySelector('.caster-space').getBoundingClientRect();
+      const bounds = canvas.getBoundingClientRect();
+      detail = { x: box.left - bounds.left + box.width / 2, y: box.top - bounds.top + box.height / 2, height: box.height };
     },
     draw(previous, current, alpha) {
       const x = previous.x + (current.x - previous.x) * alpha;
       const y = previous.y + (current.y - previous.y) * alpha;
-      const steer = previous.steer + (current.steer - previous.steer) * alpha;
+      const rendered = { ...current, x, y };
+      for (const key of ['heading', 'w', 'q', 'r', 'time']) rendered[key] = previous[key] + (current[key] - previous[key]) * alpha;
       const { scale: s, centerX: cx, cartY: cy, columnWidth } = playLayout(width, height);
       c.setTransform(ratio, 0, 0, ratio, 0, 0);
       c.fillStyle = p.paper; c.fillRect(0, 0, width, height);
@@ -66,10 +50,16 @@ export function createScene(canvas) {
         }
         c.fillStyle = '#c8cfb9'; c.fillRect(cx + (side < 0 ? -1.38 : 1.33) * s, 0, .05 * s, height);
       }
-      c.save(); c.translate(cx + x * s, cy); c.rotate(steer * .09);
-      c.fillStyle = p.shadow; c.beginPath(); c.ellipse(.06 * s, .08 * s, .4 * s, .48 * s, 0, 0, Math.PI * 2); c.fill();
-      c.drawImage(cart, -.36 * s, -.48 * s, .72 * s, .96 * s); c.restore();
+      c.save(); c.translate(cx + x * s, cy); drawCart(c, cart, rendered, s); c.restore();
       c.restore();
+      if (width >= height) {
+        c.save(); c.translate(detail.x, detail.y); c.rotate(bodyRattle(rendered));
+        c.fillStyle = '#e5e5d6'; c.beginPath(); c.arc(0, 0, detail.height * .46, 0, Math.PI * 2); c.fill();
+        c.strokeStyle = '#b4bfab'; c.lineWidth = 1; c.setLineDash([3, 5]);
+        c.beginPath(); c.moveTo(0, -detail.height * .38); c.lineTo(0, detail.height * .38); c.stroke(); c.setLineDash([]);
+        drawCaster(c, 0, -detail.height * .18, rendered.w, detail.height * 1.25, true, y);
+        c.restore();
+      }
     },
   };
 }

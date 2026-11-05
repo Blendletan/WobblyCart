@@ -1,6 +1,6 @@
 # Wobbly Cart
 
-A tiny browser game about steering a shopping cart with one bad wheel. Stage 0 currently provides the moving placeholder, responsive canvas, controls, pause/resume, deterministic fixed-step loop, and platform/storage boundaries. The wobble simulation is Stage 1.
+A tiny browser game about steering a shopping cart with one bad wheel. The practice preview now uses the real wobble/yaw simulation, an independently swivelling front-left caster, a magnified caster view, and braking that damps the wobble. The responsive scaffold, deterministic loop, pause/resume, and platform/storage boundaries are in place. The full Stage 1 Feel Lab and human tuning remain pending.
 
 Requires Node.js 22 or newer. No packages to install.
 

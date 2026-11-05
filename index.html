@@ -15,7 +15,7 @@
     <header class="intro panel">
       <p class="eyebrow"><span class="dot"></span> TAKE IT FOR A SPIN</p>
       <h1>Wobbly<br><span>Cart.</span></h1>
-      <p class="tagline">One cart.<br>A little room to roll.</p>
+      <p class="tagline">One bad wheel.<br>Find its rhythm.</p>
       <div class="aisle-label"><span>01</span><div>PRACTICE AISLE<br><small>Make yourself at home.</small></div></div>
     </header>
     <section class="readout panel" aria-label="Run information">
@@ -25,7 +25,7 @@
       <div class="speed-row"><span>PACE</span><strong><output id="speed">5.2</output> <small>m/s</small></strong></div>
       <div class="pace-track"><div id="pace-bar"></div></div>
       <p id="pace-label">Rolling along</p>
-      <div class="instructions"><p><kbd>←</kbd> <kbd>→</kbd><span>Find your line</span></p><p><kbd>Space</kbd><span>Ease off</span></p><p><kbd>P</kbd><span>Take a breather</span></p></div>
+      <div class="wheel-detail"><p class="eyebrow">THE TROUBLEMAKER</p><div class="caster-space" aria-hidden="true"></div><p><span id="wheel-status">Front-left caster</span><output id="wheel-angle">0°</output></p><meter id="wobble-level" min="0" max="1" value="0" aria-label="Wobble intensity"></meter></div>
     </section>
     <button id="pause" class="pause-button" type="button" aria-label="Pause game"><span aria-hidden="true">Ⅱ</span></button>
     <div class="touch-controls" aria-label="Driving controls">
@@ -33,7 +33,7 @@
       <button id="brake" type="button" aria-label="Hold to ease off">Ease off <span>HOLD</span></button>
       <button id="steer-right" class="steer-button" type="button" aria-label="Steer right">→</button>
     </div>
-    <p class="floor-note">A CLEAR AISLE. A FRESH START.</p>
+    <div class="instructions"><p><kbd>←</kbd> <kbd>→</kbd><span>Counter-steer</span></p><p><kbd>Space</kbd><span>Settle the wheel</span></p><p><kbd>P</kbd><span>Take a breather</span></p></div>
     <section id="pause-overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title" hidden>
       <div class="pause-card"><span class="eyebrow">NO RUSH</span><h2 id="pause-title">Parked for a moment.</h2><p>Your cart will be right here.</p><button id="resume" type="button">Keep rolling <span aria-hidden="true">→</span></button><small>Esc or P to resume</small></div>
     </section>
