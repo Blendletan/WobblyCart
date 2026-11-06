@@ -4,7 +4,9 @@
 
 2026-11-05: the user accepted the manual-push premise and requested a commercial game direction. The new milestones below supersede the old endless-run roadmap. The authoritative requirements are at the top of [SPEC.md](SPEC.md); commercial reasoning and current portal sources are in [COMMERCIAL-PLAN.md](COMMERCIAL-PLAN.md).
 
-### C1 — five-trip playable slice (next implementation)
+2026-11-06 scope update: the user requested **one complete tutorial trip first**. Milk & bread implements the collect/navigate/checkout/receipt/retry loop, saved independent stamps, a gentler profile, procedural presentation and sound. Its real-dynamics route and application flow are tested. User tuning, unguided playtests, physical phone checks, the thumb-pad comparison and the other four trips remain outstanding. Follow [FIRST-TRIP-PLAYTEST.md](FIRST-TRIP-PLAYTEST.md) before expanding.
+
+### C1 — five-trip playable slice (partially implemented)
 
 Deliver a complete loop: manually push, collect the list, navigate the shop, stop at checkout, see a receipt, and select Next/Retry. Use the five trips described in the commercial plan. The shipping opening should be gentler than the present playground, which remains available for comparison.
 
@@ -18,7 +20,7 @@ Implementation order within this milestone:
 
 Automated gate: all existing tests pass; add deterministic trip replay, pickup/checkout eligibility, once-only impact damage, active-time accounting, recovery/stamp restrictions, progression, save migration/fallback, and actual app-flow checks. Validate each layout and exercise successful routes using the real dynamics. Test rendering as read-only. Preserve the golden tree. Run `node --test`, `node tools/budget.mjs`, and relevant live QA. Do not create an endless-course bot merely to satisfy a superseded requirement.
 
-Human gate: five unguided new players, including physical phone users. Record first pickup/checkout and independent continuation/retry choices. Aim for 4/5 opening completions without help and 3/5 choosing more play; these are internal qualitative checks, not portal thresholds. Test on Android and iPhone, verify first playable frame within 3 seconds and 60 fps target/30 floor. The existing browser-tool restriction may require manual checks, which must remain honestly outstanding.
+Human gate: five unguided new players, including physical phone users. Record first pickup/checkout and independent continuation/retry choices. Aim for 4/5 opening completions without help and 3/5 choosing more play; these are internal qualitative checks, not portal thresholds. Test on Android and iPhone, verify first playable frame within 3 seconds and 60 fps target/30 floor. Live in-app browser inspection now works; a viewport emulation is not a physical device check.
 
 ### C2 — release candidate (after C1 evidence)
 

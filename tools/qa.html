@@ -13,7 +13,7 @@
 <p>Manual-push sandbox checks: stationary start, driving controls, four swivels, pause, reset, layout, and a 10-second frame-cadence sample. Physical multitouch and handling feel still need playtesting.</p>
 <button id="run">Run browser checks</button><button id="desktop">Desktop preview</button><button id="portrait">Portrait preview</button>
 <pre id="report" role="status">Ready.</pre>
-<iframe id="preview" title="Game preview" width="960" height="540" src="../index.html"></iframe>
+<iframe id="preview" title="Handling playground preview" width="960" height="540" src="../playground.html"></iframe>
 <script type="module">
   const frame = document.getElementById('preview');
   const report = document.getElementById('report');
@@ -31,7 +31,7 @@
     };
     try {
       size(960, 540);
-      await new Promise(resolve => { frame.onload = resolve; frame.src = '../index.html'; });
+      await new Promise(resolve => { frame.onload = resolve; frame.src = '../playground.html'; });
       const win = frame.contentWindow, doc = frame.contentDocument;
       const find = id => doc.getElementById(id);
       const key = (code, down) => win.dispatchEvent(new win.KeyboardEvent(down ? 'keydown' : 'keyup', { code, bubbles: true, cancelable: true }));

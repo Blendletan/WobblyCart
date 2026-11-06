@@ -38,3 +38,17 @@ export const trolleyParams = Object.freeze({
   collisionRadius: 0.4, collisionOffset: 0.32, collisionFriction: 0.25,
   bumpImpulse: 0.16, bumpSwivelKick: 0.12, bumpFlutterKick: 3,
 });
+
+/** Tutorial keeps the same caster model, with a calmer onset and gentler turning. */
+export const tutorialParams = Object.freeze({
+  ...trolleyParams, turnForce: 18, yawDrag: 4,
+  flutterCriticalSpeed: 1.8, flutterGrowth: 4, flutterCap: 210,
+  bumpImpulse: .1, bumpSwivelKick: .07, bumpFlutterKick: 1.5,
+});
+
+export const tripParams = Object.freeze({
+  pickupSpeed: .65, pickupDwell: .45,
+  checkoutSpeed: .16, checkoutDwell: .65,
+  damageThreshold: .4, damageScale: 22, damageCooldown: .65,
+  careThreshold: 90, initialCondition: 100,
+});

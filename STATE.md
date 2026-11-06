@@ -1,11 +1,12 @@
 # State
 
-- Current scope: user accepted the manual-push premise and requested commercial game planning. Feedback: current handling is almost too much; final tuning remains open.
-- Playable: stationary start, manual push/pull/turn/stop, four independent casters, flutter, per-wheel bumps/potholes and test corner; pure 240 Hz simulation. No campaign yet.
-- Planning done: sourced portal/licensing strategy, five-trip game design, revenue sensitivity model and private submission draft in `docs/COMMERCIAL-PLAN.md` and `docs/SUBMISSION-DRAFT.md`.
-- New roadmap: C1 five-trip slice, C2 release candidate if playtests support it, C3 chosen portal test/release; historical endless-run stages superseded.
-- Not done: shopping loop, campaign saves, cosmetic economy, portal SDKs, hosted submission build, outreach, portal testing or revenue. No gameplay code changed in this planning task.
-- Verification re-run at planning handoff: all 35 Node tests pass; budget/network checks pass at 16 files / 47,023 bytes; `git diff --check` passes.
-- Frozen golden tree remains `6f325ab866e7d9ef69cc31752c4624d63a4408ca`; those targets cover the historical oscillator, not the new manual model.
-- Not verified: current live browser layout/performance, physical touch controls, final difficulty or new-player appeal. Computer Use was blocked by unsupported Windows browser URL-policy enforcement; `/tools/qa.html` remains available for manual checks.
-- Next implementation: C1 in `docs/PLAN.md`; demonstrate the complete collect/navigate/checkout/retry loop before expanding content or integrating monetization.
+- Current scope: the user requested one complete tutorial/first-test shopping trip. C1 is partial; do not add the remaining trips automatically.
+- Playable at `/`: **Milk & bread** — manual push, four independent casters, gentler flutter, two pickups, broad shelf corner, optional floor seam, checkout, receipt and immediate retry.
+- Added: contextual hints, condition/active timer, independent saved delivery/care/speed stamps, free reposition, pause, procedural art/audio and sound/reduced-motion settings. No time limit or failure that blocks delivery.
+- Preserved: stronger original handling at `/playground.html`; historical oscillator and immutable golden fixtures. New values and decisions are in `TUNING.md` and `DECISIONS.md`.
+- Verification: all 45 Node tests pass, including full trip/app flow and deterministic digital-input replay. Real-dynamics driver completes in 19.25 s at 100% condition without recovery. Budget/network checks pass at 25 files / 94,259 bytes; `git diff --check` passes.
+- Golden tree: `6f325ab866e7d9ef69cc31752c4624d63a4408ca`, unchanged. Historical oscillator thresholds do not validate manual handling feel.
+- Live browser: completed both pickups, checkout/receipt and retry with 100% condition; exercised keyboard, pointer holds and pause; inspected desktop, 390×844, 320×568 and 844×390 layouts with no captured console warnings/errors.
+- Not verified: user approval of tutorial tuning, unguided new-player appeal, physical Android/iPhone usability, measured phone frame rate/load time or subjective audio quality. Agent browser completion is not a human playtest.
+- Not built: other four C1 trips, thumb-pad comparison, campaign progression, cosmetics, daily/generated jobs, exportable playtest telemetry, portal SDKs, hosted distribution, outreach or revenue.
+- Next: user's first trip and targeted tuning using `docs/FIRST-TRIP-PLAYTEST.md`; obtain further scope before content expansion. No implementation blocker recorded.

@@ -1,0 +1,73 @@
+:root { font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; color: #26473b; background: #dcded2; color-scheme: light; }
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; overscroll-behavior: none; }
+body { display: grid; place-items: center; }
+button { cursor: pointer; font: inherit; touch-action: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+button:focus-visible, canvas:focus-visible { outline: 3px solid #c75238; outline-offset: -3px; }
+#stage { --sidebar: clamp(244px, 26cqw, 300px); position: relative; background: #f3efe4; overflow: hidden; container-type: size; }
+#game { width: 100%; height: 100%; display: block; touch-action: none; }
+.intro { position: absolute; top: 22px; left: 26px; right: calc(var(--sidebar) + 42px); display: flex; align-items: center; justify-content: space-between; pointer-events: none; }
+.eyebrow { font-size: 10px; letter-spacing: .13em; font-weight: 700; }
+h1 { font-size: clamp(28px, 5.3cqh, 44px); line-height: 1; letter-spacing: -.06em; margin: 5px 0 0; }
+h1 span { color: #c75238; }
+.intro p { font-size: 12px; line-height: 1.6; color: #6a7865; }
+#playfield { position: absolute; left: 18px; top: 92px; right: calc(var(--sidebar) + 36px); bottom: 42px; pointer-events: none; border: 1px solid #c9ceba; border-radius: 20px; }
+.readout { position: absolute; top: 18px; right: 18px; bottom: 18px; width: var(--sidebar); padding: 16px; background: transparent; border: 1px solid #ccd3bf; border-radius: 20px; display: flex; flex-direction: column; }
+.status-head { display: flex; align-items: center; justify-content: space-between; }
+#pause { border: 1px solid #bbc6b0; border-radius: 50%; background: #f3efe4; width: 44px; height: 44px; color: #26473b; font-size: 20px; flex-shrink: 0; }
+.speed-row { display: flex; gap: 7px; align-items: baseline; }
+#speed { font-size: clamp(32px, 6cqh, 56px); font-variant-numeric: tabular-nums; line-height: 1; letter-spacing: -.05em; }
+.speed-row span { font-size: 13px; color: #6a7865; }
+#motion-status { font-size: 12px; margin: 9px 0 4px; min-height: 16px; }
+.caster-detail { flex: 1; min-height: 0; display: flex; flex-direction: column; margin-top: 8px; border-top: 1px solid #cbd2bd; padding-top: 5px; pointer-events: none; }
+.caster-detail p { margin: 6px 0; }
+.caster-space { flex: 1; min-height: 54px; max-height: 25cqh; }
+.wheel-readouts { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; font-size: 10px; }
+.wheel-readouts span { display: flex; justify-content: space-between; }
+.wheel-readouts span:first-child { color: #ad442f; }
+.wheel-readouts output { font-variant-numeric: tabular-nums; }
+.caster-detail small { font-size: 10px; color: #6a7865; margin-top: 6px; }
+.control-group { margin-top: 14px; }
+.control-group > .eyebrow { margin: 0 0 8px; }
+#drive-controls { display: grid; grid-template-columns: repeat(3, 1fr) 1.3fr; grid-template-rows: repeat(2, 48px); gap: 5px; }
+#drive-controls button { border: 1px solid #b5c1a8; border-bottom-width: 3px; border-radius: 10px; background: #f7f4e9; color: #26473b; min-width: 0; min-height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+#drive-controls strong { font-size: 20px; line-height: 1; }
+#drive-controls small { font-size: 9px; margin-top: 4px; }
+#push { grid-column: 2; grid-row: 1; }
+#steer-left { grid-column: 1; grid-row: 2; }
+#pull { grid-column: 2; grid-row: 2; }
+#steer-right { grid-column: 3; grid-row: 2; }
+#drive-controls #brake { grid-column: 4; grid-row: 1 / 3; background: #26473b; color: #fffbee; border-color: #18362a; }
+#drive-controls #brake strong { font-size: 15px; }
+#drive-controls button[data-held='true'] { background: #ccdabd; border-color: #718b61; }
+#drive-controls #brake[data-held='true'] { background: #547251; }
+.key-hint { margin: 8px 0 10px; font-size: 10px; color: #60715b; }
+#reset { min-height: 38px; border: 1px solid #bdc8b0; border-radius: 9px; background: transparent; color: #26473b; text-align: left; padding: 8px 10px; font-size: 12px; }
+#reset kbd { float: right; font: inherit; opacity: .6; }
+.sandbox-note { position: absolute; bottom: 6px; left: 26px; font-size: 11px; color: #6a7865; pointer-events: none; }
+#pause-overlay { position: absolute; inset: 0; z-index: 5; display: grid; place-items: center; background: #20392e66; backdrop-filter: blur(5px); padding: 24px; }
+#pause-overlay[hidden] { display: none; }
+.pause-card { padding: 36px; max-width: 410px; background: #f3efe4; border-radius: 20px; text-align: center; box-shadow: 0 20px 80px #142d2b33; }
+.pause-card h2 { font-size: 34px; line-height: 1.1; letter-spacing: -.05em; }
+.pause-card p { color: #6a7865; }
+.pause-card button { background: #26473b; color: #fffbee; border: 0; border-radius: 9px; padding: 16px; width: 100%; }
+.pause-card small { display: block; font-size: 11px; margin-top: 15px; }
+@media (orientation: portrait) {
+  .intro { top: max(15px, env(safe-area-inset-top)); left: 20px; right: 20px; }
+  .intro .eyebrow { font-size: 8px; } h1 { font-size: 32px; } .intro p { display: none; }
+  #playfield { top: 85px; left: 8px; right: 8px; bottom: 145px; }
+  .readout { position: static; border: 0; padding: 0; background: none; }
+  .status-head { position: absolute; top: 20px; right: 18px; } .status-head .eyebrow { display: none; }
+  .speed-row { position: absolute; top: 104px; left: 24px; padding: 7px 10px; border-radius: 10px; background: #f3efe4df; } #speed { font-size: 26px; }
+  #motion-status { position: absolute; top: 145px; left: 24px; padding: 5px 8px; background: #f3efe4df; border-radius: 7px; font-size: 10px; }
+  .caster-detail, .control-group > .eyebrow, .key-hint, .sandbox-note { display: none; }
+  .control-group { position: absolute; bottom: max(18px, env(safe-area-inset-bottom)); left: 18px; right: 18px; margin: 0; }
+  #drive-controls { grid-template-columns: repeat(3, minmax(44px, 1fr)) 1.3fr; grid-template-rows: repeat(2, 48px); gap: 6px; }
+  #reset { position: absolute; right: 24px; top: 106px; background: #f3efe4df; min-height: 44px; font-size: 10px; } #reset kbd { display: none; }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .readout { padding: 10px; top: 10px; bottom: 10px; right: 10px; }
+  .caster-detail { display: none; } .control-group { margin-top: auto; }
+  .intro p { display: none; } .intro { top: 14px; } #playfield { top: 75px; }
+  .key-hint { margin-bottom: 6px; } #drive-controls { grid-template-rows: repeat(2, 44px); }
+}

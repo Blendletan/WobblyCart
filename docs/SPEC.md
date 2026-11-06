@@ -2,7 +2,13 @@
 
 Nov 1, 2026 · @Robert
 
-## Current direction — commercial shopping challenges (2026-11-05)
+## Current build — one tutorial trip (2026-11-06)
+
+The user requested one complete shopping trip as a tutorial and first test. Implement only this opening before expanding content. `index.html` now opens **Milk & bread**: manually push to milk, slow in its pickup circle, take a broad shelf corner to bread, then stop fully inside checkout. One low floor seam introduces uneven ground without blocking an easier line. Hints follow the current objective. Delivery earns a receipt and immediate retry; care and speed are optional, independently saved stamps. There is no campaign or next-trip button yet.
+
+Use the gentler `tutorialParams` profile; retain the original handling at `playground.html`. See `TUNING.md` for numeric changes and the distinction between automated/browser checks and untested human feel. `docs/FIRST-TRIP-PLAYTEST.md` describes the next user check. This is the first part of C1, not completion of the five-trip milestone.
+
+## Commercial direction (2026-11-05)
 
 The user accepted the manual-push mechanic as a basis for a game, described the current handling as almost too much, and asked for a commercially viable game direction and release options. The mechanics-only approval gate is satisfied for proceeding with design. Final tuning, touch usability and commercial appeal remain unproven.
 
@@ -28,7 +34,7 @@ This section supersedes the original automatic travel, endless course, scoring, 
 
 ### Scope and release boundaries
 
-The current planning task changes documents only; the playable build remains the handling playground. C1 is the next implementation milestone. Expand toward at most 18 trips, cosmetics and a daily challenge only after the complete-loop test supports it. Do not treat the former numbered stages as automatic work orders.
+The authorized implementation is the single tutorial described above. The remainder of C1 stays pending the user's opening-trip feedback. Expand toward at most 18 trips, cosmetics and a daily challenge only after the complete-loop test supports it. Do not treat the former numbered stages as automatic work orders.
 
 The proposed revenue routes are portal advertising and non-exclusive licensing. Preserve the private Poki/Coolmath pitch option before public distribution. Keep progression and recovery free; any rewarded ad grants an optional cosmetic benefit. No portal integration until its current SDK reference is in `docs/sdk/`; use the chosen portal's pacing rules rather than the original generic ad timers.
 

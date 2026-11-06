@@ -4,7 +4,7 @@
 
 - Read `docs/SPEC.md` and `STATE.md` before working. The spec is the source of truth; read the sections named by the requested build stage.
 - Implement only the milestone or task requested; do not start later milestones automatically. The historical Stage 0–7 sequence is superseded by C1–C3 in `docs/PLAN.md`.
-- The user accepted the manual-push, four-caster premise and requested a commercial game direction. The next milestone is a five-trip shopping challenge slice; final tuning and new-player appeal remain unproven. Read the current direction at the top of `docs/SPEC.md` and the dated research in `docs/COMMERCIAL-PLAN.md`. Do not restore automatic travel or the endless-run roadmap.
+- The user accepted the manual-push, four-caster premise and requested one complete tutorial trip first. Milk & bread is the first part of the proposed five-trip C1 slice. User tuning and new-player appeal remain unproven; do not add later trips automatically. Read the current direction at the top of `docs/SPEC.md` and the dated research in `docs/COMMERCIAL-PLAN.md`. Do not restore automatic travel or the endless-run roadmap.
 - Use the defaults in the spec's "Your tasks and open decisions" table unless the user changes them. If the spec is silent, choose the simplest option, record it in `DECISIONS.md`, and continue.
 - Scaffold, tools, and tests are introduced by the build stages. Do not assume a command exists before its stage creates it.
 

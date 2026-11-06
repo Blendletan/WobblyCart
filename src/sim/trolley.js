@@ -9,7 +9,7 @@ const yawTorque = (arm, fx, fy) => arm.y * fx - arm.x * fy;
 export function createTrolley(initial = sandbox.spawn) {
   const heading = initial.heading ?? 0;
   return { x: initial.x ?? 0, y: initial.y ?? 0, heading,
-    vx: 0, vy: 0, r: 0, steer: 0, time: 0, tick: 0, distance: 0, impact: 0,
+    vx: 0, vy: 0, r: 0, steer: 0, time: 0, tick: 0, distance: 0, impact: 0, contacts: [],
     wheels: casterMounts.map(mount => ({ bearing: heading, rate: 0, flutter: 0, q: 0,
       angle: heading, roll: 0, height: 0, surface: null, excitationActive: false, hits: 0 })),
   };
@@ -70,7 +70,9 @@ function resolveWalls(state, walls, p) {
         const tangentSpeed = -state.vx * ny + state.vy * nx;
         state.vx += ny * tangentSpeed * p.collisionFriction;
         state.vy -= nx * tangentSpeed * p.collisionFriction;
-        state.impact = Math.max(state.impact, Math.min(1, -normalSpeed / 2));
+        const strength = Math.min(1, -normalSpeed / 2);
+        state.impact = Math.max(state.impact, strength);
+        state.contacts.push({ kind: 'wall', id: wall.id, strength });
       }
     }
   }
@@ -84,7 +86,7 @@ function resolveWalls(state, walls, p) {
  * @param {number} dt
  */
 export function stepTrolley(state, input, dt, world = sandbox, p = defaults) {
-  const next = { ...state, wheels: state.wheels.map(wheel => ({ ...wheel })), impact: state.impact * Math.exp(-dt * 8) };
+  const next = { ...state, wheels: state.wheels.map(wheel => ({ ...wheel })), impact: state.impact * Math.exp(-dt * 8), contacts: [] };
   const steer = state.steer + (clamp(input.steer, -1, 1) - state.steer) * (1 - Math.exp(-dt / p.steeringTimeConstant));
   const push = input.brake ? 0 : clamp(input.push, -1, 1);
   const forceForward = push * (push >= 0 ? p.pushForce : p.pullForce);
@@ -111,6 +113,7 @@ export function stepTrolley(state, input, dt, world = sandbox, p = defaults) {
       wheel.bearing += mount.bias * p.bumpSwivelKick * speed * severity;
       wheel.q += mount.bias * p.bumpFlutterKick * speed * severity;
       wheel.hits++; next.impact = Math.min(1, speed * severity / 2);
+      next.contacts.push({ kind: 'ground', id: surface.id, wheel: i, strength: next.impact });
     }
     wheel.height = surface?.z ?? 0; wheel.surface = surface?.id ?? null;
     if (speed > .02) {

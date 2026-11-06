@@ -1,5 +1,17 @@
 # Decisions
 
+## First complete trip — 2026-11-06
+
+- User narrowed implementation to one tutorial/first-test shopping trip. Ship **Milk & bread**, not the whole five-trip C1 milestone. The original sandbox remains at `playground.html`; `src/main.js` selects the appropriate entry point.
+- First delivery needs only two items and checkout. Slow automatically in a marked circle to pick up; stop the whole cart in the green bay to finish. There is no use/interact key, mandatory timer, cargo-loss failure or locked retry.
+- Keep all four casters and the physical flutter/ground model. Introduce a gentler named profile; retain baseline values unchanged for comparison. A broad shelf corner and optional low floor seam are enough geometry for the opening.
+- Emit transient contacts from the trolley model. Condition damage reads these events once, never the decaying visual impact envelope. Shopping is still deliverable at zero condition.
+- Timer starts on the first push/pull/steer input and pauses with the game. Reposition keeps cargo, condition and elapsed time but disables care/speed stamps on that attempt. Each stamp can be accumulated independently across retries.
+- Store one-trip records and preferences in `wobbly-cart.trips.v1` through the existing platform wrapper. Invalid fields are sanitized, unknown versions fall back to a fresh record, and historical playground saves are unaffected. No campaign schema or migration is needed yet.
+- Camera follows movement but clamps at shop boundaries. Desktop has a shopping sidebar; portrait uses a compact top list and bottom tutorial. Retain existing held touch buttons for this first test; thumb-pad comparison is still pending.
+- Browser play exposed an overly precise checkout approach. Widen the bay from 2.6 × 2.4 m to 3.2 × 3.1 m and provide a specific hint when the cart is only partly inside. The whole-footprint eligibility rule is unchanged.
+- Agent-driven browser completion and scripted reachability prove the loop works, not that novices enjoy it. Await user feedback before more content. No publication, analytics, portal SDK, distribution work or network tracking in this build.
+
 ## Commercial direction — 2026-11-05
 
 - The user accepted the mechanic as the basis for a game, said the handling was almost too much, and asked for a revenue-oriented game direction. The mechanics-only gate is satisfied for design; this is not final tuning or device approval.
