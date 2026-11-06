@@ -21,6 +21,16 @@ export function wheelPosition(state, index) {
   return { x: state.x + arm.x, y: state.y + arm.y, arm };
 }
 
+/** Test both collision discs so parking checks match the trolley footprint. */
+export function trolleyInRect(cart, rect, p = defaults) {
+  return [-p.collisionOffset, p.collisionOffset].every(along => {
+    const arm = offset(0, along, cart.heading);
+    const x = cart.x + arm.x, y = cart.y + arm.y;
+    return x - p.collisionRadius >= rect.x && x + p.collisionRadius <= rect.x + rect.width &&
+      y - p.collisionRadius >= rect.y && y + p.collisionRadius <= rect.y + rect.height;
+  });
+}
+
 /** Return profile height; wheels sample independently, including entering and leaving a hole. */
 export function groundAt(x, y, surfaces) {
   for (const surface of surfaces) {

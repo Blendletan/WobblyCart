@@ -1,5 +1,27 @@
 # Tuning
 
+## Cargo design experiment (2026-11-06)
+
+| Decision | Tested or untested | Evidence |
+| --- | --- | --- |
+| Optional cargo and one-use express bank with final checkout. | Automated | The same shop is traversable with digital input in both modes. Both routes deliver all seven items for 445 points and replay exactly. |
+| Wobble responds to load and the 0–200% setting. | Automated | Flutter alters actual heading. In a scripted full-push rough-strip approach, milk survives at 100%, the full pile tips, and the full pile survives at 0%. |
+| Wipeout scatters only the current pile. | Automated and desktop browser | A loaded wall impact preserves an earlier bank in the simulation test. Browser drive collected milk and hit the back wall, showed the wipeout receipt, copied it and retried. |
+| Settings persist and the shop works in portrait. | Desktop browser | Applied 0% and final checkout only, reloaded and verified both. Inspected the 390 × 844 portrait layout with emulated dimensions. |
+| The detour creates a meaningful gamble, and pile warnings are readable in time. | Human playtest pending | The automated driver can bring everything out by slowing down. The amount of pressure that makes a faster approach appealing remains open. |
+
+### Cargo parameter log
+
+| Parameter | Before | Cargo prototype | Reason |
+| --- | --- | --- | --- |
+| Caster onset and load | Fixed 1.8 m/s in tutorial | 1.8 m/s empty, reduced by up to 30% at full load and default wobble. 9 load units saturate the effect. | Carrying more should make the same push harder. |
+| Flutter growth, cap and control | 4 / 210, no slider | 6 / 165. Wobble spans 0–2×, scaling growth, loaded onset reduction and bump excitation. | Make the difference observable and easy to adjust. |
+| Pickup and checkout | Pickup 0.65 m/s for 0.45 s, checkout 0.16 m/s for 0.65 s | Pickup 1.05 m/s for 0.22 s, checkout 0.24 m/s for 0.40 s | Keep collecting optional goods and cashing out quick. |
+| Pile lean | Absent | Spring 62, damping 6, lateral gain 0.10, target cap 0.85 rad, caster sway gain 1.8 at 1.65 Hz, ground kick gain 3.6 scaled by load | Give turns, flutter and per-wheel ground hits a common, readable effect. |
+| Spill | Absent in tutorial | Lean limit drops from 0.64 to 0.45 rad with load. Immediate wall-hit threshold drops from 0.90 to 0.67 on the existing contact scale. Bump sound starts at 0.40. | Escalate the consequence with load. Ground hits feed the lean, after early tests with immediate ground wipeouts punished even the smallest load. |
+
+All cargo simulation values are in `src/sim/params.js`. The tutorial and playground retain their profiles.
+
 ## First tutorial trip (current, 2026-11-06)
 
 | Decision | Tested or untested | Evidence |

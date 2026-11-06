@@ -1,5 +1,13 @@
 # Wobbly Cart
 
+## Cargo prototype
+
+On `codex/cargo-prototype`, run `node tools/serve.mjs` and open [the shop](http://127.0.0.1:4175/). Slow in the amber circles to collect goods. Stop fully inside the green checkout to secure the pile. The express bank is a one-use stop. The final checkout ends the run, and a wipeout keeps only what you already secured.
+
+Open **Rules** to change caster wobble between 0% and 200%, or choose **Final checkout only** to disable the express bank. **Apply & restart** saves the settings locally and starts a new run. The starting settings are 100% and express banking enabled.
+
+## Milk & bread tutorial
+
 A complete first shopping trip for an awkward four-caster trolley. Push to the milk, slow in its marked circle, take a broad corner to the bread, then stop inside checkout. Finish with a receipt, optional care/speed stamps and an immediate retry. Starts stationary; no automatic travel.
 
 This is **one tutorial**, the first part of the proposed C1 slice. More trips, campaign progression, generation and portal integration remain pending user feedback. See [the playtest guide](docs/FIRST-TRIP-PLAYTEST.md), [commercial plan](docs/COMMERCIAL-PLAN.md) and [C1 plan](docs/PLAN.md).
@@ -10,7 +18,7 @@ Requires Node.js 22 or newer. No packages to install.
 node tools/serve.mjs
 ```
 
-Open `http://127.0.0.1:4175/`. The server binds only to this computer. Set `PORT` to change its port. Stop it with Ctrl+C.
+Open `http://127.0.0.1:4175/tutorial.html` on the cargo prototype branch. The server binds only to this computer. Set `PORT` to change its port. Stop it with Ctrl+C.
 
 - **Push:** hold W or Up. Release to coast and slow down.
 - **Pull backwards:** hold S or Down; watch all four forks swivel around.

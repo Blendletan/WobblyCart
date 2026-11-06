@@ -52,3 +52,13 @@ export const tripParams = Object.freeze({
   damageThreshold: .4, damageScale: 22, damageCooldown: .65,
   careThreshold: 90, initialCondition: 100,
 });
+
+export const cargoHandling = Object.freeze({ ...tutorialParams, flutterGrowth: 6, flutterCap: 165 });
+
+export const cargoParams = Object.freeze({
+  defaultWobble: 1, maxWobble: 2, maxLoad: 9, onsetDrop: .30,
+  pickupSpeed: 1.05, pickupDwell: .22, checkoutSpeed: .24, checkoutDwell: .40,
+  leanStiffness: 62, leanDamping: 6, lateralLean: .10, maxLeanTarget: .85,
+  flutterLean: 1.8, leanFrequency: 1.65, bumpLeanKick: 3.6, bumpCueImpact: .4,
+  tipAngle: .64, loadedTipDrop: .19, crashImpact: .90, loadedImpactDrop: .23,
+});

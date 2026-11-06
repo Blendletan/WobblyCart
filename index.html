@@ -3,50 +3,69 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f3efe4">
-  <meta name="description" content="You only came in for milk. Push a wobbly shopping trolley, collect your groceries and make it to checkout.">
-  <title>Wobbly Cart · Milk & bread</title>
+  <meta name="theme-color" content="#253b34">
+  <meta name="description" content="Everything's free if you can get it to checkout on a cart with one bad wheel.">
+  <title>Wobbly Cart · Cargo Prototype</title>
   <link rel="icon" href="./assets/cart.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./cargo.css">
 </head>
 <body>
-  <main id="stage" data-mode="trip" aria-label="Wobbly Cart, your first shopping trip">
+  <main id="stage" data-mode="cargo" aria-label="Wobbly Cart cargo prototype">
     <div id="game-ui">
-      <canvas id="game" tabindex="0" aria-label="Shopping trip. W or Up to push, S or Down to reverse, A and D to turn, Space to stop. Collect milk and bread, then stop at checkout."></canvas>
-      <header class="masthead"><div><span class="eyebrow">A VERY ORDINARY ERRAND</span><h1>Wobbly <em>Cart.</em></h1></div><div class="header-actions"><span class="trip-badge">TRIP 01</span><button id="pause" class="icon-button" aria-label="Pause and settings">Ⅱ</button></div></header>
-      <div id="playfield" aria-hidden="true"></div>
-      <aside class="shopping-panel" aria-label="Shopping list and tutorial">
-        <div class="list-heading"><span class="eyebrow">TODAY'S SHOPPING</span><span id="item-count">0 / 2</span></div>
-        <h2>Milk &amp; bread</h2><p class="list-note">Two things. How hard can it be?</p>
-        <ul class="shopping-list">
-          <li id="list-milk"><span class="food-icon milk-icon" aria-hidden="true"></span><span>Milk</span><span id="check-milk" class="item-check" aria-label="Not collected">○</span></li>
-          <li id="list-bread"><span class="food-icon bread-icon" aria-hidden="true"></span><span>Bread</span><span id="check-bread" class="item-check" aria-label="Not collected">○</span></li>
-        </ul>
-        <div class="basket-status"><span>Shopping condition</span><strong id="condition">100%</strong></div>
-        <div class="condition-track" aria-hidden="true"><div id="condition-fill"></div></div>
-        <section class="lesson" aria-live="polite" aria-atomic="true"><span id="lesson-step" class="eyebrow">01 / GET GOING</span><h3 id="lesson-title">Give it a push.</h3><p id="lesson-hint">Hold Push, W or ↑. The milk is straight ahead.</p></section>
-        <div class="pickup-progress"><div id="pickup-fill"></div></div>
-        <p id="action-hint">Slow down in the marked circles to collect.</p>
-        <div class="trip-stats"><span><b id="speed">0.0</b> m/s</span><span id="trip-clock">No rush</span></div>
-        <div class="utility-actions"><button id="recover" type="button">Stuck? Reposition</button><button id="reset" type="button">Restart <kbd>R</kbd></button></div>
-      </aside>
-      <div id="toast" role="status" aria-live="polite" hidden></div>
-      <div class="drive-bar"><div class="control-caption"><b>Hold to move</b><span>WASD / arrows · Space stops</span></div><div id="drive-controls" aria-label="Holdable movement controls">
-        <button id="steer-left" type="button" aria-label="Turn left"><strong>←</strong><small>Turn</small></button>
-        <button id="push" type="button" aria-label="Push forward"><strong>↑</strong><small>Push</small></button>
-        <button id="pull" type="button" aria-label="Pull backwards"><strong>↓</strong><small>Back</small></button>
-        <button id="steer-right" type="button" aria-label="Turn right"><strong>→</strong><small>Turn</small></button>
-        <button id="brake" type="button" aria-label="Hold to stop"><strong>Stop</strong><small>Space</small></button>
-      </div></div>
+      <header class="masthead">
+        <div><div class="kicker">AFTER HOURS MARKET <span> / PLAYTEST</span></div><h1>Wobbly <em>Cart.</em></h1></div>
+        <div class="utilities"><button id="reset" type="button">Restart <kbd>R</kbd></button><button id="pause" type="button">Rules <span aria-hidden="true">⚙</span></button></div>
+      </header>
+      <div class="game-board">
+        <aside class="scoreboard" aria-label="Cargo and score">
+          <p class="pitch">Everything’s free if you can get it to checkout on a cart with one bad wheel.</p>
+          <div class="scores">
+            <div class="score aboard"><span>ON THE CART</span><strong id="carried">0</strong></div>
+            <div class="score secured"><span>SECURED</span><strong id="secured">0</strong></div>
+          </div>
+          <div class="stability"><span>PILE LEAN</span><meter id="lean" min="0" max="1" low=".64" high=".84" optimum="0" value="0" aria-label="Pile lean"></meter></div>
+          <div class="tip" aria-live="polite"><strong id="tip-title">Build your pile.</strong><span id="tip-body">Hold Push to reach the milk. Slow inside the circle to grab it.</span></div>
+          <div id="active-rules" class="kicker"></div>
+        </aside>
+        <div id="view">
+          <canvas id="game" tabindex="0" aria-label="Shop floor. W or Up to push, S or Down to reverse, A and D to turn, Space to stop. Slow down in a pickup circle, then stop inside checkout to secure your points."></canvas>
+          <div id="notice" role="status" hidden></div>
+          <div class="view-label" aria-hidden="true">THE SHOP FLOOR <span> / FOLLOW THE AISLES</span></div>
+        </div>
+      </div>
+      <footer class="drive-bar">
+        <div class="control-caption"><strong>Hold to move</strong><span>WASD / arrows · Space stops</span></div>
+        <div id="drive-controls" aria-label="Holdable movement controls">
+          <button id="steer-left" type="button" aria-label="Turn left"><b>←</b><small>Left</small></button>
+          <button id="push" type="button" aria-label="Push forward"><b>↑</b><small>Push</small></button>
+          <button id="pull" type="button" aria-label="Pull backwards"><b>↓</b><small>Back</small></button>
+          <button id="steer-right" type="button" aria-label="Turn right"><b>→</b><small>Right</small></button>
+          <button id="brake" type="button" aria-label="Hold to stop"><b>Stop</b><small>Space</small></button>
+        </div>
+      </footer>
     </div>
-    <section id="pause-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title" hidden><div class="pause-card"><span class="eyebrow">NO RUSH</span><h2 id="pause-title">Parked for a moment.</h2><p>Push with W / ↑. Turn with A/D or ←/→.<br>Space stops. S / ↓ backs you out.</p><label><input id="sound-toggle" type="checkbox" checked> Sound effects</label><label><input id="motion-toggle" type="checkbox"> Reduce motion</label><button id="resume" class="primary-button" type="button">Back to the trolley →</button><a href="./playground.html">Visit the handling playground</a></div></section>
-    <section id="receipt-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="receipt-title" hidden><div class="receipt">
-      <span class="eyebrow">WOBBLY CART · TRIP 01</span><h2 id="receipt-title">Shopping, sorted.</h2><p class="receipt-sub">Milk, bread, and a little perseverance.</p>
-      <div class="receipt-items"><span>Milk</span><b>✓</b><span>Bread</span><b>✓</b></div>
-      <div class="receipt-line"><span>Trip time</span><strong id="result-time"></strong></div><div class="receipt-line"><span>Shopping condition</span><strong id="result-condition"></strong></div>
-      <div class="stamps"><div id="stamp-delivery"><b>✓</b><span>Delivered</span></div><div id="stamp-care"><b>♡</b><span>Careful</span></div><div id="stamp-speed"><b>↗</b><span>Swift</span></div></div>
-      <p id="result-note"></p><p id="personal-best"></p><button id="retry" class="primary-button" type="button">Shop again →</button><small><span id="mastery-targets"></span><br>Each stamp can be earned on a different trip.</small>
-    </div></section>
+    <dialog id="rules-dialog" aria-labelledby="rules-title">
+      <div class="kicker">PLAYTEST SETTINGS</div><h2 id="rules-title">Change the rules.</h2>
+      <p>Try the same shop with different handling or checkout rules. Applying changes starts a fresh run.</p>
+      <label class="range-label" for="wobble">Caster wobble <output id="wobble-value" for="wobble">100%</output></label>
+      <input id="wobble" type="range" min="0" max="200" step="5" value="100">
+      <p class="field-note">0% settles the bad caster. A fast turn or hard hit can still spill a loaded cart.</p>
+      <label for="banking">Checkout rule</label>
+      <select id="banking"><option value="bank">Express bank + final checkout</option><option value="exit">Final checkout only</option></select>
+      <div class="switches"><label><input id="sound" type="checkbox" checked> Sound effects</label><label><input id="motion" type="checkbox"> Reduce motion</label></div>
+      <div class="dialog-actions"><button id="apply" class="primary" type="button">Apply &amp; restart</button><button id="resume" type="button">Resume</button></div>
+      <div class="compare"><a href="./tutorial.html">Milk &amp; bread tutorial</a><a href="./playground.html">Handling playground</a></div>
+    </dialog>
+    <dialog id="receipt-dialog" aria-labelledby="receipt-title">
+      <div class="kicker">AFTER HOURS MARKET / RECEIPT</div><h2 id="receipt-title">Shopping secured.</h2>
+      <div class="receipt-total"><span>FINAL SCORE</span><strong id="receipt-score"></strong></div>
+      <div class="receipt-row"><b>Secured</b><span id="receipt-banked"></span></div>
+      <div class="receipt-row"><b>Spilled</b><span id="receipt-spilled"></span></div>
+      <div class="receipt-row"><b>Run time</b><span id="receipt-time"></span></div>
+      <p id="receipt-mode" class="field-note"></p>
+      <div class="dialog-actions"><button id="retry" class="primary" type="button">Shop again ↗</button><button id="copy" type="button">Copy receipt</button><button id="receipt-rules" type="button">Rules</button></div>
+      <textarea id="share-text" aria-label="Receipt text" readonly hidden></textarea><div id="copy-status" role="status"></div>
+    </dialog>
     <noscript>Enable JavaScript to play Wobbly Cart.</noscript>
   </main>
   <script type="module" src="./src/main.js"></script>

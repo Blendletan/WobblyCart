@@ -1,5 +1,5 @@
 import { firstTrip } from '../content/first-trip.js';
-import { createTrolley, stepTrolley } from './trolley.js';
+import { createTrolley, stepTrolley, trolleyInRect } from './trolley.js';
 import { tutorialParams, tripParams as rules } from './params.js';
 
 export function createTrip(level = firstTrip) {
@@ -11,13 +11,7 @@ export function createTrip(level = firstTrip) {
 }
 
 export function atCheckout(cart, level = firstTrip, p = tutorialParams) {
-  const bay = level.checkout;
-  return [-p.collisionOffset, p.collisionOffset].every(along => {
-    const x = cart.x + Math.sin(cart.heading) * along;
-    const y = cart.y + Math.cos(cart.heading) * along;
-    return x - p.collisionRadius >= bay.x && x + p.collisionRadius <= bay.x + bay.width &&
-      y - p.collisionRadius >= bay.y && y + p.collisionRadius <= bay.y + bay.height;
-  });
+  return trolleyInRect(cart, level.checkout, p);
 }
 
 /** A completed trip is immutable. The caller never steps while paused. */

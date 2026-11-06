@@ -2,7 +2,7 @@
 
 Scope: one tutorial trip. The next decision is whether its controls and objectives are clear enough to build upon. Additional levels, generation and distribution are outside this build.
 
-Start the local server with `node tools/serve.mjs`, then open `http://127.0.0.1:4175/`. The server is loopback-only; this link is not remotely shareable. `playground.html` preserves the stronger original handling for comparison.
+Start the local server with `node tools/serve.mjs`, then open `http://127.0.0.1:4175/tutorial.html` on the cargo prototype branch. The server binds to this computer only. `playground.html` preserves the stronger original handling for comparison.
 
 ## First check with the user
 

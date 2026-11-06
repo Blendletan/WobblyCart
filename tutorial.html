@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f3efe4">
+  <meta name="description" content="You only came in for milk. Push a wobbly shopping trolley, collect your groceries and make it to checkout.">
+  <title>Wobbly Cart · Milk & bread</title>
+  <link rel="icon" href="./assets/cart.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main id="stage" data-mode="trip" aria-label="Wobbly Cart, your first shopping trip">
+    <div id="game-ui">
+      <canvas id="game" tabindex="0" aria-label="Shopping trip. W or Up to push, S or Down to reverse, A and D to turn, Space to stop. Collect milk and bread, then stop at checkout."></canvas>
+      <header class="masthead"><div><span class="eyebrow">A VERY ORDINARY ERRAND</span><h1>Wobbly <em>Cart.</em></h1></div><div class="header-actions"><span class="trip-badge">TRIP 01</span><button id="pause" class="icon-button" aria-label="Pause and settings">Ⅱ</button></div></header>
+      <div id="playfield" aria-hidden="true"></div>
+      <aside class="shopping-panel" aria-label="Shopping list and tutorial">
+        <div class="list-heading"><span class="eyebrow">TODAY'S SHOPPING</span><span id="item-count">0 / 2</span></div>
+        <h2>Milk &amp; bread</h2><p class="list-note">Two things. How hard can it be?</p>
+        <ul class="shopping-list">
+          <li id="list-milk"><span class="food-icon milk-icon" aria-hidden="true"></span><span>Milk</span><span id="check-milk" class="item-check" aria-label="Not collected">○</span></li>
+          <li id="list-bread"><span class="food-icon bread-icon" aria-hidden="true"></span><span>Bread</span><span id="check-bread" class="item-check" aria-label="Not collected">○</span></li>
+        </ul>
+        <div class="basket-status"><span>Shopping condition</span><strong id="condition">100%</strong></div>
+        <div class="condition-track" aria-hidden="true"><div id="condition-fill"></div></div>
+        <section class="lesson" aria-live="polite" aria-atomic="true"><span id="lesson-step" class="eyebrow">01 / GET GOING</span><h3 id="lesson-title">Give it a push.</h3><p id="lesson-hint">Hold Push, W or ↑. The milk is straight ahead.</p></section>
+        <div class="pickup-progress"><div id="pickup-fill"></div></div>
+        <p id="action-hint">Slow down in the marked circles to collect.</p>
+        <div class="trip-stats"><span><b id="speed">0.0</b> m/s</span><span id="trip-clock">No rush</span></div>
+        <div class="utility-actions"><button id="recover" type="button">Stuck? Reposition</button><button id="reset" type="button">Restart <kbd>R</kbd></button></div>
+      </aside>
+      <div id="toast" role="status" aria-live="polite" hidden></div>
+      <div class="drive-bar"><div class="control-caption"><b>Hold to move</b><span>WASD / arrows · Space stops</span></div><div id="drive-controls" aria-label="Holdable movement controls">
+        <button id="steer-left" type="button" aria-label="Turn left"><strong>←</strong><small>Turn</small></button>
+        <button id="push" type="button" aria-label="Push forward"><strong>↑</strong><small>Push</small></button>
+        <button id="pull" type="button" aria-label="Pull backwards"><strong>↓</strong><small>Back</small></button>
+        <button id="steer-right" type="button" aria-label="Turn right"><strong>→</strong><small>Turn</small></button>
+        <button id="brake" type="button" aria-label="Hold to stop"><strong>Stop</strong><small>Space</small></button>
+      </div></div>
+    </div>
+    <section id="pause-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title" hidden><div class="pause-card"><span class="eyebrow">NO RUSH</span><h2 id="pause-title">Parked for a moment.</h2><p>Push with W / ↑. Turn with A/D or ←/→.<br>Space stops. S / ↓ backs you out.</p><label><input id="sound-toggle" type="checkbox" checked> Sound effects</label><label><input id="motion-toggle" type="checkbox"> Reduce motion</label><button id="resume" class="primary-button" type="button">Back to the trolley →</button><a href="./playground.html">Visit the handling playground</a></div></section>
+    <section id="receipt-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="receipt-title" hidden><div class="receipt">
+      <span class="eyebrow">WOBBLY CART · TRIP 01</span><h2 id="receipt-title">Shopping, sorted.</h2><p class="receipt-sub">Milk, bread, and a little perseverance.</p>
+      <div class="receipt-items"><span>Milk</span><b>✓</b><span>Bread</span><b>✓</b></div>
+      <div class="receipt-line"><span>Trip time</span><strong id="result-time"></strong></div><div class="receipt-line"><span>Shopping condition</span><strong id="result-condition"></strong></div>
+      <div class="stamps"><div id="stamp-delivery"><b>✓</b><span>Delivered</span></div><div id="stamp-care"><b>♡</b><span>Careful</span></div><div id="stamp-speed"><b>↗</b><span>Swift</span></div></div>
+      <p id="result-note"></p><p id="personal-best"></p><button id="retry" class="primary-button" type="button">Shop again →</button><small><span id="mastery-targets"></span><br>Each stamp can be earned on a different trip.</small>
+    </div></section>
+    <noscript>Enable JavaScript to play Wobbly Cart.</noscript>
+  </main>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

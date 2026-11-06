@@ -1,12 +1,11 @@
 # State
 
-- Current scope: the user requested one complete tutorial/first-test shopping trip. C1 is partial; do not add the remaining trips automatically.
-- Playable at `/`: **Milk & bread** — manual push, four independent casters, gentler flutter, two pickups, broad shelf corner, optional floor seam, checkout, receipt and immediate retry.
-- Added: contextual hints, condition/active timer, independent saved delivery/care/speed stamps, free reposition, pause, procedural art/audio and sound/reduced-motion settings. No time limit or failure that blocks delivery.
-- Preserved: stronger original handling at `/playground.html`; historical oscillator and immutable golden fixtures. New values and decisions are in `TUNING.md` and `DECISIONS.md`.
-- Verification: all 45 Node tests pass, including full trip/app flow and deterministic digital-input replay. Real-dynamics driver completes in 19.25 s at 100% condition without recovery. Budget/network checks pass at 25 files / 94,259 bytes; `git diff --check` passes.
-- Golden tree: `6f325ab866e7d9ef69cc31752c4624d63a4408ca`, unchanged. Historical oscillator thresholds do not validate manual handling feel.
-- Live browser: completed both pickups, checkout/receipt and retry with 100% condition; exercised keyboard, pointer holds and pause; inspected desktop, 390×844, 320×568 and 844×390 layouts with no captured console warnings/errors.
-- Not verified: user approval of tutorial tuning, unguided new-player appeal, physical Android/iPhone usability, measured phone frame rate/load time or subjective audio quality. Agent browser completion is not a human playtest.
-- Not built: other four C1 trips, thumb-pad comparison, campaign progression, cosmetics, daily/generated jobs, exportable playtest telemetry, portal SDKs, hosted distribution, outreach or revenue.
-- Next: user's first trip and targeted tuning using `docs/FIRST-TRIP-PLAYTEST.md`; obtain further scope before content expansion. No implementation blocker recorded.
+- Current scope is a design experiment on `codex/cargo-prototype`. C1 remains partial on `main` at `7a2fa16`.
+- `/` opens a three-quarter shop with seven stackable goods, a one-use express bank, a final checkout, wipeout animation, copyable receipt and quick retry. The score is the value secured.
+- **Rules** saves caster strength from 0–200% and lets players disable express banking. Applying settings starts a fresh run. Defaults are 100% and express banking on. Elapsed time is informational.
+- `/tutorial.html` opens the original Milk & bread trip. `/playground.html` opens the original handling comparison.
+- All 52 Node tests pass. The scripted cargo routes deliver all seven items for 445 points with either checkout rule and replay deterministically. The tutorial driver still completes in 19.25 s at 100% condition.
+- Budget and runtime-network checks pass at 31 files and 139,004 bytes. Golden tree remains `6f325ab866e7d9ef69cc31752c4624d63a4408ca`.
+- Desktop browser verified pickup, wipeout receipt, copy, retry and persistence of changed Rules. Inspected the 390 × 844 portrait layout in the browser.
+- Human checks pending include whether the bank detour is tempting, whether the pile warns in time, whether people retry, and physical phone controls, frame rate and load time.
+- Next is comparative playtesting of wobble and banking. The other C1 trips, campaign work and portal integration are outside this experiment.

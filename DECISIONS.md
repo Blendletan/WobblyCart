@@ -1,5 +1,11 @@
 # Decisions
 
+## Cargo design experiment — 2026-11-06
+
+- Use one authored shop with seven optional goods, a detour to a one-use express bank, and a final checkout. The score is the sum of secured item values. Elapsed time goes on the receipt and carries no penalty. The first comparison isolates checkout rules with the same layout, cargo and controls.
+- Put caster strength and express banking in the Rules panel, saved for the next attempt. At 0% the caster flutter is off and turning, rough ground and impacts can still spill cargo. Keep the stronger handling playground and the original tutorial available for comparison.
+- Project the existing ground plane into Canvas with height and depth for shelves, cart and goods. A deterministic damped lean drives the stack. After a terminal spill, the renderer animates the pieces using the frozen result pose.
+
 ## First complete trip — 2026-11-06
 
 - User narrowed implementation to one tutorial/first-test shopping trip. Ship **Milk & bread**, not the whole five-trip C1 milestone. The original sandbox remains at `playground.html`; `src/main.js` selects the appropriate entry point.

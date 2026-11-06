@@ -2,6 +2,12 @@
 
 Nov 1, 2026 · @Robert
 
+## Cargo design experiment (2026-11-06)
+
+On `codex/cargo-prototype`, the root page opens a one-shop experiment in making the visible cargo pile the score and the risk. The accepted manual controls and four-caster simulation drive a fixed three-quarter view. Carrying more lowers the bad caster’s flutter onset and makes the pile easier to tip. Slow in pickup circles to collect optional goods. Stop inside the final checkout to cash out. By default a one-use express checkout secures the current pile and lets play continue. A wipeout spills the current pile and ends the run with already-secured points intact.
+
+The Rules panel applies a 0–200% caster wobble setting and switches between express banking and final checkout only. Applying changes starts a new run in the same shop. The design questions are whether the growing pile reads clearly, whether the crash feels fair and funny, and whether a chance to bank makes players want another attempt. The tutorial stays playable at `tutorial.html` on this branch. This experiment is separate from the five-trip C1 plan below.
+
 ## Current build — one tutorial trip (2026-11-06)
 
 The user requested one complete shopping trip as a tutorial and first test. Implement only this opening before expanding content. `index.html` now opens **Milk & bread**: manually push to milk, slow in its pickup circle, take a broad shelf corner to bread, then stop fully inside checkout. One low floor seam introduces uneven ground without blocking an easier line. Hints follow the current objective. Delivery earns a receipt and immediate retry; care and speed are optional, independently saved stamps. There is no campaign or next-trip button yet.
