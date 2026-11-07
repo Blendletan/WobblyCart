@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wobbly Cart · Art QA</title><link rel="stylesheet" href="../cargo.css">
+  <style>
+    #stage { width: 100vw; height: 100dvh; }
+    .fixture-controls { position: absolute; z-index: 10; top: 16px; left: 50%; transform: translateX(-50%); background: #fffae9; padding: 9px 14px; border-radius: 12px; font-size: 12px; }
+    .fixture-controls select { font: inherit; }
+  </style>
+</head>
+<body>
+  <main id="stage">
+    <div id="view"><canvas id="game"></canvas></div>
+    <header class="masthead"><div class="wordmark"><div class="kicker">EVERYTHING MUST GO!</div><h1>Wobbly <em>Cart!</em></h1></div></header>
+    <div class="fixture-controls"><label>Visual fixture <select id="pose"><option value="loaded">Full haul</option><option value="turn">Loaded corner</option><option value="spill">Wipeout</option><option value="exit">Final checkout</option></select></label><output id="timing" style="display:block;margin-top:4px">Measuring frame cadence…</output></div>
+  </main>
+  <script type="module">
+    import { createCargoScene } from '../src/render/cargo-scene.js';
+    import { createCargoRun } from '../src/sim/cargo-run.js';
+    import { createTrolley } from '../src/sim/trolley.js';
+    import { cargoShop } from '../src/content/cargo-shop.js';
+    const scene = createCargoScene(document.getElementById('game'));
+    let state, spillTime = 0, lastFrame = null, firstFrame = null, intervals = [], processing = [];
+    function pose() {
+      const choice = document.getElementById('pose').value;
+      state = { ...createCargoRun(), elapsed: 5, cargo: cargoShop.items, collected: cargoShop.items.map(item => item.id),
+        cart: createTrolley({ x: -1.2, y: 6, heading: 0 }), lean: 0 };
+      spillTime = 0;
+      if (choice === 'turn') { state.cart = createTrolley({ x: 2.5, y: 9, heading: 1 }); state.lean = .28; state.risk = .66; }
+      if (choice === 'spill') { state.status = 'wipeout'; state.spilled = state.cargo; state.cargo = []; state.lean = .56; spillTime = .6; }
+      if (choice === 'exit') state.cart = createTrolley({ x: 2.7, y: 17.5, heading: 0 });
+    }
+    function resize() {
+      scene.resize(innerWidth,innerHeight,devicePixelRatio);
+      intervals = []; processing = []; lastFrame = null;
+    }
+    document.getElementById('pose').addEventListener('change',pose);
+    window.addEventListener('resize',resize); pose(); resize();
+    function frame(now) {
+      const start = performance.now();
+      scene.draw(state,state,1,spillTime);
+      firstFrame ??= performance.now();
+      if (processing.length < 180) {
+        processing.push(performance.now()-start);
+        if (lastFrame !== null) intervals.push(now-lastFrame);
+        lastFrame = now;
+        if (intervals.length === 179) {
+          const average = intervals.reduce((sum,value) => sum+value,0)/intervals.length;
+          const p95 = [...processing].sort((a,b) => a-b)[Math.floor(processing.length*.95)];
+          document.getElementById('timing').textContent = `${(1000/average).toFixed(1)} fps · CPU draw p95 ${p95.toFixed(2)} ms · first draw ${firstFrame.toFixed(0)} ms`;
+        }
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

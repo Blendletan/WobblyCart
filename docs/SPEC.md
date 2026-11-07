@@ -2,6 +2,12 @@
 
 Nov 1, 2026 · @Robert
 
+## Visual development (2026-11-07)
+
+The user accepted the steering and rough gameplay and requested a visual standard suitable for a commercial pitch. The current cargo branch presents a bright toy supermarket with a WebGL scene, procedural rounded models, directional shadows, an animated shopper, three-dimensional groceries and a compact overlay HUD. It keeps a Canvas fallback for unavailable or lost GPU contexts. The simulation remains the manual ground-plane model. Banking and wobble remain adjustable while level structure is still open.
+
+The art pass brings presentation work forward within the existing shop. It does not select the remaining campaign or release scope. User approval of this visual direction and physical phone checks are pending. `tools/art-qa.html` provides fixed full-pile, turn, spill and checkout views with a desktop cadence sample.
+
 ## Cargo design experiment (2026-11-06)
 
 On `codex/cargo-prototype`, the root page opens a one-shop experiment in making the visible cargo pile the score and the risk. The accepted manual controls and four-caster simulation drive a fixed three-quarter view. Carrying more lowers the bad caster’s flutter onset and makes the pile easier to tip. Slow in pickup circles to collect optional goods. Stop inside the final checkout to cash out. By default a one-use express checkout secures the current pile and lets play continue. A wipeout spills the current pile and ends the run with already-secured points intact.

@@ -4,6 +4,8 @@
 
 On `codex/cargo-prototype`, run `node tools/serve.mjs` and open [the shop](http://127.0.0.1:4175/). Slow in the amber circles to collect goods. Stop fully inside the green checkout to secure the pile. The express bank is a one-use stop. The final checkout ends the run, and a wipeout keeps only what you already secured.
 
+The shop uses a procedural 3D presentation with a Canvas fallback. For visual checks, open [Art QA](http://127.0.0.1:4175/tools/art-qa.html) to inspect a full pile, corner, spill or checkout and sample desktop frame cadence.
+
 Open **Rules** to change caster wobble between 0% and 200%, or choose **Final checkout only** to disable the express bank. **Apply & restart** saves the settings locally and starts a new run. The starting settings are 100% and express banking enabled.
 
 ## Milk & bread tutorial

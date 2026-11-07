@@ -1,5 +1,13 @@
 # Decisions
 
+## Visual development — 2026-11-07
+
+- Choose a bright toy supermarket with cream floor tiles, teal fixtures, a yellow-rimmed trolley and coral accents. Move the score and controls onto the scene to give the cart and pile more screen space.
+- Use a small WebGL renderer with procedural geometry, a fixed orthographic camera and directional shadows. Cache models and buffers, cull offscreen shelf sections and keep the existing Canvas renderer as the fallback for unavailable or lost GPU contexts. Context restoration rebuilds GPU resources.
+- Add a cosmetic shopper whose legs follow cart travel, rotating caster tires, rounded three-dimensional goods, pickup flights, sparkles and a modeled checkout register. These are presentation choices over the existing simulation.
+- Use the in-game gallery of Monkey Mart as a reference for strong silhouettes, a readable shop and compact overlays. The reference was inspected through Poki. [Monkey Mart](https://poki.com/en/g/monkey-mart)
+- Add `tools/art-qa.html` to inspect the full pile, turning and spills without driving every pose manually. Its performance sample describes a fixed desktop scene and awaits physical phone comparison.
+
 ## Cargo design experiment — 2026-11-06
 
 - Use one authored shop with seven optional goods, a detour to a one-use express bank, and a final checkout. The score is the sum of secured item values. Elapsed time goes on the receipt and carries no penalty. The first comparison isolates checkout rules with the same layout, cargo and controls.

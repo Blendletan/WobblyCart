@@ -1,5 +1,9 @@
 # Wobbly Cart: build plan
 
+## Current priority — visual development
+
+2026-11-07. The user accepts the steering and rough cargo gameplay and wants high-quality visuals suitable for a pitch. On `codex/cargo-prototype`, refine the current shop with a toy-like 3D presentation, readable cargo, a compact HUD and polished feedback. Evaluate the visual direction with the user, then test performance and usability on physical phones. Level count and campaign structure remain open design decisions.
+
 ## Current priority: a complete shopping trip
 
 2026-11-05: the user accepted the manual-push premise and requested a commercial game direction. The new milestones below supersede the old endless-run roadmap. The authoritative requirements are at the top of [SPEC.md](SPEC.md); commercial reasoning and current portal sources are in [COMMERCIAL-PLAN.md](COMMERCIAL-PLAN.md).

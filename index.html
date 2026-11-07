@@ -5,23 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#253b34">
   <meta name="description" content="Everything's free if you can get it to checkout on a cart with one bad wheel.">
-  <title>Wobbly Cart · Cargo Prototype</title>
+  <title>Wobbly Cart</title>
   <link rel="icon" href="./assets/cart.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./cargo.css">
 </head>
 <body>
-  <main id="stage" data-mode="cargo" aria-label="Wobbly Cart cargo prototype">
+  <main id="stage" data-mode="cargo" aria-label="Wobbly Cart">
     <div id="game-ui">
       <header class="masthead">
-        <div><div class="kicker">AFTER HOURS MARKET <span> / PLAYTEST</span></div><h1>Wobbly <em>Cart.</em></h1></div>
-        <div class="utilities"><button id="reset" type="button">Restart <kbd>R</kbd></button><button id="pause" type="button">Rules <span aria-hidden="true">⚙</span></button></div>
+        <div class="wordmark"><div class="kicker">EVERYTHING MUST GO!</div><h1>Wobbly <em>Cart!</em></h1></div>
+        <div class="utilities"><button id="reset" type="button" aria-label="Restart"><span aria-hidden="true">↻</span></button><button id="pause" type="button" aria-label="Rules and settings"><span aria-hidden="true">☰</span></button></div>
       </header>
       <div class="game-board">
         <aside class="scoreboard" aria-label="Cargo and score">
           <p class="pitch">Everything’s free if you can get it to checkout on a cart with one bad wheel.</p>
           <div class="scores">
-            <div class="score aboard"><span>ON THE CART</span><strong id="carried">0</strong></div>
-            <div class="score secured"><span>SECURED</span><strong id="secured">0</strong></div>
+            <div class="score aboard"><span class="score-symbol" aria-hidden="true">★</span><div><span>ON THE CART</span><strong id="carried">0</strong></div></div>
+            <div class="score secured"><span class="score-symbol" aria-hidden="true">✓</span><div><span>SECURED</span><strong id="secured">0</strong></div></div>
           </div>
           <div class="stability"><span>PILE LEAN</span><meter id="lean" min="0" max="1" low=".64" high=".84" optimum="0" value="0" aria-label="Pile lean"></meter></div>
           <div class="tip" aria-live="polite"><strong id="tip-title">Build your pile.</strong><span id="tip-body">Hold Push to reach the milk. Slow inside the circle to grab it.</span></div>
@@ -30,11 +30,11 @@
         <div id="view">
           <canvas id="game" tabindex="0" aria-label="Shop floor. W or Up to push, S or Down to reverse, A and D to turn, Space to stop. Slow down in a pickup circle, then stop inside checkout to secure your points."></canvas>
           <div id="notice" role="status" hidden></div>
-          <div class="view-label" aria-hidden="true">THE SHOP FLOOR <span> / FOLLOW THE AISLES</span></div>
+          <div class="view-label" aria-hidden="true">HELP YOURSELF.</div>
         </div>
       </div>
       <footer class="drive-bar">
-        <div class="control-caption"><strong>Hold to move</strong><span>WASD / arrows · Space stops</span></div>
+        <div class="control-caption"><strong>Hold to move</strong><span>WASD / arrows<br>Space to stop · R to retry</span></div>
         <div id="drive-controls" aria-label="Holdable movement controls">
           <button id="steer-left" type="button" aria-label="Turn left"><b>←</b><small>Left</small></button>
           <button id="push" type="button" aria-label="Push forward"><b>↑</b><small>Push</small></button>
@@ -45,7 +45,7 @@
       </footer>
     </div>
     <dialog id="rules-dialog" aria-labelledby="rules-title">
-      <div class="kicker">PLAYTEST SETTINGS</div><h2 id="rules-title">Change the rules.</h2>
+      <div class="kicker">PARKED FOR A MOMENT</div><h2 id="rules-title">Make it your kind of chaos.</h2>
       <p>Try the same shop with different handling or checkout rules. Applying changes starts a fresh run.</p>
       <label class="range-label" for="wobble">Caster wobble <output id="wobble-value" for="wobble">100%</output></label>
       <input id="wobble" type="range" min="0" max="200" step="5" value="100">
@@ -57,7 +57,7 @@
       <div class="compare"><a href="./tutorial.html">Milk &amp; bread tutorial</a><a href="./playground.html">Handling playground</a></div>
     </dialog>
     <dialog id="receipt-dialog" aria-labelledby="receipt-title">
-      <div class="kicker">AFTER HOURS MARKET / RECEIPT</div><h2 id="receipt-title">Shopping secured.</h2>
+      <div class="kicker">WOBBLY CART / YOUR RECEIPT</div><h2 id="receipt-title">Shopping secured.</h2>
       <div class="receipt-total"><span>FINAL SCORE</span><strong id="receipt-score"></strong></div>
       <div class="receipt-row"><b>Secured</b><span id="receipt-banked"></span></div>
       <div class="receipt-row"><b>Spilled</b><span id="receipt-spilled"></span></div>

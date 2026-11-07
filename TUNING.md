@@ -1,5 +1,17 @@
 # Tuning
 
+## Visual development (2026-11-07)
+
+| Decision | Tested or untested | Evidence |
+| --- | --- | --- |
+| Manual steering and the rough cargo loop are worth continuing. | User accepted | User said the steering mechanism and rough gameplay work. Levels and remaining design details are open. |
+| Procedural 3D art, soft directional shadows, shopper and cargo animations. | Automated and desktop browser | Finite mesh/normal checks, GPU rendering isolation and resource-loss/restore tests. Browser showed actual milk and bread pickups, the full pile and a loaded turn. |
+| Full-pile desktop rendering cadence. | Sampled in in-app browser | Isolated 1280 × 720 QA scene averaged 59.7 fps over 179 intervals, CPU draw p95 1.40 ms, first draw at 953 ms. An earlier sample with multiple visual pages open averaged 31.9 fps. Culled offscreen shelf sections and reduced shadow sampling before the isolated sample. |
+| Phone layout and touch targets. | Emulated layout checks | Inspected 390 × 844 and 320 × 568 with cargo aboard, plus 844 × 390 and 568 × 320 landscape. Physical phone usability, load and GPU timing remain pending. |
+| Commercial visual appeal and final art direction. | User review pending | Visual references inform the art pass. Portal acceptance and market appeal require their own evidence. |
+
+No simulation parameters changed in this pass. Wobble and banking retain the in-game controls. The new art uses procedural meshes and system fonts.
+
 ## Cargo design experiment (2026-11-06)
 
 | Decision | Tested or untested | Evidence |

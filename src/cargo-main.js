@@ -3,7 +3,7 @@ import { bindInput, createInputState } from './core/input.js';
 import { cargoShop } from './content/cargo-shop.js';
 import { cargoValue, createCargoRun, stepCargoRun } from './sim/cargo-run.js';
 import { cargoParams } from './sim/params.js';
-import { createCargoScene } from './render/cargo-shop.js';
+import { createCargoScene } from './render/cargo-scene.js';
 import { stageSize } from './render/layout.js';
 import { createDevAdapter } from './platform/dev.js';
 import { createShopAudio } from './audio/shop.js';
