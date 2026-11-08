@@ -2,11 +2,11 @@
 
 Nov 1, 2026 · @Robert
 
-## Current direction — cargo gameplay planning (2026-11-07)
+## Current direction — H1 player test (2026-11-07)
 
-The user considers the visual design adequate for the next design experiment and requested a staged planning document after reviewing the One Trip proposal. [GAMEPLAY-PLAN.md](GAMEPLAY-PLAN.md) defines H1–H5: one recoverable haul, three authored challenges, a quick packing comparison, a focused session and a selected portal test. It supersedes the remaining proposed C1–C3 content for the cargo experiment. This task authorizes planning only; H1 is the next implementation when requested.
+The user authorized proceeding one stage at a time, with player testing after each. [GAMEPLAY-PLAN.md](GAMEPLAY-PLAN.md) defines H1–H5 and supersedes the remaining proposed C1–C3 content for the cargo experiment. H1 is implemented separately at `/haul.html`: preloaded milk and bread, an optional melon, individual recoverable slips and losses, and checkout accepting any remaining haul. The baseline is 100% wobble with express banking off; both remain adjustable. [H1-PLAYTEST.md](H1-PLAYTEST.md) describes the next player check. Do not begin H2 before reviewing that feedback.
 
-Keep manual four-caster handling, adjustable wobble/banking, the existing procedural renderer, deterministic simulation and all current engineering budgets. Partial item losses, delivered-value goals and quick packing remain proposed work. Do not treat One Trip's assumed hand-stacking physics, automatic speed schedule, new dependencies or relaxed budgets as adopted requirements. The public prototype remains the current game, and physical phone checks and new-player appeal remain unproven.
+Keep manual four-caster handling, adjustable wobble/banking, the existing procedural renderer, deterministic simulation and all current engineering budgets. Quick packing remains proposed work. Do not treat One Trip's assumed hand-stacking physics, automatic speed schedule, new dependencies or relaxed budgets as adopted requirements. The root prototype remains available for comparison; physical phone checks and new-player appeal remain unproven.
 
 The sections below record the earlier builds and design history. Where gameplay scope differs, use the linked H plan; retained engineering constraints and frozen references still apply.
 

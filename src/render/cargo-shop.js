@@ -1,6 +1,6 @@
-import { cargoShop as shop } from '../content/cargo-shop.js';
+import { cargoShop as defaultShop } from '../content/cargo-shop.js';
 import { casterMounts } from '../content/sandbox.js';
-import { cargoParams } from '../sim/params.js';
+import { cargoParams, haulParams } from '../sim/params.js';
 
 const ink = '#232b28';
 const shelfColors = { blue: ['#a6bcbc', '#64898a', '#3f6264'], green: ['#b4bd8a', '#758c61', '#4f6447'], orange: ['#edba84', '#b98053', '#89583c'] };
@@ -20,7 +20,7 @@ function oval(c, x, y, rx, ry, color) {
 }
 
 /** Cached, hand-painted item silhouettes shared by the shelf, pile and spill. */
-function itemSprites() {
+function itemSprites(shop) {
   return new Map(shop.items.map(({ id }) => {
     const sprite = document.createElement('canvas'); sprite.width = 128; sprite.height = 84;
     const c = sprite.getContext('2d'); c.translate(64, 44); c.lineJoin = 'round';
@@ -58,8 +58,23 @@ function itemSprites() {
 
 const itemWidths = { milk: .82, bread: .92, melon: 1, soda: 1.05, bowling: .96, tv: 1.22, canoe: 2.34 };
 
-export function createCargoScene(canvas) {
-  const c = canvas.getContext('2d'), sprites = itemSprites();
+/** Presentation-only debris, starting exactly where an authoritative item loss occurred. */
+export function cargoLossPose(loss, elapsed, reducedMotion = false) {
+  const age = elapsed-loss.time;
+  if (age < 0 || age >= 2.4) return null;
+  const flight = Math.min(age,.9), travel = (1-Math.exp(-2.2*flight))/2.2;
+  const direction = Math.sign(loss.lean || loss.vx || 1);
+  return {
+    x:loss.x+loss.vx*travel, y:loss.y+loss.vy*travel,
+    z:Math.max(loss.item.height/2+.025,loss.z+.8*flight-4.9*flight*flight),
+    heading:loss.heading+(reducedMotion ? 0 : flight*direction),
+    lean:loss.lean+(reducedMotion ? 0 : flight*direction*1.5),
+    scale:Math.min(1,(2.4-age)/.3),
+  };
+}
+
+export function createCargoScene(canvas, shop = defaultShop) {
+  const c = canvas.getContext('2d'), sprites = itemSprites(shop);
   let width = 1, height = 1, dpr = 1;
   const shelves = shop.walls.flatMap(wall => {
     if (!wall.color) return [{ ...wall, z: .16, colors: ['#bfc5a2', '#979e7b', '#818d70'] }];
@@ -134,7 +149,8 @@ export function createCargoScene(canvas) {
           polygon(c,face(floor(x,surface.y,.10,surface.height),.008),'#e5b86e');
         }
       }
-      for (const { x, y, heading } of [{ x: .38, y: 8.8, heading: Math.PI / 2 }, { x: 2.75, y: 15.9, heading: 0 }]) {
+      const arrows = shop.arrows ?? (shop === defaultShop ? [{ x: .38, y: 8.8, heading: Math.PI / 2 }, { x: 2.75, y: 15.9, heading: 0 }] : []);
+      for (const { x, y, heading = 0 } of arrows) {
         const arrow = [[-.24,-.28],[0,-.05],[.24,-.28],[.24,-.02],[0,.23],[-.24,-.02]];
         const sin = Math.sin(heading), cos = Math.cos(heading);
         polygon(c,arrow.map(([u,v]) => project(x+u*cos+v*sin,y-u*sin+v*cos)),'#5e795f');
@@ -178,10 +194,15 @@ export function createCargoScene(canvas) {
       const visibleLean = reducedMotion ? lean*.33 : lean;
       const load = current.status === 'wipeout' ? current.spilled : current.cargo;
       const stacked = load.map((item,i) => {
+        if (item.pose) {
+          const old = previous.cargo.find(candidate => candidate.id === item.id)?.pose ?? item.pose;
+          return {item,z:mix(old.z,item.pose.z,alpha),side:mix(old.x,item.pose.x,alpha),
+            forward:mix(old.y,item.pose.y,alpha),tilt:mix(old.lean,item.pose.lean,alpha),i};
+        }
         const below = load.slice(0,i).reduce((total, other) => total + other.height, 0);
         const z = .68 + below + item.height/2;
         const side = Math.sin(visibleLean)*(z-.58)+(i%2 ? .055 : -.055);
-        return { item,z,side,i };
+        return { item,z,side,forward:i%2 ? .06 : -.04,tilt:visibleLean*.73+(i%2 ? .07 : -.055),i };
       });
 
       objects.push({ depth: depth(cart.x,cart.y)+.42, draw() {
@@ -220,13 +241,20 @@ export function createCargoScene(canvas) {
           c.stroke();
         }
         mesh(back); mesh((back+3)%4);
-        if (current.status !== 'wipeout') for (const {item,z,side,i} of stacked) {
-          sprite(item,...local(side,i%2 ? .06 : -.04),z,visibleLean*.73 + (i%2 ? .07 : -.055));
+        if (current.status !== 'wipeout') for (const {item,z,side,forward,tilt} of stacked) {
+          sprite(item,...local(side,forward),z,tilt);
         }
         mesh(front); mesh((front+3)%4);
         const handle = [project(...local(-.41,-.65),.72),project(...local(.41,-.65),.72)];
         c.strokeStyle = '#b5523c'; c.lineWidth = scale*.09; c.beginPath(); c.moveTo(...handle[0]); c.lineTo(...handle[1]); c.stroke();
-        if (current.risk > .64 && current.status === 'shopping') {
+        const endangered = stacked.filter(({item}) => item.pose && item.risk >= haulParams.warningThreshold).sort((a,b) => b.item.risk-a.item.risk)[0];
+        if (endangered && current.status === 'shopping') {
+          const {item,z,side,forward} = endangered, point = local(side,forward);
+          const [px,py] = project(...point,z);
+          c.strokeStyle = '#c74630'; c.lineWidth = 2.5;
+          c.beginPath(); c.ellipse(px,py,scale*.43,scale*.20,0,0,Math.PI*2); c.stroke();
+          badge(`${item.name.toUpperCase()} IS SLIPPING`,px,py-scale*.38,'#a64232',10);
+        } else if (!load.some(item => item.pose) && current.risk > .64 && current.status === 'shopping') {
           const [px,py] = project(cart.x,cart.y,.97 + load.reduce((sum,item) => sum+item.height,0));
           badge(current.risk > .84 ? 'TIPPING!' : 'EASE OFF',px,py,'#a64232',11);
         }
@@ -244,8 +272,26 @@ export function createCargoScene(canvas) {
           sprite(item,...point,altitude,visibleLean*.73+flight*(i%2 ? -1 : 1)*(2+i*.25));
         } });
       }
+      for (const loss of current.losses ?? []) {
+        const pose = cargoLossPose(loss,current.elapsed,reducedMotion);
+        if (!pose || !near(project(pose.x,pose.y,pose.z),scale)) continue;
+        objects.push({depth:depth(pose.x,pose.y)+.44,draw() {
+          const [px,py] = project(pose.x,pose.y);
+          oval(c,px,py,scale*.26*pose.scale,scale*.105*pose.scale,'#634a3038');
+          sprite(loss.item,pose.x,pose.y,pose.z,pose.lean,pose.scale);
+        }});
+      }
       objects.sort((a,b) => a.depth-b.depth);
       for (const object of objects) object.draw();
+      for (const sign of shop.signs ?? []) {
+        const point = project(sign.x,sign.y,sign.z ?? 1.5);
+        if (near(point,0) && point[1] > 85 && point[1] < height-90) badge(sign.label ?? sign.text,...point,sign.color ?? '#397d8b',10);
+      }
+      if (shop !== defaultShop) {
+        const goal = shop.checkouts.find(bay => bay.final);
+        const point = project(goal.x+goal.width/2,goal.y+goal.height/2);
+        if (point[1] < 95 || point[0] < 40 || point[0] > width-40) badge('CHECKOUT ↑',width-75,106,'#365b47',10);
+      }
     },
   };
 }

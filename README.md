@@ -1,5 +1,13 @@
 # Wobbly Cart
 
+## H1: First haul
+
+Play [the new experiment](https://blendletan.github.io/WobblyCart/haul.html), or run `node tools/serve.mjs` and open <http://127.0.0.1:4175/haul.html>. Milk and bread start aboard, worth the 25-point goal. Stop in the optional melon's circle to raise the haul to 65, then follow the arrows around the shelf to checkout. Individual goods can slip out; brake and straighten to save them, or deliver what remains.
+
+**Rules** keeps wobble adjustable from 0–200% and express banking optional (off by default here). **Reposition** preserves remaining goods and time, marking the attempt Practice. Retry restores the same shop. Only unassisted default-rule runs affect the session best; no progression is stored yet.
+
+See [the H1 playtest](docs/H1-PLAYTEST.md) and [H1–H5 plan](docs/GAMEPLAY-PLAN.md). H2 waits for player feedback. Checks: `node --test`, `node tools/budget.mjs`, and `node tools/budget.mjs haul.html`.
+
 ## Cargo prototype
 
 On `codex/cargo-prototype`, run `node tools/serve.mjs` and open [the shop](http://127.0.0.1:4175/). Slow in the amber circles to collect goods. Stop fully inside the green checkout to secure the pile. The express bank is a one-use stop. The final checkout ends the run, and a wipeout keeps only what you already secured.

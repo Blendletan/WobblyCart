@@ -62,7 +62,7 @@ export async function checkBudget(root, entry = 'index.html', limits = {}) {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
   const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-  const result = await checkBudget(root);
+  const result = await checkBudget(root, process.argv[2] ?? 'index.html');
   console.log(`${result.count}/${MAX_FILES} files, ${result.bytes.toLocaleString('en-US')}/${MAX_BYTES.toLocaleString('en-US')} bytes uncompressed`);
   if (result.errors.length) { console.error(result.errors.join('\n')); process.exitCode = 1; }
   else console.log('Budget and runtime network checks passed.');

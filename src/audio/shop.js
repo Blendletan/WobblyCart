@@ -15,7 +15,7 @@ export function createShopAudio() {
     play(events) {
       if (muted || context?.state !== 'running') return;
       for (const event of events) {
-        const notes = event.type === 'pickup' ? [660, 880] : event.type === 'checkout' ? [523, 659, 784, 1047] : event.type === 'spill' ? [330, 246, 147, 92] : event.type === 'bump' ? [110] : [];
+        const notes = event.type === 'pickup' ? [660, 880] : event.type === 'checkout' ? [523, 659, 784, 1047] : event.type === 'spill' ? [330, 246, 147, 92] : event.type === 'item_lost' ? [246, 147] : event.type === 'bump' ? [110] : [];
         notes.forEach((frequency, i) => {
           const at = context.currentTime + i * .09;
           const tone = context.createOscillator(), gain = context.createGain();

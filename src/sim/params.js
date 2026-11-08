@@ -62,3 +62,14 @@ export const cargoParams = Object.freeze({
   flutterLean: 1.8, leanFrequency: 1.65, bumpLeanKick: 3.6, bumpCueImpact: .4,
   tipAngle: .64, loadedTipDrop: .19, crashImpact: .90, loadedImpactDrop: .23,
 });
+
+/** H1 item slip. Existing handling and whole-pile prototype parameters stay unchanged. */
+export const haulParams = Object.freeze({
+  warningThreshold: .62, basketFloor: .34, slotSide: .035, slotForward: .025,
+  slipSpring: 4, slipDamping: 1.9, lateralSlip: .09, maxAcceleration: 6,
+  maxSlipTarget: 1.5, flutterSlip: .45, leanFrequency: 1.65,
+  groundKick: 3.75, wallKick: 2.9, impactThreshold: .22, contactReset: 1,
+  brakeSlipDamping: 4, brakeSpringGain: 8, edgeGrace: .55,
+  slipDistance: .38, slipAngle: .48, settleRate: 8, lossSpeed: 1.2,
+  response: Object.freeze({ central: .65, light: .55, round: 1.65 }),
+});

@@ -1,5 +1,14 @@
 # Decisions
 
+## H1 implementation — 2026-11-07
+
+- The user authorized one stage at a time with a player test after each. Implement one recoverable haul at `/haul.html`; preserve all previous entries. H2 waits for the user's H1 feedback.
+- Keep the chassis unchanged. A small deterministic per-item slip model ties danger, visible displacement and loss to the same state. A rim-catch interval and stronger settling while braking allow a delayed save. Removing an item settles the support height without adding an impulse to the remainder.
+- Begin with milk and bread worth 25, an optional melon worth 40, and a delivery goal of 25. Checkout accepts an empty cart. Baseline rules are 100% wobble and final checkout only; Rules retains the banking comparison and 0–200% wobble range.
+- Recovery keeps the inventory ledger and elapsed time, clears motion and marks Practice. Keep only a session best for unassisted baseline runs; defer persistent progression and packing to their planned experiments. H1 preferences use a separate guarded versioned storage key.
+- After two failed runs of the new renderer check, stop and report the defect as instructed. The user authorized correcting it: identify actual cargo mesh draws and compare their authoritative transforms across motion modes, excluding cosmetic shopper legs. Existing tests, thresholds and golden fixtures are unchanged.
+- Automated routes and browser completion establish reachability and accounting, not player enjoyment or phone readiness. Record those as pending at handoff.
+
 ## Cargo gameplay plan — 2026-11-07
 
 - Record H1–H5 in `docs/GAMEPLAY-PLAN.md` after reviewing One Trip with the user. This is planning only. The next requested implementation should be H1, one recoverable haul, before expanding to three challenges or testing packing.

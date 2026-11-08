@@ -4,7 +4,7 @@
 
 - Read `docs/SPEC.md` and `STATE.md` before working. The spec is the source of truth; read the sections named by the requested build stage.
 - Implement only the milestone or task requested; do not start later milestones automatically. The active cargo plan is H1–H5 in `docs/GAMEPLAY-PLAN.md`, linked from `docs/PLAN.md`. The historical Stage 0–7 and C1–C3 proposals are superseded for this experiment.
-- The user accepted manual four-caster steering and considers the cargo visuals adequate to explore the game. H1 is the next proposed build, when requested; planning is not permission to implement it. Preserve the current cargo prototype, Milk & bread tutorial and handling playground. User tuning, new-player appeal and physical phone readiness remain unproven. Read the current direction at the top of `docs/SPEC.md`; do not restore automatic travel or the endless-run roadmap.
+- The user authorized one stage at a time with player testing after each. H1 is implemented at `/haul.html` and awaits player feedback; do not start H2 automatically. Preserve the current cargo prototype, Milk & bread tutorial and handling playground. User tuning, new-player appeal and physical phone readiness remain unproven. Read the current direction at the top of `docs/SPEC.md`; do not restore automatic travel or the endless-run roadmap.
 - Use the defaults in the spec's "Your tasks and open decisions" table unless the user changes them. If the spec is silent, choose the simplest option, record it in `DECISIONS.md`, and continue.
 - Scaffold, tools, and tests are introduced by the build stages. Do not assume a command exists before its stage creates it.
 

@@ -1,7 +1,7 @@
-import { cargoShop as shop } from '../content/cargo-shop.js';
+import { cargoShop as defaultShop } from '../content/cargo-shop.js';
 import { casterMounts } from '../content/sandbox.js';
-import { cargoParams } from '../sim/params.js';
-import { createCargoScene as createFallbackScene } from './cargo-shop.js';
+import { cargoParams, haulParams } from '../sim/params.js';
+import { createCargoScene as createFallbackScene, cargoLossPose } from './cargo-shop.js';
 import { createToyEngine, identity, transform, multiply, pitch, ToyMesh } from './toy-engine.js';
 import { createItemModels, createCartModels, createShopperModels, createWorldModels } from './cargo-models.js';
 
@@ -10,17 +10,17 @@ const smooth = t => 1-(1-t)**3;
 const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
 
 /** GPU world with a transparent 2D layer for labels and transient feedback. */
-export function createCargoScene(canvas) {
-  if (!canvas.parentElement) return createFallbackScene(canvas);
+export function createCargoScene(canvas, shop = defaultShop) {
+  if (!canvas.parentElement) return createFallbackScene(canvas,shop);
   const worldCanvas = document.createElement('canvas');
   worldCanvas.className = 'world-canvas'; worldCanvas.setAttribute('aria-hidden','true');
   canvas.parentElement.insertBefore(worldCanvas,canvas);
   let engine;
   try { engine = createToyEngine(worldCanvas); } catch { /* Use the Canvas renderer when GPU setup fails. */ }
-  if (!engine) { worldCanvas.remove(); return createFallbackScene(canvas); }
+  if (!engine) { worldCanvas.remove(); return createFallbackScene(canvas,shop); }
   const c = canvas.getContext('2d');
   const items = createItemModels(), cartModels = createCartModels(), shopperModels = createShopperModels();
-  const worldModels = createWorldModels();
+  const worldModels = createWorldModels(shop);
   const bankModels = shop.checkouts.map(bay => {
     const mesh = new ToyMesh(), gray = new ToyMesh();
     for (const [model,color] of [[mesh,'#7bb79a'],[gray,'#c3c9bd']]) {
@@ -50,11 +50,15 @@ export function createCargoScene(canvas) {
   uploadModels();
   worldCanvas.addEventListener('webglcontextlost',event => {
     event.preventDefault(); lost = true; worldCanvas.hidden = true;
-    fallback = createFallbackScene(canvas); fallback.resize(width,height,ratio);
+    fallback = createFallbackScene(canvas,shop); fallback.resize(width,height,ratio);
   });
   worldCanvas.addEventListener('webglcontextrestored',() => {
-    engine = createToyEngine(worldCanvas); uploadModels(); engine.resize(width,height,ratio);
-    lost = false; worldCanvas.hidden = false;
+    try {
+      const restored = createToyEngine(worldCanvas);
+      if (!restored) return;
+      engine = restored; uploadModels(); engine.resize(width,height,ratio);
+      lost = false; worldCanvas.hidden = false;
+    } catch { /* Continue with the working Canvas scene if GPU restoration fails. */ }
   });
 
   function label(message,x,y,{color = '#fff9e9',ink = '#365c61',size = 11,outline = '#3d6c6120'} = {}) {
@@ -92,11 +96,13 @@ export function createCargoScene(canvas) {
         knownCollected = current.collected; lastBankCount = current.banked.length; firstDraw = false;
       }
       if (current.elapsed < lastElapsed || (!current.collected.length && knownCollected.length)) {
-        particles = []; flights.clear(); knownCollected = []; lastBankCount = 0; bankFlash = -10;
+        particles = []; flights.clear(); knownCollected = shop.preloaded ?? []; lastBankCount = 0; bankFlash = -10;
       }
       lastElapsed = current.elapsed;
       for (const id of current.collected) if (!knownCollected.includes(id)) {
-        flights.set(id,{start:current.elapsed,item:shop.items.find(item => item.id === id)});
+        const item = shop.items.find(item => item.id === id);
+        if (!item || shop.preloaded?.includes(id)) continue;
+        flights.set(id,{start:current.elapsed,item});
         for (let i = 0; i < 10; i++) particles.push({id,start:clock,angle:i*Math.PI/5,speed:.35+(i%3)*.12});
       }
       knownCollected = current.collected;
@@ -107,7 +113,8 @@ export function createCargoScene(canvas) {
       engine.camera(x,y,span);
       const objects = [{mesh:gpu.ground,shadow:false}];
       for (const section of gpu.fixtures) {
-        const corners = [[-5.4,section.y,0],[5.4,section.y,0],[-5.4,section.y+4,1.7],[5.4,section.y+4,1.7]].map(point => engine.project(...point));
+        const {left:worldLeft,right:worldRight} = shop.bounds;
+        const corners = [[worldLeft-.4,section.y,0],[worldRight+.4,section.y,0],[worldLeft-.4,section.y+4,1.7],[worldRight+.4,section.y+4,1.7]].map(point => engine.project(...point));
         const left = Math.min(...corners.map(point => point[0])), right = Math.max(...corners.map(point => point[0]));
         const top = Math.min(...corners.map(point => point[1])), bottom = Math.max(...corners.map(point => point[1]));
         if (right < -140 || left > width+140 || bottom < -140 || top > height+140) continue;
@@ -145,12 +152,19 @@ export function createCargoScene(canvas) {
         add(mount.bad ? gpu.cart.badTire : gpu.cart.tire,multiply(wheelMatrix,multiply(transform(0,-.10,.12),pitch(wheel.roll/.12))),.2);
       }
       let pileHeight = .48;
+      const posed = [];
       for (const [index,item] of load.entries()) {
         const altitude = pileHeight;
         pileHeight += item.height*1.02;
         const side = Math.sin(lean)*(altitude-.38)+(index%2 ? .035 : -.035);
         let [px,py] = local(side,index%2 ? .04 : -.03), z = altitude, rotation = heading+(index%2 ? -.13 : .13);
         let itemLean = lean;
+        if (item.pose) {
+          const old = previous.cargo.find(candidate => candidate.id === item.id)?.pose ?? item.pose;
+          [px,py] = local(mix(old.x,item.pose.x,alpha),mix(old.y,item.pose.y,alpha));
+          z = mix(old.z,item.pose.z,alpha); itemLean = mix(old.lean,item.pose.lean,alpha); rotation = heading;
+          posed.push({item,x:px,y:py,z});
+        }
         const flight = flights.get(item.id), progress = flight ? clamp((clock-flight.start)/.44,0,1) : 1;
         if (!reducedMotion && progress < 1) {
           const t = smooth(progress);
@@ -162,7 +176,14 @@ export function createCargoScene(canvas) {
           [px,py] = offset; z = Math.max(.04,altitude+(1.9+index*.12)*t-5*t*t);
           rotation += t*(index%2 ? -2.2 : 2.2); itemLean += t*(index%2 ? 1 : -1)*1.8;
         }
-        add(gpu.items[item.id],transform(px,py,z,rotation,itemLean),.22);
+        const matrix = transform(px,py,z,rotation,itemLean);
+        add(gpu.items[item.id],item.pose ? multiply(matrix,transform(0,0,-item.height/2)) : matrix,.22);
+      }
+      for (const loss of current.losses ?? []) {
+        const pose = cargoLossPose(loss,current.elapsed,reducedMotion);
+        if (!pose) continue;
+        add(gpu.items[loss.item.id],multiply(transform(pose.x,pose.y,pose.z,pose.heading,pose.lean,pose.scale),
+          transform(0,0,-loss.item.height/2)),.18);
       }
       engine.render(objects);
 
@@ -195,7 +216,16 @@ export function createCargoScene(canvas) {
           c.fillStyle = '#3d9e87'; c.fillRect(px-29,py+17,58*t,5);
         }
       }
-      if (current.risk > .62 && current.status === 'shopping') {
+      const endangered = posed.filter(({item}) => item.risk >= haulParams.warningThreshold).sort((a,b) => b.item.risk-a.item.risk)[0];
+      if (endangered && current.status === 'shopping') {
+        const {item,x:ix,y:iy,z} = endangered;
+        const [px,py] = engine.project(ix,iy,z), edge = engine.project(ix+.43,iy,z);
+        const radius = Math.max(14,Math.hypot(edge[0]-px,edge[1]-py));
+        c.strokeStyle = '#dc6143'; c.lineWidth = 2.5;
+        c.beginPath(); c.ellipse(px,py,radius,radius*.53,0,0,Math.PI*2); c.stroke();
+        const warningPoint = engine.project(ix,iy,z+item.height/2+.22);
+        label(`${item.name.toUpperCase()} IS SLIPPING`,...warningPoint,{color:'#ef765a',ink:'#fffaf0',size:10});
+      } else if (!posed.length && current.risk > .62 && current.status === 'shopping') {
         const [px,py] = engine.project(x,y,Math.max(1.4,pileHeight+.24));
         label(current.risk > .84 ? 'WHOAAA!' : 'EASY DOES IT',px,py,{color:'#ef765a',ink:'#fffaf0',size:12});
       }
@@ -214,8 +244,8 @@ export function createCargoScene(canvas) {
         c.globalAlpha = 1;
       }
       // Keep the goal visible when it is beyond the camera's view.
-      const goal = shop.checkouts.at(-1), target = engine.project(goal.x+goal.width/2,goal.y+goal.height/2);
-      if (y > 6 && (target[1] < 100 || target[0] > width-40)) {
+      const goal = shop.checkouts.find(bay => bay.final), target = engine.project(goal.x+goal.width/2,goal.y+goal.height/2);
+      if ((shop !== defaultShop || y > 6) && (target[1] < 100 || target[0] < 40 || target[0] > width-40)) {
         label('CHECKOUT ↑',width-85,105,{color:'#3e8e78',ink:'#fff9e9',size:10});
       }
     },

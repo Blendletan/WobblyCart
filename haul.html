@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#253b34">
+  <meta name="description" content="A little shopping trip. A tempting extra. Bring home what you can on a cart with one bad wheel.">
+  <title>First haul · Wobbly Cart</title>
+  <link rel="icon" href="./assets/cart.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./cargo.css">
+</head>
+<body>
+  <main id="stage" data-mode="haul" aria-label="Wobbly Cart — first haul">
+    <div id="game-ui">
+      <header class="masthead">
+        <div class="wordmark"><div class="kicker">JUST ONE MORE THING</div><h1>Wobbly <em>Cart!</em></h1></div>
+        <div class="utilities"><button id="reset" type="button" aria-label="Restart"><span aria-hidden="true">↻</span></button><button id="pause" type="button" aria-label="Pause and settings"><span aria-hidden="true">☰</span></button></div>
+      </header>
+      <div class="game-board">
+        <aside class="scoreboard" aria-label="Cargo and score">
+          <div class="scores">
+            <div class="score aboard"><span class="score-symbol" aria-hidden="true">★</span><div><span>ON BOARD</span><strong id="carried">25</strong></div></div>
+            <div class="score secured"><span class="score-symbol" aria-hidden="true">✓</span><div><span>DELIVERED</span><strong id="secured">0</strong></div></div>
+          </div>
+          <div id="goal-line" class="haul-goal"></div>
+          <div class="stability"><span>CARGO RISK</span><meter id="lean" min="0" max="1" low=".6" high=".85" optimum="0" value="0" aria-label="Most endangered item"></meter></div>
+          <div class="tip" aria-live="polite"><strong id="tip-title">Your shopping is aboard.</strong><span id="tip-body">Hold Push. Bring it to checkout, or pick up something extra.</span></div>
+          <div id="active-rules" class="kicker"></div>
+        </aside>
+        <div id="view">
+          <canvas id="game" tabindex="0" aria-label="Shop floor. W or Up to push, S or Down to reverse, A and D to turn, Space to stop. Milk and bread are already aboard. Collect the optional melon by stopping in its circle. Stop fully inside checkout to deliver what remains."></canvas>
+          <div id="notice" role="status" hidden></div>
+          <div class="view-label" aria-hidden="true">A LITTLE SHOPPING TRIP.</div>
+        </div>
+      </div>
+      <footer class="drive-bar">
+        <div class="control-caption"><strong>Hold to move</strong><span>WASD / arrows<br>Space to stop · R to retry</span></div>
+        <div id="drive-controls" aria-label="Holdable movement controls">
+          <button id="steer-left" type="button" aria-label="Turn left"><b>←</b><small>Left</small></button>
+          <button id="push" type="button" aria-label="Push forward"><b>↑</b><small>Push</small></button>
+          <button id="pull" type="button" aria-label="Pull backwards"><b>↓</b><small>Back</small></button>
+          <button id="steer-right" type="button" aria-label="Turn right"><b>→</b><small>Right</small></button>
+          <button id="brake" type="button" aria-label="Hold to stop"><b>Stop</b><small>Space</small></button>
+        </div>
+      </footer>
+    </div>
+    <dialog id="rules-dialog" aria-labelledby="rules-title">
+      <div class="kicker">CART PARKED</div><h2 id="rules-title">Take a breather.</h2>
+      <p>Try a different wobble or checkout rule. Applying changes starts a fresh haul.</p>
+      <label class="range-label" for="wobble">Caster wobble <output id="wobble-value" for="wobble">100%</output></label>
+      <input id="wobble" type="range" min="0" max="200" step="5" value="100">
+      <p class="field-note">A sharp turn or hard hit can still spill goods at 0%. Different rules count as practice.</p>
+      <label for="banking">Checkout rule</label>
+      <select id="banking"><option value="exit">Final checkout only</option><option value="bank">Express bank + final checkout</option></select>
+      <div class="switches"><label><input id="sound" type="checkbox" checked> Sound effects</label><label><input id="motion" type="checkbox"> Reduce motion</label></div>
+      <div class="dialog-actions"><button id="resume" class="primary" type="button">Resume</button><button id="apply" type="button">Apply &amp; restart</button></div>
+      <div class="recovery"><button id="recover" type="button">Reposition cart</button><p class="field-note">Stuck? Keep your goods and time, return to a clear spot. This attempt becomes practice.</p></div>
+      <div class="compare"><a href="./index.html">Original cargo shop</a><a href="./tutorial.html">Milk &amp; bread tutorial</a><a href="./playground.html">Handling playground</a></div>
+    </dialog>
+    <dialog id="receipt-dialog" aria-labelledby="receipt-title">
+      <div class="kicker">WOBBLY CART / YOUR RECEIPT</div><h2 id="receipt-title">Haul delivered.</h2>
+      <div class="receipt-total"><span>DELIVERED VALUE</span><strong id="receipt-score"></strong></div>
+      <p id="receipt-goal"></p>
+      <div class="receipt-row"><b>Delivered</b><span id="receipt-banked"></span></div>
+      <div class="receipt-row"><b>Lost</b><span id="receipt-spilled"></span></div>
+      <div class="receipt-row"><b>Left behind</b><span id="receipt-skipped"></span></div>
+      <div class="receipt-row"><b>Time</b><span id="receipt-time"></span></div>
+      <div class="receipt-row"><b>Session best</b><span id="receipt-best"></span></div>
+      <p id="receipt-mode" class="field-note"></p>
+      <div class="dialog-actions"><button id="retry" class="primary" type="button">Try another haul ↗</button><button id="copy" type="button">Copy receipt</button><button id="receipt-rules" type="button">Rules</button></div>
+      <textarea id="share-text" aria-label="Receipt text" readonly hidden></textarea><div id="copy-status" role="status"></div>
+    </dialog>
+    <noscript>Enable JavaScript to play Wobbly Cart.</noscript>
+  </main>
+  <script type="module" src="./src/haul-main.js"></script>
+</body>
+</html>

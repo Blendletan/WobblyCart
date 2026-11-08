@@ -1,5 +1,34 @@
 # Tuning
 
+## H1 player-test build — 2026-11-07
+
+The user authorized correcting the new renderer test and resuming H1. Existing `cargoHandling`, `cargoParams`, tutorial and reference parameters are unchanged. New simulation values below live in `haulParams` in `src/sim/params.js`.
+
+| New parameter group | Before | Current values | Why |
+| --- | --- | --- | --- |
+| Warning and placement | Absent | `warningThreshold=.62`, `basketFloor=.34`, `slotSide=.035`, `slotForward=.025` | Position identifiable goods and expose their danger before loss. |
+| Slip response | Absent | `slipSpring=4`, `slipDamping=1.9`, `lateralSlip=.09`, `maxAcceleration=6`, `maxSlipTarget=1.5` | Slower, readable response to turning and contacts with bounded acceleration. |
+| Flutter coupling | Absent | `flutterSlip=.45`, `leanFrequency=1.65` | Feed the existing bad caster into cargo motion. |
+| Impact episodes | Absent | `groundKick=3.75`, `wallKick=2.9`, `impactThreshold=.22`, `contactReset=1` | Bounded obstacle impacts rather than repeated loss on each simulation tick. |
+| Braking and rim catch | Absent | `brakeSlipDamping=4`, `brakeSpringGain=8`, `edgeGrace=.55` | Slipping cargo catches at the rim; braking settles it before release. |
+| Visible motion and loss | Absent | `slipDistance=.38`, `slipAngle=.48`, `settleRate=8`, `lossSpeed=1.2` | Keep visible item position tied to its actual risk and loss origin. |
+| Cargo response profiles | Absent | `central=.65`, `light=.55`, `round=1.65` | Stable milk/bread and a more exposed, awkward melon. |
+
+- During initial diagnostics, `groundKick` changed **5 → 6.5** after the rough route peaked at .819 risk without a loss; then **6.5 → 7.5**, with `edgeGrace=.18` and `brakeSlipDamping=8` added to explore catching the item at the rim. No existing test threshold changed. The initial warning/save window was too short; the following revision replaces these values.
+- On resumption, slow the cargo response without changing the chassis: `slipSpring` **16 → 4**, `slipDamping` **3.8 → 1.9**, `groundKick` **7.5 → 3.75**, `wallKick` **5.8 → 2.9**, `brakeSlipDamping` **8 → 4**, `edgeGrace` **.18 → .36** and new `brakeSpringGain=4`. This made the warning about .51 s long but a .30 s delayed brake still lost the melon. Increase `edgeGrace` **.36 → .55** and `brakeSpringGain` **4 → 8**: the ignored warning lasts .70 s and the same approach with a .30 s delayed brake saves all three goods. These are diagnostic observations awaiting the player test.
+- New authored content: preloaded milk value 10 / bread 15; optional melon 40; pass target 25 / full haul 65. Stack heights .62 / .32 / .50 m. Avoidable rough strip rise .065 m, severity .9. These are provisional content values, not approved tuning.
+- The diagnostic driver's intermediate waypoint radius changed .35 → .9 m after it orbited a waypoint. This changes only the test tool's navigation policy, not player controls or a game acceptance threshold.
+
+| Decision | Tested or untested | Evidence |
+| --- | --- | --- |
+| The authored shop can finish with a full haul and with one loss. | Automated; full haul also completed in browser | Careful route: 65 delivered, 21.73 s. Rough route: melon lost, 25 delivered, 19.40 s. Digital input logs replay exactly and conserve the item ledger on every tick. Browser keyboard drive delivered all three goods. |
+| Banking can deliver once and continue to final checkout. | Automated | Banking route: 65 delivered, 27.99 s. Tests check one-time pickup/banking/final delivery and empty-cart checkout. |
+| A slipping melon can be saved after a delayed response. | Automated; human readability untested | Real rough approach gives .70 s from threshold to loss; braking after .30 s saves all three goods. Test requires at least .60 s on this route. This is not a guarantee for every impact. |
+| Reduced motion preserves authoritative cargo poses. | Automated in WebGL and Canvas fallback | User-approved new-test correction identifies cargo mesh draws rather than cosmetic leg matrices. Per-item transforms, read-only state, debris origins and GPU context restoration are checked. |
+| Retry, pause, recovery and isolated settings. | App test and desktop browser | Exact retry, assist marking and best-score eligibility pass. Browser restart collects the melon again; Rules, Reposition and settings restart work. No captured console warnings/errors. |
+| Responsive layout. | Emulated browser inspection | 1280 × 720, 390 × 844, 320 × 568 and 568 × 320 checked. Held pointer input exercised. This is not physical touch-device validation. |
+| Human feel, touch comfort, phone frame rate and replay appeal. | Untested for H1 | See `docs/H1-PLAYTEST.md`. User feedback and physical Android/iPhone checks remain pending; do not begin H2 automatically. |
+
 ## Visual development (2026-11-07)
 
 | Decision | Tested or untested | Evidence |

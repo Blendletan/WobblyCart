@@ -166,16 +166,18 @@ function plant(mesh,x,y) {
   }
 }
 
-export function createWorldModels() {
+export function createWorldModels(shop = cargoShop) {
   const ground = new ToyMesh(), fixtures = new ToyMesh();
-  ground.block(0,8.75,-.29,10.4,21.9,.12,'#7bbcb8',.06);
-  ground.block(0,8.75,-.18,10.4,21.9,.15,'#d8d6bd',.06);
-  for (let x = -5; x < 5; x++) for (let y = -2; y < 19.5; y++) {
-    const top = Math.min(y+.986,19.49);
-    ground.face([[x+.014,y+.014,-.015],[x+.986,y+.014,-.015],[x+.986,top,-.015],[x+.014,top,-.015]],
+  const {left,right,bottom,top} = shop.bounds;
+  const centerX = (left+right)/2, centerY = (bottom+top)/2;
+  ground.block(centerX,centerY,-.29,right-left+.4,top-bottom+.4,.12,'#7bbcb8',.06);
+  ground.block(centerX,centerY,-.18,right-left+.4,top-bottom+.4,.15,'#d8d6bd',.06);
+  for (let x = left; x < right; x++) for (let y = bottom; y < top; y++) {
+    const tileTop = Math.min(y+.986,top-.01), tileRight = Math.min(x+.986,right-.01);
+    ground.face([[x+.014,y+.014,-.015],[tileRight,y+.014,-.015],[tileRight,tileTop,-.015],[x+.014,tileTop,-.015]],
       (x+y)%2 ? '#f0ead5' : '#f9f5e6');
   }
-  const wallSections = cargoShop.walls.flatMap(wall => {
+  const wallSections = shop.walls.flatMap(wall => {
     const count = wall.id === 'till' ? 1 : Math.ceil(wall.height/1.3);
     return Array.from({length:count},(_,i) => ({...wall,y:wall.y+i*wall.height/count,height:wall.height/count}));
   });
@@ -224,7 +226,7 @@ export function createWorldModels() {
       fixtures.block(cx,cy,1.12,w*.85,d*.88,.025,'#f2ffed',.01);
     }
   }
-  for (const surface of cargoShop.surfaces) {
+  for (const surface of shop.surfaces) {
     if (surface.kind === 'pothole') {
       ground.cylinder(surface.x,surface.y,.001,surface.radius,.008,'#8e9c94',32);
       ground.cylinder(surface.x,surface.y,.012,surface.radius*.83,.008,'#71847e',32);
@@ -236,19 +238,25 @@ export function createWorldModels() {
     }
   }
   // Decoration is placed against the perimeter so the walking aisles stay clear.
-  plant(fixtures,-4.43,-1.35);
-  plant(fixtures,4.4,-1.35);
-  plant(fixtures,-4.4,18.7);
+  const plants = shop === cargoShop ? [[-4.43,-1.35],[4.4,-1.35],[-4.4,18.7]] : shop.plants ?? [];
+  for (const [x,y] of plants) plant(fixtures,x,y);
   const welcome = new ToyMesh();
-  welcome.block(-1.25,-1.25,.001,2.3,.70,.015,'#599892',.02);
-  for (let i = 0; i < 6; i++) welcome.block(-2.2+i*.38,-1.25,.018,.018,.50,.005,'#8cbbb0',0);
+  const matX = shop.spawn.x, matY = shop.spawn.y-.70;
+  welcome.block(matX,matY,.001,2.3,.70,.015,'#599892',.02);
+  for (let i = 0; i < 6; i++) welcome.block(matX-.95+i*.38,matY,.018,.018,.50,.005,'#8cbbb0',0);
   ground.append(welcome);
-  const signs = [
+  for (const {x,y,heading = 0} of shop.arrows ?? []) {
+    const sin = Math.sin(heading), cos = Math.cos(heading);
+    for (const shape of [[[-.07,-.28],[.07,-.28],[.07,.03],[-.07,.03]],[[-.24,.02],[.24,.02],[0,.27]]]) {
+      ground.face(shape.map(([u,v]) => [x+u*cos+v*sin,y-u*sin+v*cos,.009]),'#6c9b88');
+    }
+  }
+  const signs = (shop.signs ?? (shop === cargoShop ? [
     {x:-4.25,y:2.0,z:1.51,label:'DAIRY',color:'#397d8b'},
     {x:.97,y:4.9,z:1.50,label:'FRESH PICKS',color:'#548866'},
     {x:-4.1,y:9.1,z:1.49,label:'BAKERY',color:'#b67a4b'},
     {x:.37,y:13.9,z:1.50,label:'THE BIG STUFF',color:'#397d8b'},
-  ];
+  ] : [])).map(sign => ({z:1.5,color:'#397d8b',...sign,label:sign.label ?? sign.text}));
   const sections = new Map();
   for (let i = 0; i < fixtures.vertices.length; i += 27) {
     const section = Math.floor((fixtures.vertices[i+1]+fixtures.vertices[i+10]+fixtures.vertices[i+19])/12);

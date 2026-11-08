@@ -6,7 +6,7 @@
 
 Find a short, funny shopping game that strangers understand, voluntarily replay and could support a portal release. The pitch we are testing is: **Load an unreasonable amount onto a terrible shopping cart, then try to get it out intact.**
 
-The user accepts the current steering and considers the visual direction sufficient to explore the game. This document plans the next experiments; no H-stage is implemented or authorized to start by this planning task. Work through one requested stage at a time, then review its results together.
+The user accepts the current steering and considers the visual direction sufficient to explore the game. They authorized one stage at a time, with player testing after each. H1 is implemented at `/haul.html`; automated and desktop browser checks are recorded in `STATE.md` and `TUNING.md`. The next step is the [H1 player test](H1-PLAYTEST.md). H2 and later stages wait for that review.
 
 H1–H5 below replace the remaining proposed C1–C3 work for this cargo experiment. The engineering requirements in [SPEC.md](SPEC.md) and [AGENTS.md](../AGENTS.md) remain in force. The One Trip document remains a reference proposal; its instructions to replace the spec, restore automatic travel or add libraries are not adopted.
 
@@ -16,7 +16,7 @@ H1–H5 below replace the remaining proposed C1–C3 work for this cargo experim
 | --- | --- |
 | User-accepted manual pushing, reversing, braking and four-caster handling | New players can learn it comfortably, especially on phones |
 | Procedural WebGL supermarket with a Canvas fallback | The presentation and feedback are appealing to a wider audience |
-| Automatic collection, a shared pile-lean model, whole-pile wipeout | Individual losses and recoveries create understandable, enjoyable decisions |
+| Original shared-pile prototype, plus H1's per-item slip and salvage experiment | Individual losses and recoveries create understandable, enjoyable decisions |
 | Adjustable caster wobble and express banking | Which settings and checkout rules produce the best game |
 | A public GitHub Pages prototype | Portal acceptance, audience size, retention and revenue |
 

@@ -74,6 +74,10 @@ dialog select { margin-top: 6px; padding: .7rem; border: 2px solid #d0dec9; bord
 .receipt-row span { text-align: right; }
 #share-text { margin-top: .8rem; width: 100%; min-height: 5rem; resize: vertical; border: 2px solid #d0dec9; border-radius: 8px; }
 #copy-status { margin-top: .5rem; font-size: .78rem; }
+.haul-goal { position: absolute; z-index: 3; top: 91px; left: 50%; transform: translateX(-50%); padding: 5px 10px; border-radius: 8px; background: #fffbece8; color: #47746b; font-size: .68rem; font-weight: 900; white-space: nowrap; pointer-events: none; }
+[data-mode="haul"] .recovery { margin-top: 1rem; padding-top: 1rem; border-top: 2px dashed #d6d9bc; }
+[data-mode="haul"] .recovery .field-note { margin-top: .7rem; }
+[data-mode="haul"] button:disabled { opacity: .45; cursor: default; }
 @media (orientation: portrait) {
   .masthead { top: 16px; left: 16px; right: 13px; }
   h1 { font-size: 36px; -webkit-text-stroke-width: 6px; }
@@ -96,6 +100,8 @@ dialog select { margin-top: 6px; padding: .7rem; border: 2px solid #d0dec9; bord
   #drive-controls button { width: auto; flex: 1; min-height: 52px; }
   #drive-controls #brake { width: auto; flex: 1.18; }
   #notice { top: 168px; max-width: 90%; font-size: .76rem; padding: 7px 11px; white-space: nowrap; }
+  [data-mode="haul"] .haul-goal { top: 161px; font-size: .64rem; }
+  [data-mode="haul"] #notice { top: 194px; white-space: normal; width: max-content; }
 }
 @media (orientation: landscape) and (max-height: 500px) {
   .masthead { top: 12px; left: 15px; right: 15px; }
@@ -122,6 +128,8 @@ dialog select { margin-top: 6px; padding: .7rem; border: 2px solid #d0dec9; bord
   .tip span { font-size: .59rem; }
   .tip::after { display: none; }
   #notice { top: 77px; padding: 7px 11px; font-size: .7rem; }
+  [data-mode="haul"] .haul-goal { top: 66px; font-size: .59rem; }
+  [data-mode="haul"] #notice { top: 95px; }
 }
 @media (prefers-reduced-motion: reduce) {
   button { transition: none; }
