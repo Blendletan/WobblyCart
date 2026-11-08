@@ -1,5 +1,13 @@
 # Decisions
 
+## Cargo gameplay plan — 2026-11-07
+
+- Record H1–H5 in `docs/GAMEPLAY-PLAN.md` after reviewing One Trip with the user. This is planning only. The next requested implementation should be H1, one recoverable haul, before expanding to three challenges or testing packing.
+- Keep the accepted manual four-caster handling and current visual direction. The new experiment proposes partial item losses, delivered-value goals, early touch checks and immediate retries. These are untested design defaults; no simulation parameters or gameplay changed in this task.
+- Preserve the current playable entries and use a separate proposed `/haul.html` for the experiment. Start that experiment with final checkout only while retaining banking and wobble controls. Keep the public build's existing defaults unchanged.
+- Delay freeform stacking, new dependencies, endless generation, larger progression and portal integration until the preceding experiment earns the next investment. Keep the user's One Trip source document intact as a reference rather than adopting its assumptions as implementation instructions.
+- Update planning pointers to avoid continuing the older C1–C3 roadmap automatically. Preserve engineering constraints and frozen tests. The public GitHub Pages prototype must be described accurately in any later portal pitch.
+
 ## Visual development — 2026-11-07
 
 - Choose a bright toy supermarket with cream floor tiles, teal fixtures, a yellow-rimmed trolley and coral accents. Move the score and controls onto the scene to give the cart and pile more screen space.

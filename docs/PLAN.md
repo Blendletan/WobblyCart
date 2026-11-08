@@ -1,10 +1,22 @@
 # Wobbly Cart: build plan
 
-## Current priority — visual development
+## Current plan — cargo gameplay experiments
+
+2026-11-07. Use [GAMEPLAY-PLAN.md](GAMEPLAY-PLAN.md) for the next work. The user requested a plan, with implementation to proceed one step at a time. H1–H5 replace the remaining proposed C1–C3 milestones for this cargo experiment; no H-stage has started.
+
+1. **H1:** one short trip with readable partial spills, recovery and checkout.
+2. **H2:** three authored risk/reward situations and an unguided five-person test.
+3. **H3:** compare quick constrained packing with collection during driving.
+4. **H4:** develop the selected loop into a small session with saved progress.
+5. **H5:** test one selected portal and monetize only if accepted.
+
+The detailed plan includes technical boundaries, acceptance checks, human questions and the H1 starting prompt. Existing controls, adjustable wobble/banking, budgets and frozen references are retained. The sections below are historical plans and are not automatic instructions to build more trips.
+
+## Previous priority — visual development
 
 2026-11-07. The user accepts the steering and rough cargo gameplay and wants high-quality visuals suitable for a pitch. On `codex/cargo-prototype`, refine the current shop with a toy-like 3D presentation, readable cargo, a compact HUD and polished feedback. Evaluate the visual direction with the user, then test performance and usability on physical phones. Level count and campaign structure remain open design decisions.
 
-## Current priority: a complete shopping trip
+## Previous plan: a complete shopping trip
 
 2026-11-05: the user accepted the manual-push premise and requested a commercial game direction. The new milestones below supersede the old endless-run roadmap. The authoritative requirements are at the top of [SPEC.md](SPEC.md); commercial reasoning and current portal sources are in [COMMERCIAL-PLAN.md](COMMERCIAL-PLAN.md).
 
