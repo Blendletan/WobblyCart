@@ -2,11 +2,11 @@
 
 Nov 1, 2026 · @Robert
 
-## Current direction — H1 player test (2026-11-07)
+## Current direction — H2 player test (2026-11-08)
 
-The user authorized proceeding one stage at a time, with player testing after each. [GAMEPLAY-PLAN.md](GAMEPLAY-PLAN.md) defines H1–H5 and supersedes the remaining proposed C1–C3 content for the cargo experiment. H1 is implemented separately at `/haul.html`: preloaded milk and bread, an optional melon, individual recoverable slips and losses, and checkout accepting any remaining haul. The baseline is 100% wobble with express banking off; both remain adjustable. [H1-PLAYTEST.md](H1-PLAYTEST.md) describes the next player check. Do not begin H2 before reviewing that feedback.
+The user found H1 very easy and is happy with the current wobble. They requested removal of misleading decorative instructions, banking selection and manual repositioning, then authorized H2. `/haul.html` now offers First haul, Rough shortcut and One more thing, with immediate Next/Retry and access to any trip. All use final checkout only. Pause explains rules and retains sound/reduced motion; a collapsed Debug tuning section retains wobble. The simulation parameters are unchanged. [H2-PLAYTEST.md](H2-PLAYTEST.md) describes the next test. H3 waits for feedback.
 
-Keep manual four-caster handling, adjustable wobble/banking, the existing procedural renderer, deterministic simulation and all current engineering budgets. Quick packing remains proposed work. Do not treat One Trip's assumed hand-stacking physics, automatic speed schedule, new dependencies or relaxed budgets as adopted requirements. The root prototype remains available for comparison; physical phone checks and new-player appeal remain unproven.
+Keep manual four-caster handling, the existing procedural renderer, deterministic simulation and all current engineering budgets. Banking/recovery code remains available for future experiments but is not exposed in the H2 player flow. Quick packing remains proposed work. Do not treat One Trip's assumed hand-stacking physics, automatic speed schedule, new dependencies or relaxed budgets as adopted requirements. The root prototype remains available for comparison; physical phone checks and new-player appeal remain unproven.
 
 The sections below record the earlier builds and design history. Where gameplay scope differs, use the linked H plan; retained engineering constraints and frozen references still apply.
 

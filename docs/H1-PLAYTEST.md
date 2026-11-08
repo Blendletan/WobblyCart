@@ -1,5 +1,7 @@
 # H1: first-haul playtest
 
+Historical guide. The user reviewed H1 as very easy and requested removal of its banking/reposition controls and decorative signs. H2 is now the active build; use [H2-PLAYTEST.md](H2-PLAYTEST.md). The instructions below describe the original H1 test.
+
 Play <https://blendletan.github.io/WobblyCart/haul.html>. Start with **100% wobble / final checkout only**. H2 waits for this feedback.
 
 Try three short attempts:

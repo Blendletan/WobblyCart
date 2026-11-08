@@ -1,5 +1,23 @@
 # Tuning
 
+## H2 content and feedback — 2026-11-08
+
+No simulation parameters changed. The user is happy with the current wobble and calls H1 very easy. Keep all chassis, slip and warning settings from H1; change the route decisions and optional cargo. H1 geometry/rewards are unchanged; content version 1 → 2 records removal of decorative signs and addition of challenge instructions.
+
+New data-only content: Rough shortcut starts with 65, goal 65, optional bowling ball +60 (load 1.5, stack height .50, existing round response), total 125. Its direct ridge spans 3.8 m with .065 m rise and .9 severity, matching H1's height/severity. One more thing starts with 65, goal 65, optional television +100 (load 1.85, stack height .65, existing round response), total 165. Its return ridge spans 3.4 m with the same rise/severity. All are provisional content choices for the next playtest, not approved difficulty.
+
+The new route diagnostic initially orbited intermediate goals at a .65 m arrival radius. Changing only its steering waypoint radius to .95 m lets the driver progress; no game parameter or test threshold changed. The old H1 driver and its .60 s minimum warning check are retained.
+
+| Decision | Tested or untested | Evidence |
+| --- | --- | --- |
+| H1 is an easy opening; present caster wobble is acceptable to the author. | User feedback | User called it VERY easy and said they are happy with the wobble. This does not establish new-player comfort. |
+| Smooth detour versus rough direct crossing. | Real-dynamics route checks | Full smooth detour delivers 125 in 35.13 s, no impacts. Careful direct route delivers 65 in 15.19 s. Rushed direct route loses the melon, delivers 25 in 9.40 s. |
+| Nearby cashout versus television return. | Real-dynamics route checks | Cashout delivers 65 in 4.65 s. Full television route delivers 165 in 46.91 s. Rushed return loses melon/TV and delivers 25 in 42.94 s. |
+| Accounting, route reproducibility and best-score separation. | Automated | Exact input replay and conserved inventory every tick; once-only final/bank transfer, valid spawn/recovery/pickup/bay centers; Next below goal, selection, retry, pause and practice eligibility. |
+| Both renderer paths support each shop. | Automated | Preloaded/pickup goods render read-only; inactive bays and misleading signs absent; switching releases GPU meshes; existing fallback/context checks retained. |
+| Player flow and small-screen presentation. | Desktop browser / emulated layouts | Actual rushed crossing lost melon and checked out for 25; Next opened the third trip and nearby cashout delivered 65. Retry, selection, pause and debug collapse inspected. Layouts at 390×844, 320×568 and 568×320; fixed narrow portrait title wrapping. A second old game preview severely reduced browser cadence; closing it restored normal interaction. No phone performance claim. |
+| Optional greed, understandable losses and voluntary replay. | H2 human check pending | `docs/H2-PLAYTEST.md` records the next questions and five-person table. No results invented; physical phone readiness remains untested. |
+
 ## H1 player-test build — 2026-11-07
 
 The user authorized correcting the new renderer test and resuming H1. Existing `cargoHandling`, `cargoParams`, tutorial and reference parameters are unchanged. New simulation values below live in `haulParams` in `src/sim/params.js`.

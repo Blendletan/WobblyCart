@@ -5,16 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#253b34">
   <meta name="description" content="A little shopping trip. A tempting extra. Bring home what you can on a cart with one bad wheel.">
-  <title>First haul · Wobbly Cart</title>
+  <title>Three shopping trips · Wobbly Cart</title>
   <link rel="icon" href="./assets/cart.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./cargo.css">
 </head>
 <body>
-  <main id="stage" data-mode="haul" aria-label="Wobbly Cart — first haul">
+  <main id="stage" data-mode="haul" aria-label="Wobbly Cart — shopping trips">
     <div id="game-ui">
       <header class="masthead">
         <div class="wordmark"><div class="kicker">JUST ONE MORE THING</div><h1>Wobbly <em>Cart!</em></h1></div>
-        <div class="utilities"><button id="reset" type="button" aria-label="Restart"><span aria-hidden="true">↻</span></button><button id="pause" type="button" aria-label="Pause and settings"><span aria-hidden="true">☰</span></button></div>
+        <div class="utilities"><button id="trips" type="button" aria-label="Choose a trip">Trips</button><button id="reset" type="button" aria-label="Restart"><span aria-hidden="true">↻</span></button><button id="pause" type="button" aria-label="Pause and rules"><span aria-hidden="true">☰</span></button></div>
       </header>
       <div class="game-board">
         <aside class="scoreboard" aria-label="Cargo and score">
@@ -28,7 +28,7 @@
           <div id="active-rules" class="kicker"></div>
         </aside>
         <div id="view">
-          <canvas id="game" tabindex="0" aria-label="Shop floor. W or Up to push, S or Down to reverse, A and D to turn, Space to stop. Milk and bread are already aboard. Collect the optional melon by stopping in its circle. Stop fully inside checkout to deliver what remains."></canvas>
+          <canvas id="game" tabindex="0" aria-label="Shop floor. W or Up to push, S or Down to reverse, A and D to turn, Space to stop. Stop in a gold pickup circle to collect extra goods. Stop fully inside the green checkout to deliver what remains."></canvas>
           <div id="notice" role="status" hidden></div>
           <div class="view-label" aria-hidden="true">A LITTLE SHOPPING TRIP.</div>
         </div>
@@ -46,16 +46,24 @@
     </div>
     <dialog id="rules-dialog" aria-labelledby="rules-title">
       <div class="kicker">CART PARKED</div><h2 id="rules-title">Take a breather.</h2>
-      <p>Try a different wobble or checkout rule. Applying changes starts a fresh haul.</p>
-      <label class="range-label" for="wobble">Caster wobble <output id="wobble-value" for="wobble">100%</output></label>
-      <input id="wobble" type="range" min="0" max="200" step="5" value="100">
-      <p class="field-note">A sharp turn or hard hit can still spill goods at 0%. Different rules count as practice.</p>
-      <label for="banking">Checkout rule</label>
-      <select id="banking"><option value="exit">Final checkout only</option><option value="bank">Express bank + final checkout</option></select>
+      <p>Hold W / ↑ to push, S / ↓ to reverse, A / D to turn and Space to stop. On a phone, hold Push and a turn button together.</p>
+      <p>Stop in a gold circle to take the item. Brake before bumps and sharp turns to keep your load. Lost goods stay lost; bring the rest to the green checkout. There is no time limit.</p>
       <div class="switches"><label><input id="sound" type="checkbox" checked> Sound effects</label><label><input id="motion" type="checkbox"> Reduce motion</label></div>
-      <div class="dialog-actions"><button id="resume" class="primary" type="button">Resume</button><button id="apply" type="button">Apply &amp; restart</button></div>
-      <div class="recovery"><button id="recover" type="button">Reposition cart</button><p class="field-note">Stuck? Keep your goods and time, return to a clear spot. This attempt becomes practice.</p></div>
-      <div class="compare"><a href="./index.html">Original cargo shop</a><a href="./tutorial.html">Milk &amp; bread tutorial</a><a href="./playground.html">Handling playground</a></div>
+      <div class="dialog-actions"><button id="resume" class="primary" type="button">Resume</button></div>
+      <details class="debug-settings"><summary>Debug tuning</summary>
+        <label class="range-label" for="wobble">Caster wobble <output id="wobble-value" for="wobble">100%</output></label>
+        <input id="wobble" type="range" min="0" max="200" step="5" value="100">
+        <p class="field-note">Default 100%. Changing this starts a fresh attempt and counts as practice.</p>
+        <button id="apply" type="button">Apply wobble &amp; restart</button>
+        <button id="copy-test" type="button">Copy playtest notes</button>
+        <textarea id="test-text" aria-label="Playtest notes" readonly hidden></textarea><div id="test-status" role="status"></div>
+      </details>
+    </dialog>
+    <dialog id="trips-dialog" aria-labelledby="trips-title">
+      <div class="kicker">THREE SHOPPING TRIPS</div><h2 id="trips-title">Pick your haul.</h2>
+      <p>Each trip starts fresh. All three are open to try.</p>
+      <div id="trip-list" class="trip-list"></div>
+      <div class="dialog-actions"><button id="close-trips" type="button">Back</button></div>
     </dialog>
     <dialog id="receipt-dialog" aria-labelledby="receipt-title">
       <div class="kicker">WOBBLY CART / YOUR RECEIPT</div><h2 id="receipt-title">Haul delivered.</h2>
@@ -67,7 +75,7 @@
       <div class="receipt-row"><b>Time</b><span id="receipt-time"></span></div>
       <div class="receipt-row"><b>Session best</b><span id="receipt-best"></span></div>
       <p id="receipt-mode" class="field-note"></p>
-      <div class="dialog-actions"><button id="retry" class="primary" type="button">Try another haul ↗</button><button id="copy" type="button">Copy receipt</button><button id="receipt-rules" type="button">Rules</button></div>
+      <div class="dialog-actions"><button id="next" class="primary" type="button">Next trip →</button><button id="retry" type="button">Retry</button><button id="receipt-trips" type="button">Choose trip</button><button id="copy" type="button">Copy receipt</button><button id="receipt-rules" type="button">Rules</button></div>
       <textarea id="share-text" aria-label="Receipt text" readonly hidden></textarea><div id="copy-status" role="status"></div>
     </dialog>
     <noscript>Enable JavaScript to play Wobbly Cart.</noscript>

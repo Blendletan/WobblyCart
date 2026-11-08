@@ -1,12 +1,12 @@
 # Wobbly Cart
 
-## H1: First haul
+## H2: Three shopping trips
 
-Play [the new experiment](https://blendletan.github.io/WobblyCart/haul.html), or run `node tools/serve.mjs` and open <http://127.0.0.1:4175/haul.html>. Milk and bread start aboard, worth the 25-point goal. Stop in the optional melon's circle to raise the haul to 65, then follow the arrows around the shelf to checkout. Individual goods can slip out; brake and straighten to save them, or deliver what remains.
+Play [the new experiment](https://blendletan.github.io/WobblyCart/haul.html), or run `node tools/serve.mjs` and open <http://127.0.0.1:4175/haul.html>. First haul introduces an optional melon. Rough shortcut offers a bumpy direct route or a longer smooth aisle with a bowling ball. One more thing lets you cash out immediately or fetch a television and bring it back. Individual goods can slip out; brake and straighten to save them, or deliver what remains.
 
-**Rules** keeps wobble adjustable from 0–200% and express banking optional (off by default here). **Reposition** preserves remaining goods and time, marking the attempt Practice. Retry restores the same shop. Only unassisted default-rule runs affect the session best; no progression is stored yet.
+**Trips** opens any of the three challenges. Receipts offer Next and Retry, even below the goal. Pause shows controls and rules, plus sound/reduced motion. **Debug tuning** retains the 0–200% wobble slider and local playtest-note copying. Banking and manual repositioning are removed from this player flow. Each trip has a separate session best; debug wobble attempts cannot overwrite it. No progression is stored yet.
 
-See [the H1 playtest](docs/H1-PLAYTEST.md) and [H1–H5 plan](docs/GAMEPLAY-PLAN.md). H2 waits for player feedback. Checks: `node --test`, `node tools/budget.mjs`, and `node tools/budget.mjs haul.html`.
+See [the H2 playtest](docs/H2-PLAYTEST.md) and [H1–H5 plan](docs/GAMEPLAY-PLAN.md). H3 waits for player feedback. Checks: `node --test`, `node tools/budget.mjs`, and `node tools/budget.mjs haul.html`. `node tools/challenge-route.mjs` reports deterministic routes through both new challenges.
 
 ## Cargo prototype
 

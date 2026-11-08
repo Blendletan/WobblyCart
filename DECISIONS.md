@@ -1,5 +1,14 @@
 # Decisions
 
+## H2 and H1 feedback — 2026-11-08
+
+- User found H1 very easy, is happy with current wobble, and authorized the UI cleanup followed by H2. Remove decorative ONE MORE?/TAKE IT EASY signs, banking selection, manual repositioning and comparison links from the H2 flow. Keep rules, accessibility toggles and a collapsed debug section. Keep the existing internal banking/recovery implementations and original entries.
+- Build three authored challenges without retuning handling: First haul, Rough shortcut (bumpy direct crossing versus smooth detour with a bowling ball), and One more thing (nearby checkout versus fetching/returning a television). Use existing models, terrain and slip profiles. Do not add a compulsory timer or speed target before seeing player route choices.
+- Let the player select any trip and continue from a below-goal receipt. Keep separate in-memory best scores per challenge. Changing debug wobble restarts and does not affect eligible bests; legacy saved banking preferences are ignored in H2.
+- Release GPU meshes/contexts when changing shops. Hide inactive express bays for the haul challenges, and make the offscreen checkout arrow point toward its actual screen direction so the return trip is readable.
+- Provide bounded, local, explicit playtest-note copying under Debug tuning. No analytics, runtime networking, persistent progress or player identifiers. Five-person and physical-device checks remain human work; stop before H3.
+- Update the H1 app-flow test to reflect the user's removal of recovery/banking UI, retain those simulation checks, and add next/selection/per-trip-score coverage. No golden or acceptance threshold changes.
+
 ## H1 implementation — 2026-11-07
 
 - The user authorized one stage at a time with a player test after each. Implement one recoverable haul at `/haul.html`; preserve all previous entries. H2 waits for the user's H1 feedback.

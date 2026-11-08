@@ -6,11 +6,13 @@ import { createItemModels, createWorldModels } from '../src/render/cargo-models.
 import { multiply, transform } from '../src/render/toy-engine.js';
 import { createCargoRun } from '../src/sim/cargo-run.js';
 import { firstHaul } from '../src/content/first-haul.js';
+import { haulChallenges } from '../src/content/haul-challenges.js';
+import { createHaulRun } from '../src/sim/haul-run.js';
 
 function runtime() {
   const cargoMatrices = [], labels = [], created = [], itemBuffers = new Map();
   const itemVertices = Object.entries(createItemModels()).map(([id,mesh]) => [id,new Float32Array(mesh.vertices)]);
-  let draws = 0, uploads = 0, available = true, boundBuffer;
+  let draws = 0, uploads = 0, deletes = 0, available = true, boundBuffer;
   const gl = new Proxy({}, { get: (_,name) => {
     if (String(name).toUpperCase() === name) return 1;
     if (name.startsWith('create')) return () => ({});
@@ -19,6 +21,7 @@ function runtime() {
     if (name === 'getUniformLocation') return (_,uniform) => uniform;
     return (...args) => {
       if (name === 'drawArrays') draws++;
+      if (name === 'deleteBuffer') deletes++;
       if (name === 'bindBuffer') boundBuffer = args[1];
       if (name === 'bufferData') {
         uploads++;
@@ -50,7 +53,7 @@ function runtime() {
   const originalDocument = globalThis.document;
   globalThis.document = {createElement: () => { const canvas = new Canvas(); created.push(canvas); return canvas; }};
   return {
-    Canvas, cargoMatrices, labels, created, counts: () => ({draws,uploads}),
+    Canvas, cargoMatrices, labels, created, counts: () => ({draws,uploads,deletes}),
     gpu(value) { available = value; },
     restore() { globalThis.document = originalDocument; },
   };
@@ -72,6 +75,24 @@ test('authored shop meshes use their own bounds and signs', () => {
   assert.ok(Math.min(...ys) >= -2.21);
   assert.equal(world.signs[0].label,'CUSTOM ROUTE');
   assert.ok(world.signs.every(sign => Number.isFinite(sign.z)));
+});
+
+test('each challenge renders its goods read-only in both paths and frees GPU meshes when switched', () => {
+  const env = runtime();
+  try {
+    for (const gpu of [true, false]) for (const shop of haulChallenges) {
+      env.gpu(gpu); env.labels.length = 0;
+      const canvas = new env.Canvas(); canvas.parentElement = {insertBefore() {}};
+      const scene = createCargoScene(canvas, shop), state = createHaulRun({}, shop);
+      const before = structuredClone(state);
+      scene.resize(390, 844, 1); scene.draw(state, state, 1);
+      assert.deepEqual(state, before);
+      assert.ok(!env.labels.some(label => /EXPRESS|ONE MORE\?|TAKE IT EASY/.test(label)), 'no inactive bay or misleading instruction');
+      const deletions = env.counts().deletes;
+      scene.dispose?.();
+      if (gpu) assert.ok(env.counts().deletes > deletions, 'switching releases the old GPU models');
+    }
+  } finally { env.restore(); }
 });
 
 test('partial-loss debris starts at the event origin, expires and does not mutate the event', () => {

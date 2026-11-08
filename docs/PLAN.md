@@ -2,7 +2,7 @@
 
 ## Current plan — cargo gameplay experiments
 
-2026-11-07. Use [GAMEPLAY-PLAN.md](GAMEPLAY-PLAN.md) for the next work. The user authorized implementation one stage at a time, with player testing after each. H1 is implemented at `/haul.html` and awaits [player feedback](H1-PLAYTEST.md); H2 must wait. H1–H5 replace the remaining proposed C1–C3 milestones for this cargo experiment.
+2026-11-08. Use [GAMEPLAY-PLAN.md](GAMEPLAY-PLAN.md) for the next work. After H1 feedback, the user authorized its UI cleanup and H2. Three challenges are implemented at `/haul.html` and await [H2 player feedback](H2-PLAYTEST.md); H3 must wait. H1–H5 replace the remaining proposed C1–C3 milestones for this cargo experiment.
 
 1. **H1:** one short trip with readable partial spills, recovery and checkout.
 2. **H2:** three authored risk/reward situations and an unguided five-person test.

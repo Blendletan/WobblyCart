@@ -1,7 +1,7 @@
 import { createFixedStepper } from './core/loop.js';
 import { bindInput, createInputState } from './core/input.js';
-import { firstHaul } from './content/first-haul.js';
-import { createHaulRun, stepHaulRun, recoverHaul } from './sim/haul-run.js';
+import { haulChallenges } from './content/haul-challenges.js';
+import { createHaulRun, stepHaulRun } from './sim/haul-run.js';
 import { cargoParams, haulParams } from './sim/params.js';
 import { createCargoScene } from './render/cargo-scene.js';
 import { stageSize } from './render/layout.js';
@@ -9,45 +9,57 @@ import { createDevAdapter } from './platform/dev.js';
 import { createShopAudio } from './audio/shop.js';
 
 const settingsKey = 'wobbly-cart:haul-settings:v1';
+const build = 'H2-2026-11-08';
 const value = items => items.reduce((sum, item) => sum + item.value, 0);
 const timeLabel = seconds => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
 const names = items => items.map(item => item.name).join(', ') || '—';
 
 function loadSettings(platform) {
   let saved;
-  try { saved = JSON.parse(platform.storageGet(settingsKey)); } catch { /* Start with this experiment's defaults. */ }
+  try { saved = JSON.parse(platform.storageGet(settingsKey)); } catch { /* Use defaults. */ }
   return {
     wobble: Number.isFinite(saved?.wobble) && saved.wobble >= 0 && saved.wobble <= cargoParams.maxWobble ? saved.wobble : cargoParams.defaultWobble,
-    banking: saved?.banking === true, muted: saved?.muted === true, reducedMotion: saved?.reducedMotion === true,
+    banking: false, muted: saved?.muted === true, reducedMotion: saved?.reducedMotion === true,
   };
 }
 
 async function startHaulApp() {
   const el = id => document.getElementById(id), canvas = el('game');
   const text = (id, message) => { if (el(id).textContent !== message) el(id).textContent = message; };
-  const rulesDialog = el('rules-dialog'), receipt = el('receipt-dialog');
+  const rulesDialog = el('rules-dialog'), receipt = el('receipt-dialog'), tripsDialog = el('trips-dialog');
   const controls = { left: el('steer-left'), right: el('steer-right'), push: el('push'), pull: el('pull'), brake: el('brake') };
   const input = createInputState({ manualPush: true });
   const platform = createDevAdapter(); await platform.init();
-  const audio = createShopAudio(), scene = createCargoScene(canvas, firstHaul);
-  let settings = loadSettings(platform), current = createHaulRun(settings), previous = current;
-  let paused = false, receiptShown = false, noticeUntil = 0, shareText = '', best = null;
+  const audio = createShopAudio(), best = new Map(), attempts = [];
+  let index = 0, shop = haulChallenges[index], settings = loadSettings(platform);
+  let scene = createCargoScene(canvas, shop), current = createHaulRun(settings, shop), previous = current;
+  let paused = false, receiptShown = false, noticeUntil = 0, shareText = '', events = [];
   audio.mute(settings.muted);
-
-  const practice = () => current.assisted || current.banking || current.wobble !== cargoParams.defaultWobble;
-  const rulesLabel = () => `${practice() ? 'Practice' : 'First haul'} · ${Math.round(current.wobble * 100)}% wobble · ${current.banking ? 'Express bank on' : 'Final checkout only'}${current.assisted ? ' · Repositioned' : ''}`;
+  const practice = () => current.wobble !== cargoParams.defaultWobble;
+  const rulesLabel = () => `${shop.title} · ${Math.round(current.wobble * 100)}% wobble${practice() ? ' · Practice' : ''}`;
+  const snapshot = action => ({ build, challenge: shop.id, contentVersion: current.contentVersion,
+    acquisition: current.acquisition, wobble: current.wobble, banking: current.banking,
+    assisted: current.assisted, seconds: current.elapsed, result: current.status, delivered: value(current.banked),
+    carried: value(current.cargo), goal: shop.targetValue, lost: current.spilled.map(item => item.id),
+    firstPickup: events.find(event => event.type === 'pickup')?.seconds ?? null,
+    events: [...events], nextAction: action });
+  function record(action) {
+    if (current.started) { attempts.push(snapshot(action)); if (attempts.length > 100) attempts.shift(); }
+  }
   function notice(message) {
     text('notice', message); el('notice').hidden = false; noticeUntil = current.elapsed + 2.8;
   }
   const stepper = createFixedStepper(dt => {
     if (current.status !== 'shopping') return;
-    previous = current; current = stepHaulRun(current, input.sample(), dt);
+    previous = current; current = stepHaulRun(current, input.sample(), dt, shop);
     if (!previous.started && current.started) platform.gameplayStart();
     audio.play(current.events);
     for (const event of current.events) {
+      if (['pickup', 'item_lost', 'checkout'].includes(event.type)) events.push({
+        type: event.type, item: event.item?.id, seconds: current.elapsed, value: event.value,
+      });
       if (event.type === 'pickup') notice(`${event.item.name} aboard · ${event.item.value} more at stake`);
       if (event.type === 'item_lost') notice(`${event.item.name} lost. ${current.cargo.length ? 'Save the rest!' : 'Checkout or try again.'}`);
-      if (event.type === 'checkout' && !event.final) notice(`${event.value} delivered. Keep shopping or head to checkout.`);
     }
     if (current.status !== 'shopping') { platform.gameplayStop(); input.clear(); }
   });
@@ -55,53 +67,73 @@ async function startHaulApp() {
   function syncSettingsForm() {
     el('wobble').value = String(Math.round(settings.wobble * 100));
     text('wobble-value', `${el('wobble').value}%`);
-    el('banking').value = settings.banking ? 'bank' : 'exit';
     el('sound').checked = !settings.muted; el('motion').checked = settings.reducedMotion;
-    el('recover').disabled = current.status !== 'shopping';
     text('resume', receiptShown ? 'Back to receipt' : 'Resume');
   }
-  function openRules() {
-    if (rulesDialog.open) return;
+  function openDialog(dialog) {
+    if (dialog.open) return;
     if (receipt.open) receipt.close();
     paused = true; previous = current; input.clear(); stepper.resetClock(); platform.gameplayStop(); audio.suspend();
-    syncSettingsForm(); rulesDialog.showModal();
+    dialog.showModal();
   }
-  function closeRules() {
-    if (!rulesDialog.open) return;
-    rulesDialog.close(); paused = false; input.clear(); stepper.resetClock();
+  function openRules() { if (tripsDialog.open) return; syncSettingsForm(); openDialog(rulesDialog); }
+  function closeDialog(dialog) {
+    if (!dialog.open) return;
+    dialog.close(); paused = false; input.clear(); stepper.resetClock();
     if (receiptShown) { receipt.showModal(); el('retry').focus(); return; }
     canvas.focus({ preventScroll: true }); audio.unlock();
     if (current.started) platform.gameplayStart();
   }
-  function restart() {
-    if (rulesDialog.open) rulesDialog.close();
-    if (receipt.open) receipt.close();
+  function restart(nextIndex = index, action = 'retry') {
+    record(action);
+    for (const dialog of [rulesDialog, receipt, tripsDialog]) if (dialog.open) dialog.close();
     platform.gameplayStop(); input.clear(); stepper.resetClock();
-    current = createHaulRun(settings); previous = current;
+    if (index !== nextIndex) {
+      scene.dispose?.(); index = nextIndex; shop = haulChallenges[index]; scene = createCargoScene(canvas, shop); resize();
+    }
+    current = createHaulRun(settings, shop); previous = current; events = [];
     paused = false; receiptShown = false; noticeUntil = 0;
     el('notice').hidden = true; el('share-text').hidden = true; text('copy-status', '');
+    el('test-text').hidden = true; text('test-status', '');
+    document.title = `${shop.title} · Wobbly Cart`;
     canvas.focus({ preventScroll: true }); audio.unlock(); updateHud();
   }
   bindInput({ target: window, canvas, buttons: controls, state: input, canvasSteering: false,
-    onPause: () => { if (rulesDialog.open) closeRules(); else if (current.status === 'shopping') openRules(); },
+    onPause: () => {
+      if (tripsDialog.open) closeDialog(tripsDialog);
+      else if (rulesDialog.open) closeDialog(rulesDialog);
+      else if (current.status === 'shopping') openRules();
+    },
     isPaused: () => paused || current.status !== 'shopping', onInput: () => audio.unlock(),
   });
-  rulesDialog.addEventListener('cancel', event => { event.preventDefault(); closeRules(); });
+  for (const dialog of [rulesDialog, tripsDialog]) dialog.addEventListener('cancel', event => { event.preventDefault(); closeDialog(dialog); });
   receipt.addEventListener('cancel', event => event.preventDefault());
   for (const id of ['pause', 'receipt-rules']) el(id).addEventListener('click', openRules);
-  el('resume').addEventListener('click', closeRules);
-  for (const id of ['reset', 'retry']) el(id).addEventListener('click', restart);
-  el('recover').addEventListener('click', () => {
-    if (current.status !== 'shopping') return;
-    current = recoverHaul(current); previous = current; closeRules();
-    notice('Back on clear ground. Your remaining goods are safe.'); updateHud();
+  el('resume').addEventListener('click', () => closeDialog(rulesDialog));
+  for (const id of ['reset', 'retry']) el(id).addEventListener('click', () => restart());
+  for (const id of ['trips', 'receipt-trips']) el(id).addEventListener('click', () => openDialog(tripsDialog));
+  el('close-trips').addEventListener('click', () => closeDialog(tripsDialog));
+  el('next').addEventListener('click', () => {
+    if (index < haulChallenges.length - 1) restart(index + 1, 'next');
+    else openDialog(tripsDialog);
   });
+  haulChallenges.forEach((challenge, i) => {
+    const button = document.createElement('button');
+    button.id = `trip-${challenge.id}`; button.type = 'button';
+    button.textContent = `${i + 1}. ${challenge.title} · ${challenge.targetValue} goal / ${challenge.stretchValue} full haul`;
+    button.addEventListener('click', () => restart(i, `choose:${challenge.id}`));
+    el('trip-list').append(button);
+  });
+  const savePreferences = () => {
+    platform.storageSet(settingsKey, JSON.stringify(settings)); audio.mute(settings.muted);
+  };
+  el('sound').addEventListener('change', () => { settings.muted = !el('sound').checked; savePreferences(); });
+  el('motion').addEventListener('change', () => { settings.reducedMotion = el('motion').checked; savePreferences(); });
   el('wobble').addEventListener('input', () => text('wobble-value', `${el('wobble').value}%`));
   el('apply').addEventListener('click', () => {
     const chosen = Number(el('wobble').value) / 100;
-    settings = { wobble: Number.isFinite(chosen) ? Math.max(0, Math.min(cargoParams.maxWobble, chosen)) : cargoParams.defaultWobble,
-      banking: el('banking').value === 'bank', muted: !el('sound').checked, reducedMotion: el('motion').checked };
-    platform.storageSet(settingsKey, JSON.stringify(settings)); audio.mute(settings.muted); restart();
+    settings.wobble = Number.isFinite(chosen) ? Math.max(0, Math.min(cargoParams.maxWobble, chosen)) : cargoParams.defaultWobble;
+    savePreferences(); restart(index, 'debug-restart');
   });
   window.addEventListener('keydown', event => {
     if (event.code === 'KeyR' && !paused && !event.repeat && !event.altKey && !event.ctrlKey && !event.metaKey) {
@@ -111,54 +143,58 @@ async function startHaulApp() {
   const blur = () => { if (current.status === 'shopping') openRules(); };
   window.addEventListener('blur', blur);
   document.addEventListener('visibilitychange', () => { if (document.hidden) blur(); });
-  el('copy').addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(shareText); text('copy-status', 'Receipt copied.'); }
+  async function copy(message, fieldId, statusId) {
+    try { await navigator.clipboard.writeText(message); text(statusId, 'Copied.'); }
     catch {
-      const field = el('share-text'); field.value = shareText; field.hidden = false; field.select();
-      text('copy-status', 'Copy the selected text.');
+      const field = el(fieldId); field.value = message; field.hidden = false; field.select();
+      text(statusId, 'Copy the selected text.');
     }
-  });
+  }
+  el('copy').addEventListener('click', () => copy(shareText, 'share-text', 'copy-status'));
+  el('copy-test').addEventListener('click', () => copy(JSON.stringify({
+    build, attempts: [...attempts, snapshot(receiptShown ? 'at-receipt' : 'in-progress')],
+  }, null, 2), 'test-text', 'test-status'));
 
   function showReceipt() {
     receiptShown = true;
-    const delivered = value(current.banked), skipped = firstHaul.items.filter(item => !current.collected.includes(item.id));
-    if (!practice()) best = best === null ? delivered : Math.max(best, delivered);
-    text('receipt-title', delivered >= firstHaul.targetValue ? 'A good haul!' : delivered ? 'Something made it home.' : 'An empty checkout.');
+    const delivered = value(current.banked), skipped = shop.items.filter(item => !current.collected.includes(item.id));
+    if (!practice()) best.set(shop.id, Math.max(best.get(shop.id) ?? 0, delivered));
+    text('receipt-title', delivered >= shop.stretchValue ? 'Everything made it!' : delivered >= shop.targetValue ? 'A good haul!' : delivered ? 'Something made it home.' : 'An empty checkout.');
     text('receipt-score', String(delivered));
-    text('receipt-goal', delivered >= firstHaul.targetValue ? `Goal reached · ${firstHaul.targetValue} delivered was enough.` : `Goal: ${firstHaul.targetValue}. Try a slower corner or leave the extra behind.`);
+    text('receipt-goal', delivered >= shop.targetValue ? `Goal reached · ${shop.targetValue} needed / ${shop.stretchValue} full haul.` : `Goal: ${shop.targetValue}. Try a slower corner or a different route.`);
     text('receipt-banked', names(current.banked)); text('receipt-spilled', names(current.spilled)); text('receipt-skipped', names(skipped));
-    text('receipt-time', timeLabel(current.elapsed)); text('receipt-best', best === null ? 'No challenge result yet' : String(best));
+    text('receipt-time', timeLabel(current.elapsed)); text('receipt-best', best.has(shop.id) ? String(best.get(shop.id)) : 'No challenge result yet');
     text('receipt-mode', `${rulesLabel()}${practice() ? ' · Does not change session best' : ''}`);
-    shareText = `Wobbly Cart · First haul · ${firstHaul.contentVersion}\nDelivered ${delivered} / goal ${firstHaul.targetValue} in ${timeLabel(current.elapsed)}\nDelivered: ${names(current.banked)}\nLost: ${names(current.spilled)}\nLeft behind: ${names(skipped)}\n${rulesLabel()}`;
-    receipt.showModal(); el('retry').focus();
+    text('next', index < haulChallenges.length - 1 ? `Next: ${haulChallenges[index + 1].title} →` : 'Choose a trip');
+    shareText = `Wobbly Cart · ${build}\n${rulesLabel()} · content ${current.contentVersion}\nDelivered ${delivered} / goal ${shop.targetValue} in ${timeLabel(current.elapsed)}\nDelivered: ${names(current.banked)}\nLost: ${names(current.spilled)}\nLeft behind: ${names(skipped)}`;
+    receipt.showModal(); el('next').focus();
   }
   function updateHud() {
     text('carried', String(value(current.cargo))); text('secured', String(value(current.banked)));
-    text('goal-line', `Bring home ${firstHaul.targetValue} · ${practice() ? 'Practice' : 'First haul'}`);
-    el('lean').value = Math.min(1, current.risk); text('active-rules', rulesLabel());
-    const nearItem = firstHaul.items.find(item => !current.collected.includes(item.id) && Math.hypot(current.cart.x - item.x, current.cart.y - item.y) <= item.radius);
+    text('goal-line', `${index + 1}/3 · ${shop.title} · Goal ${shop.targetValue}${practice() ? ' · Practice' : ''}`);
+    el('lean').value = Math.min(1, current.risk);
+    text('active-rules', practice() ? `Debug wobble: ${Math.round(current.wobble * 100)}%` : '');
+    el('active-rules').hidden = !practice();
+    const available = shop.items.filter(item => !current.collected.includes(item.id));
+    const nearItem = available.find(item => Math.hypot(current.cart.x - item.x, current.cart.y - item.y) <= item.radius);
     const endangered = current.cargo.reduce((worst, item) => !worst || item.risk > worst.risk ? item : worst, null);
-    const finalBay = firstHaul.checkouts.find(bay => bay.final);
-    let title = current.cargo.some(item => item.id === 'milk') && current.cargo.some(item => item.id === 'bread')
-      ? 'Milk & bread are aboard.' : 'Bring the rest home.';
-    let hint = 'Hold Push. Follow the arrows to checkout; any remaining goods count.';
-    if (!current.collected.includes('melon')) hint = 'Hold Push. Take the melon if you dare, then follow the arrows to checkout.';
+    const bay = shop.checkouts.find(candidate => candidate.final);
+    const nearCheckout = Math.hypot(current.cart.x - bay.x - bay.width / 2, current.cart.y - bay.y - bay.height / 2) < 2.4;
+    let title = shop.prompt, hint = current.started ? shop.carryingHint : shop.intro;
     if (endangered && endangered.risk >= haulParams.warningThreshold) {
       title = `${endangered.name} is slipping!`; hint = 'Straighten up and hold Stop to save it.';
     } else if (current.checkoutId) {
       title = 'Hold still…'; hint = 'Whatever is left on your cart counts.';
     } else if (nearItem) {
-      title = `Room for ${nearItem.name.toLowerCase()}?`; hint = `Stop in the circle to add ${nearItem.value} to your haul.`;
+      title = `Take the ${nearItem.name.toLowerCase()}?`; hint = `Stop in the circle to add ${nearItem.value} to your haul.`;
     } else if (!current.cargo.length) {
-      title = current.banked.length ? 'Your banked haul is safe.' : 'The cart is empty. Keep going!'; hint = 'Checkout still works, or press Restart for another try.';
-    } else if (current.cart.y >= finalBay.y - 2) {
-      title = 'Bring it home.'; hint = 'Stop with the whole cart inside the green checkout.';
-    } else if (current.cart.x > .6) {
-      title = 'Mind the rough patch.'; hint = 'Brake before the bump, or go around it. Checkout is ahead.';
-    } else if (current.cart.y > 3.7) {
-      title = 'Take a wide right turn.'; hint = 'Ease off, go around the shelf, then turn up the right-hand aisle.';
-    } else if (current.cargo.some(item => item.id === 'melon')) {
-      title = 'That melon is worth saving.'; hint = 'Slow before turning. Head around the shelf to the right.';
+      title = 'The cart is empty.'; hint = 'Checkout still works, or press Restart for another try.';
+    } else if (nearCheckout) {
+      title = 'Ready to check out?'; hint = 'Stop with the whole cart inside the green bay to finish.';
+    } else if (shop.id === 'one-more-thing' && current.collected.includes('tv')) {
+      title = 'Back to checkout.'; hint = 'Return around the shelf to the green bay on the left. Brake before crossing the stripes.';
+    } else if (!available.length && current.spilled.length) {
+      title = 'Bring the rest home.'; hint = 'Your remaining goods still count. Stop inside checkout to finish.';
     }
     text('tip-title', title); text('tip-body', hint);
     const intent = input.sample();
@@ -183,7 +219,6 @@ async function startHaulApp() {
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-  return { readState: () => current, readBest: () => best };
+  return { readState: () => current, readBest: () => best.get(shop.id) ?? null };
 }
-
 export const app = await startHaulApp();

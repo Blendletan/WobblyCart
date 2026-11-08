@@ -75,8 +75,15 @@ dialog select { margin-top: 6px; padding: .7rem; border: 2px solid #d0dec9; bord
 #share-text { margin-top: .8rem; width: 100%; min-height: 5rem; resize: vertical; border: 2px solid #d0dec9; border-radius: 8px; }
 #copy-status { margin-top: .5rem; font-size: .78rem; }
 .haul-goal { position: absolute; z-index: 3; top: 91px; left: 50%; transform: translateX(-50%); padding: 5px 10px; border-radius: 8px; background: #fffbece8; color: #47746b; font-size: .68rem; font-weight: 900; white-space: nowrap; pointer-events: none; }
-[data-mode="haul"] .recovery { margin-top: 1rem; padding-top: 1rem; border-top: 2px dashed #d6d9bc; }
-[data-mode="haul"] .recovery .field-note { margin-top: .7rem; }
+[data-mode="haul"] #trips { width: auto; padding: 0 10px; font-size: .8rem; }
+.debug-settings { margin-top: 1.25rem; border-top: 2px dashed #d6d9bc; padding-top: .8rem; }
+.debug-settings summary { cursor: pointer; font-size: .8rem; margin-bottom: .8rem; }
+.debug-settings button { margin-top: .6rem; font-size: .78rem; }
+#test-text { width: 100%; min-height: 5rem; margin-top: .7rem; }
+#test-status { font-size: .75rem; }
+.trip-list { display: grid; gap: 12px; margin: 1.2rem 0; }
+.trip-list button { text-align: left; line-height: 1.5; font-size: .88rem; }
+[data-mode="haul"] #notice { top: 124px; }
 [data-mode="haul"] button:disabled { opacity: .45; cursor: default; }
 @media (orientation: portrait) {
   .masthead { top: 16px; left: 16px; right: 13px; }
@@ -102,6 +109,10 @@ dialog select { margin-top: 6px; padding: .7rem; border: 2px solid #d0dec9; bord
   #notice { top: 168px; max-width: 90%; font-size: .76rem; padding: 7px 11px; white-space: nowrap; }
   [data-mode="haul"] .haul-goal { top: 161px; font-size: .64rem; }
   [data-mode="haul"] #notice { top: 194px; white-space: normal; width: max-content; }
+}
+@media (orientation: portrait) and (max-width: 360px) {
+  [data-mode="haul"] h1 { font-size: 26px; white-space: nowrap; -webkit-text-stroke-width: 5px; }
+  [data-mode="haul"] .wordmark .kicker { font-size: .43rem; padding: 3px 5px; }
 }
 @media (orientation: landscape) and (max-height: 500px) {
   .masthead { top: 12px; left: 15px; right: 15px; }

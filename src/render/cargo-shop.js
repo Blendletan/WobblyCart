@@ -132,6 +132,7 @@ export function createCargoScene(canvas, shop = defaultShop) {
         polygon(c,face(floor(x,y,1,Math.min(1,top-y)),0),(x+y)%2 === 0 ? '#ebe1cb' : '#e4d9bf','#d9cdb3',.55);
       }
       for (const bay of shop.checkouts) {
+        if (shop.id && !bay.final && !current.banking) continue;
         const closed = !bay.final && (!current.banking || current.usedExpress);
         const corners = face(floor(bay.x,bay.y,bay.width,bay.height),0);
         polygon(c,corners,closed ? '#b6b4a0' : '#9cb49b',closed ? '#7e806d' : '#47745b',2.5);
@@ -290,7 +291,10 @@ export function createCargoScene(canvas, shop = defaultShop) {
       if (shop !== defaultShop) {
         const goal = shop.checkouts.find(bay => bay.final);
         const point = project(goal.x+goal.width/2,goal.y+goal.height/2);
-        if (point[1] < 95 || point[0] < 40 || point[0] > width-40) badge('CHECKOUT ↑',width-75,106,'#365b47',10);
+        if (point[1] < 95 || point[1] > height-80 || point[0] < 40 || point[0] > width-40) {
+          const direction = ['→','↘','↓','↙','←','↖','↑','↗'][(Math.round(Math.atan2(point[1]-height/2,point[0]-width/2)/(Math.PI/4))+8)%8];
+          badge(`CHECKOUT ${direction}`,width-75,106,'#365b47',10);
+        }
       }
     },
   };

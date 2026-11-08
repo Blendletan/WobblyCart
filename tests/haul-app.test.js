@@ -1,8 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHaulDriver } from '../tools/haul-route.mjs';
+import { createChallengeDriver } from '../tools/challenge-route.mjs';
+import { haulChallenges } from '../src/content/haul-challenges.js';
 
-test('haul app: preloaded start, pickup, pause, assisted recovery, exact retry, checkout and isolated settings', async () => {
+test('haul app: three trips, pause, exact retry, next, per-trip bests and isolated debug settings', async () => {
   let scheduled, draws = 0;
   const context = new Proxy({}, {
     get: (_, name) => (...args) => {
@@ -22,6 +24,7 @@ test('haul app: preloaded start, pickup, pause, assisted recovery, exact retry, 
     showModal() { this.open = true; }
     close() { this.open = false; }
     select() {}
+    append(child) { elements.set(child.id, child); }
     getBoundingClientRect() { return { x: 0, y: 0, width: 960, height: 540 }; }
   }
   const elements = new Map();
@@ -57,20 +60,38 @@ test('haul app: preloaded start, pickup, pause, assisted recovery, exact retry, 
     assert.ok(app.readState().collected.includes('melon'), 'actual input collects optional cargo');
     click('pause'); const paused = structuredClone(app.readState());
     key('KeyW', true); advance(1); assert.deepEqual(app.readState(), paused); assert.equal(get('rules-dialog').open, true);
-    click('recover'); advance(.1);
-    assert.equal(app.readState().assisted, true); assert.equal(app.readState().recoveries, 1);
+    click('resume'); advance(.1);
+    assert.equal(app.readState().assisted, false);
     assert.deepEqual(app.readState().cargo.map(item => item.id), paused.cargo.map(item => item.id));
-    assert.equal(app.readState().elapsed >= paused.elapsed, true); assert.match(get('active-rules').textContent, /Practice/);
     click('reset'); advance(.1); assert.deepEqual(app.readState(), initial, 'retry restores exact starting run');
     drive(createHaulDriver(), () => app.readState().status === 'complete'); advance(.1);
     assert.equal(app.readState().status, 'complete'); assert.equal(get('receipt-dialog').open, true);
     assert.equal(get('receipt-score').textContent, '65'); assert.equal(app.readBest(), 65);
     const delivered = structuredClone(app.readState()); advance(1); assert.deepEqual(app.readState(), delivered);
-    click('receipt-rules'); get('wobble').value = '0'; get('banking').value = 'bank'; click('apply'); advance(.1);
-    assert.equal(app.readState().wobble, 0); assert.equal(app.readState().banking, true);
+    click('next'); advance(.1);
+    assert.equal(app.readState().challengeId, 'rough-shortcut'); assert.equal(app.readBest(), null);
+    drive(createChallengeDriver(haulChallenges[1], { route: 'rush' }), () => app.readState().status === 'complete'); advance(.1);
+    assert.equal(get('receipt-score').textContent, '25'); assert.equal(app.readBest(), 25);
+    click('next'); advance(.1);
+    assert.equal(app.readState().challengeId, 'one-more-thing', 'below-goal receipt still permits next');
+    assert.equal(app.readBest(), null);
+    drive(createChallengeDriver(haulChallenges[2], { route: 'cashout' }), () => app.readState().status === 'complete'); advance(.1);
+    assert.equal(get('receipt-score').textContent, '65'); assert.equal(get('next').textContent, 'Choose a trip');
+    click('next'); assert.equal(get('trips-dialog').open, true);
+    click('trip-first-haul'); advance(.1); assert.equal(app.readBest(), 65);
+    assert.deepEqual(app.readState(), initial, 'reselecting restores the original shop and initial cargo');
+    click('pause'); get('wobble').value = '0'; click('apply'); advance(.1);
+    assert.equal(app.readState().wobble, 0); assert.equal(app.readState().banking, false);
     assert.match(get('goal-line').textContent, /Practice/); assert.equal(app.readBest(), 65);
     assert.equal(storage.get('wobbly-cart:cargo-settings:v1'), '{"wobble":0,"banking":true}', 'old experiment preferences untouched');
-    assert.deepEqual(JSON.parse(storage.get('wobbly-cart:haul-settings:v1')).banking, true);
+    assert.equal(JSON.parse(storage.get('wobbly-cart:haul-settings:v1')).banking, false);
+    drive(createHaulDriver(), () => app.readState().status === 'complete'); advance(.1);
+    assert.equal(app.readBest(), 65, 'debug attempt cannot replace eligible best');
+    click('receipt-rules'); click('copy-test'); await new Promise(resolve => setImmediate(resolve));
+    const notes = JSON.parse(get('test-text').value);
+    assert.ok(notes.attempts.some(attempt => attempt.nextAction === 'next' && attempt.challenge === 'rough-shortcut'));
+    assert.ok(notes.attempts.some(attempt => attempt.events.some(event => event.type === 'item_lost')));
+    get('wobble').value = '100'; click('apply'); advance(.1);
     window.dispatchEvent(new Event('blur')); assert.equal(get('rules-dialog').open, true);
     click('resume'); advance(.1); assert.equal(app.readState().started, false, 'blur clears held input');
     assert.ok(draws > 1000);

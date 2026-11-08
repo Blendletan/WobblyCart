@@ -21,7 +21,7 @@ export function createHaulRun(settings = {}, shop = firstHaul) {
   const initial = shop.preloaded.map(id => shop.items.find(item => item.id === id));
   return {
     cart: createTrolley(shop.spawn), started: false, elapsed: 0, status: 'shopping',
-    contentVersion: shop.contentVersion, acquisition: 'collect',
+    challengeId: shop.id, contentVersion: shop.contentVersion, acquisition: 'collect',
     wobble: Number.isFinite(settings.wobble) ? clamp(settings.wobble, 0, cargoRules.maxWobble) : cargoRules.defaultWobble,
     banking: settings.banking === true, assisted: false, recoveries: 0,
     cargo: settledItems(initial), collected: [...shop.preloaded], banked: [], spilled: [], losses: [],

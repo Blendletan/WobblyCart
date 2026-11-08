@@ -48,18 +48,20 @@ export function createCargoScene(canvas, shop = defaultShop) {
     };
   }
   uploadModels();
-  worldCanvas.addEventListener('webglcontextlost',event => {
+  const onLost = event => {
     event.preventDefault(); lost = true; worldCanvas.hidden = true;
     fallback = createFallbackScene(canvas,shop); fallback.resize(width,height,ratio);
-  });
-  worldCanvas.addEventListener('webglcontextrestored',() => {
+  };
+  const onRestored = () => {
     try {
       const restored = createToyEngine(worldCanvas);
       if (!restored) return;
-      engine = restored; uploadModels(); engine.resize(width,height,ratio);
+      engine.dispose(); engine = restored; uploadModels(); engine.resize(width,height,ratio);
       lost = false; worldCanvas.hidden = false;
     } catch { /* Continue with the working Canvas scene if GPU restoration fails. */ }
-  });
+  };
+  worldCanvas.addEventListener('webglcontextlost',onLost);
+  worldCanvas.addEventListener('webglcontextrestored',onRestored);
 
   function label(message,x,y,{color = '#fff9e9',ink = '#365c61',size = 11,outline = '#3d6c6120'} = {}) {
     c.font = `900 ${size}px "Trebuchet MS",sans-serif`;
@@ -81,6 +83,11 @@ export function createCargoScene(canvas, shop = defaultShop) {
   }
 
   return {
+    dispose() {
+      worldCanvas.removeEventListener('webglcontextlost',onLost);
+      worldCanvas.removeEventListener('webglcontextrestored',onRestored);
+      engine.dispose(true); worldCanvas.remove();
+    },
     resize(w,h,dpr = 1) {
       width = Math.max(1,w); height = Math.max(1,h); ratio = Math.min(dpr,2);
       canvas.width = Math.round(width*ratio); canvas.height = Math.round(height*ratio);
@@ -127,6 +134,7 @@ export function createCargoScene(canvas, shop = defaultShop) {
       const load = current.status === 'wipeout' ? current.spilled : current.cargo;
 
       for (const [index,bay] of shop.checkouts.entries()) {
+        if (shop.id && !bay.final && !current.banking) continue;
         const closed = !bay.final && (!current.banking || current.usedExpress);
         add(closed ? gpu.banks[index].gray : gpu.banks[index].mesh,identity(),0,false);
       }
@@ -206,6 +214,7 @@ export function createCargoScene(canvas, shop = defaultShop) {
         }
       }
       for (const bay of shop.checkouts) {
+        if (shop.id && !bay.final && !current.banking) continue;
         const [px,py] = engine.project(bay.x+bay.width/2,bay.y+bay.height/2,.12);
         if (!visible([px,py])) continue;
         const closed = !bay.final && (!current.banking || current.usedExpress);
@@ -245,8 +254,9 @@ export function createCargoScene(canvas, shop = defaultShop) {
       }
       // Keep the goal visible when it is beyond the camera's view.
       const goal = shop.checkouts.find(bay => bay.final), target = engine.project(goal.x+goal.width/2,goal.y+goal.height/2);
-      if ((shop !== defaultShop || y > 6) && (target[1] < 100 || target[0] < 40 || target[0] > width-40)) {
-        label('CHECKOUT ↑',width-85,105,{color:'#3e8e78',ink:'#fff9e9',size:10});
+      if ((shop !== defaultShop || y > 6) && (target[1] < 100 || target[1] > height-80 || target[0] < 40 || target[0] > width-40)) {
+        const direction = ['→','↘','↓','↙','←','↖','↑','↗'][(Math.round(Math.atan2(target[1]-height/2,target[0]-width/2)/(Math.PI/4))+8)%8];
+        label(`CHECKOUT ${direction}`,width-85,105,{color:'#3e8e78',ink:'#fff9e9',size:10});
       }
     },
   };

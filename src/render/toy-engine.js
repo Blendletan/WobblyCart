@@ -203,8 +203,10 @@ void main() {
 export function createToyEngine(canvas) {
   const gl = canvas.getContext('webgl', { alpha: false, antialias: true, powerPreference: 'high-performance' });
   if (!gl) return null;
+  const shaders = [], buffers = [];
   function compile(type, source) {
     const shader = gl.createShader(type);
+    shaders.push(shader);
     gl.shaderSource(shader,source); gl.compileShader(shader);
     if (!gl.getShaderParameter(shader,gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(shader));
     return shader;
@@ -234,8 +236,18 @@ export function createToyEngine(canvas) {
   gl.enable(gl.DEPTH_TEST);
   let width = 1, height = 1, camera, light, eye;
   return {
+    dispose(releaseContext = false) {
+      for (const buffer of buffers) gl.deleteBuffer(buffer);
+      buffers.length = 0;
+      for (const shader of shaders) gl.deleteShader(shader);
+      shaders.length = 0;
+      gl.deleteProgram(program); gl.deleteFramebuffer(shadowBuffer);
+      gl.deleteRenderbuffer(depthBuffer); gl.deleteTexture(shadowTexture);
+      if (releaseContext) gl.getExtension('WEBGL_lose_context')?.loseContext();
+    },
     upload(mesh) {
       const buffer = gl.createBuffer();
+      buffers.push(buffer);
       gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
       gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(mesh.vertices),gl.STATIC_DRAW);
       return { buffer, count: mesh.vertices.length/9 };

@@ -1,6 +1,9 @@
 /** H1: one authored haul. Floor distances in metres; north is positive y. */
 export const firstHaul = Object.freeze({
-  id: 'first-haul', contentVersion: 1, title: 'Bring it home', targetValue: 25, stretchValue: 65,
+  id: 'first-haul', contentVersion: 2, title: 'First haul', targetValue: 25, stretchValue: 65,
+  intro: 'Milk & bread are aboard. Stop in the melon circle for an extra 40, then follow the arrows to checkout.',
+  prompt: 'Take the melon?',
+  carryingHint: 'Go around the end of the shelf, then up the right aisle. Brake before the striped bump or go around it.',
   spawn: { x: -1.6, y: -.4, heading: 0 },
   recovery: { x: -1.6, y: -.4, heading: 0 },
   preloaded: ['milk', 'bread'],
@@ -28,5 +31,5 @@ export const firstHaul = Object.freeze({
     { id: 'exit', x: 1.25, y: 10.7, width: 2.95, height: 2.8, name: 'Checkout', final: true },
   ],
   arrows: [{ x: -1.4, y: 5.8, heading: 0 }, { x: .8, y: 6.7, heading: Math.PI / 2 }, { x: 3.6, y: 9.3, heading: 0 }],
-  signs: [{ text: 'ONE MORE?', x: -3.9, y: 2.2 }, { text: 'TAKE IT EASY', x: .2, y: 9.5 }],
+  signs: [],
 });

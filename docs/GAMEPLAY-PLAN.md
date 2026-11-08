@@ -6,7 +6,9 @@
 
 Find a short, funny shopping game that strangers understand, voluntarily replay and could support a portal release. The pitch we are testing is: **Load an unreasonable amount onto a terrible shopping cart, then try to get it out intact.**
 
-The user accepts the current steering and considers the visual direction sufficient to explore the game. They authorized one stage at a time, with player testing after each. H1 is implemented at `/haul.html`; automated and desktop browser checks are recorded in `STATE.md` and `TUNING.md`. The next step is the [H1 player test](H1-PLAYTEST.md). H2 and later stages wait for that review.
+The user accepts the steering and visual direction. After finding H1 very easy, they requested a simpler pause page and removal of misleading signs, then authorized H2. All three challenges are implemented at `/haul.html`; automated and desktop browser evidence is in `STATE.md` and `TUNING.md`. The next step is the [H2 player test](H2-PLAYTEST.md), including five fresh players when available. H3 waits for that review.
+
+The user's H1 feedback supersedes earlier UI defaults below: final checkout only, no player-facing bank switch or reposition button, and wobble retained under collapsed Debug tuning. Free restart remains. Banking/recovery stay available in the simulation and original prototype for future design changes. The accepted 100% handling is unchanged.
 
 H1–H5 below replace the remaining proposed C1–C3 work for this cargo experiment. The engineering requirements in [SPEC.md](SPEC.md) and [AGENTS.md](../AGENTS.md) remain in force. The One Trip document remains a reference proposal; its instructions to replace the spec, restore automatic travel or add libraries are not adopted.
 
@@ -40,12 +42,12 @@ The main result is **delivered value**, not item count. A conservative haul can 
 | --- | --- | --- |
 | Movement | Keep manual pushing, reverse, coast, turn and brake | Only after evidence from new players; no automatic travel in this plan |
 | Wobble | Keep the existing 0–200% control; use the existing 100% as the initial comparison baseline | H1 feel review; the user chooses the active challenge preset |
-| Banking | Final checkout only in the new experiment; retain an express-bank comparison switch | After H2; do not remove the implementation option |
+| Banking | Final checkout only; retain implementation but hide inactive bays and the comparison switch | Reintroduce only if a later design test needs it |
 | Cargo acquisition | Preloaded opening plus optional pickups during driving | H3 compares a quick loading alternative |
 | Cargo simulation | Small deterministic per-item model with readable slip/lean and simplified support | H1; richer physics only if the limitation is visible and consequential |
 | Failure | Lose individual goods and continue; checkout accepts any remaining value, including zero | H1 and H2; terminal wipeouts are not the default |
 | Timer | Informational; no zero-score timeout or forced speed schedule | H2 tests whether cautious play becomes dull; try an optional time target before a hard deadline |
-| Recovery | Free restart and free reposition to a validated safe pose | Recovery preserves inventory and elapsed time; marks the attempt assisted |
+| Recovery | Free restart; remove reposition from the H2 player flow per feedback | Retained internal recovery preserves inventory/time and marks assistance |
 | Progression | Delivered-value pass and optional stretch result; no required fragile item | H2 first, persistent progression in H4 |
 | Orientation | Keep portrait and landscape, with touch tested early | H1 physical-device review |
 | Rewards | Gameplay and new situations first; later cosmetics only | H4/H5 |
@@ -192,8 +194,8 @@ At every implementation handoff:
 4. Commit the completed stage. Provide the testable entry point, build identifier and a short human-check list. Keep the original proposal and unrelated work intact.
 5. Stop at the stage checkpoint. A failed check twice is a blocker to record, as required by AGENTS.md; never change a golden or weaken a threshold to proceed. A request to revise the current stage is not permission to start the next one.
 
-Use this prompt when ready to start:
+Historical H1 starting prompt:
 
 > Read AGENTS.md, STATE.md and the current section of docs/SPEC.md. Follow docs/GAMEPLAY-PLAN.md, including its defaults and technical boundaries. Implement H1 only: one recoverable haul. Preserve the existing playable entries and adjustable rules. Complete the H1 checks, update the handoff documents, commit, and stop for the H1 playtest. Do not start H2.
 
-For later stages, name that stage and any decisions from the preceding playtest. The first next action is **H1**, when requested.
+For later stages, name that stage and any decisions from the preceding playtest. The current next action is the **H2 player test**, not H3 implementation.
