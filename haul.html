@@ -65,6 +65,16 @@
       <div id="trip-list" class="trip-list"></div>
       <div class="dialog-actions"><button id="close-trips" type="button">Back</button></div>
     </dialog>
+    <dialog id="packing-dialog" aria-labelledby="packing-title">
+      <div class="kicker">QUICK PACKING TEST</div><h2 id="packing-title">Pack the cart.</h2>
+      <p>Choose what to risk, then place it from bottom to top. Tap an item and a slot, or drag it. The driving route and values match One more thing.</p>
+      <div class="packing-layout">
+        <div><b>Offered goods</b><div id="packing-offer" class="packing-offer"></div></div>
+        <div><b>Basket · bottom to top</b><div id="packing-slots" class="packing-slots"></div></div>
+      </div>
+      <p id="packing-total" class="packing-total" aria-live="polite"></p>
+      <div class="dialog-actions"><button id="packing-go" class="primary" type="button">Go with this load</button><button id="packing-clear" type="button">Clear</button><button id="packing-cancel" type="button">Back</button></div>
+    </dialog>
     <dialog id="receipt-dialog" aria-labelledby="receipt-title">
       <div class="kicker">WOBBLY CART / YOUR RECEIPT</div><h2 id="receipt-title">Haul delivered.</h2>
       <div class="receipt-total"><span>DELIVERED VALUE</span><strong id="receipt-score"></strong></div>
@@ -72,10 +82,11 @@
       <div class="receipt-row"><b>Delivered</b><span id="receipt-banked"></span></div>
       <div class="receipt-row"><b>Lost</b><span id="receipt-spilled"></span></div>
       <div class="receipt-row"><b>Left behind</b><span id="receipt-skipped"></span></div>
-      <div class="receipt-row"><b>Time</b><span id="receipt-time"></span></div>
+      <div class="receipt-row"><b>Driving time</b><span id="receipt-time"></span></div>
+      <div id="receipt-packing-row" class="receipt-row" hidden><b>Packing time</b><span id="receipt-packing"></span></div>
       <div class="receipt-row"><b>Session best</b><span id="receipt-best"></span></div>
       <p id="receipt-mode" class="field-note"></p>
-      <div class="dialog-actions"><button id="next" class="primary" type="button">Next trip →</button><button id="retry" type="button">Retry</button><button id="receipt-trips" type="button">Choose trip</button><button id="copy" type="button">Copy receipt</button><button id="receipt-rules" type="button">Rules</button></div>
+      <div class="dialog-actions"><button id="next" class="primary" type="button">Next trip →</button><button id="retry" type="button">Retry</button><button id="change-load" type="button" hidden>Change load</button><button id="receipt-trips" type="button">Choose trip</button><button id="copy" type="button">Copy receipt</button><button id="receipt-rules" type="button">Rules</button></div>
       <textarea id="share-text" aria-label="Receipt text" readonly hidden></textarea><div id="copy-status" role="status"></div>
     </dialog>
     <noscript>Enable JavaScript to play Wobbly Cart.</noscript>

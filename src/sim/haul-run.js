@@ -1,30 +1,38 @@
 import { firstHaul } from '../content/first-haul.js';
 import { createTrolley, stepTrolley, trolleyInRect } from './trolley.js';
 import { cargoHandling, cargoParams as cargoRules, haulParams as rules } from './params.js';
+import { normalizePackedIds } from './packing.js';
 
 const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
 export const haulValue = items => items.reduce((sum, item) => sum + item.value, 0);
 
-function freshItem(item, below, index) {
+function freshItem(item, below, index, packingSlot = null) {
   return { ...item, slip: 0, slipRate: 0, risk: 0, edgeTime: 0,
+    packingSlot,
     pose: { x: index % 2 ? rules.slotSide : -rules.slotSide, y: index % 2 ? rules.slotForward : -rules.slotForward,
       z: rules.basketFloor + below + item.height / 2, lean: 0 } };
 }
 
 function settledItems(items) {
   let below = 0;
-  return items.map((item, index) => { const next = freshItem(item, below, index); below += item.height; return next; });
+  return items.map((item, index) => { const next = freshItem(item, below, index, item.packingSlot ?? null); below += item.height; return next; });
 }
 
 /** Fresh attempts have a fixed starting load and do not inherit a damaged pile. */
-export function createHaulRun(settings = {}, shop = firstHaul) {
-  const initial = shop.preloaded.map(id => shop.items.find(item => item.id === id));
+export function createHaulRun(settings = {}, shop = firstHaul, load = null) {
+  const packed = load?.acquisition === 'pack';
+  const ids = packed ? normalizePackedIds(load?.itemIds, shop.items) : shop.preloaded;
+  const initial = ids.map(id => shop.items.find(item => item.id === id));
   return {
     cart: createTrolley(shop.spawn), started: false, elapsed: 0, status: 'shopping',
-    challengeId: shop.id, contentVersion: shop.contentVersion, acquisition: 'collect',
+    challengeId: shop.id, contentVersion: shop.contentVersion, acquisition: packed ? 'pack' : 'collect',
+    initialLoad: [...ids],
     wobble: Number.isFinite(settings.wobble) ? clamp(settings.wobble, 0, cargoRules.maxWobble) : cargoRules.defaultWobble,
     banking: settings.banking === true, assisted: false, recoveries: 0,
-    cargo: settledItems(initial), collected: [...shop.preloaded], banked: [], spilled: [], losses: [],
+    cargo: initial.reduce((result, item, index) => {
+      const below = result.reduce((sum, other) => sum + other.height, 0);
+      return [...result, freshItem(item, below, index, packed ? index : null)];
+    }, []), collected: [...ids], banked: [], spilled: [], losses: [],
     usedExpress: false, lean: 0, risk: 0, pickupDwell: {}, checkoutId: null, checkoutDwell: 0,
     contactAges: {}, events: [],
   };
@@ -83,7 +91,8 @@ export function stepHaulRun(state, input, dt, shop = firstHaul) {
   let below = 0;
   const survivors = [], losses = [];
   for (const item of state.cargo) {
-    const response = rules.response[item.stability] ?? rules.response.central;
+    const slotExposure = item.packingSlot === null ? 1 : 1 + item.packingSlot * rules.packingSlotExposure;
+    const response = (rules.response[item.stability] ?? rules.response.central) * slotExposure;
     const target = clamp((-acceleration * rules.lateralSlip + sway) * response, -rules.maxSlipTarget, rules.maxSlipTarget);
     const damping = rules.slipDamping + (input.brake ? rules.brakeSlipDamping : 0);
     const spring = rules.slipSpring * (input.brake ? rules.brakeSpringGain : 1);
@@ -110,7 +119,7 @@ export function stepHaulRun(state, input, dt, shop = firstHaul) {
   }
 
   const speed = Math.hypot(cart.vx, cart.vy);
-  for (const item of shop.items) {
+  for (const item of state.acquisition === 'pack' ? [] : shop.items) {
     if (next.collected.includes(item.id)) continue;
     const eligible = speed <= cargoRules.pickupSpeed && Math.hypot(cart.x - item.x, cart.y - item.y) <= item.radius;
     next.pickupDwell[item.id] = eligible ? (state.pickupDwell[item.id] ?? 0) + dt : 0;

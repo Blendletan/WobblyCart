@@ -6,7 +6,7 @@ Play [the new experiment](https://blendletan.github.io/WobblyCart/haul.html), or
 
 **Trips** opens any of the three challenges. Receipts offer Next and Retry, even below the goal. Pause shows controls and rules, plus sound/reduced motion. **Debug tuning** retains the 0–200% wobble slider and local playtest-note copying. Banking and manual repositioning are removed from this player flow. Each trip has a separate session best; debug wobble attempts cannot overwrite it. No progression is stored yet.
 
-See [the H2 playtest](docs/H2-PLAYTEST.md) and [H1–H5 plan](docs/GAMEPLAY-PLAN.md). H3 waits for player feedback. Checks: `node --test`, `node tools/budget.mjs`, and `node tools/budget.mjs haul.html`. `node tools/challenge-route.mjs` reports deterministic routes through both new challenges.
+See [the H3 acquisition playtest](docs/H3-PLAYTEST.md) and [H1–H5 plan](docs/GAMEPLAY-PLAN.md). H3 compares collection during driving with a constrained quick pack on the same route; H4 waits for the result. Checks: `node --test`, `node tools/budget.mjs`, and `node tools/budget.mjs haul.html`. `node tools/challenge-route.mjs` reports deterministic routes through the driving challenges.
 
 ## Cargo prototype
 

@@ -71,5 +71,6 @@ export const haulParams = Object.freeze({
   groundKick: 3.75, wallKick: 2.9, impactThreshold: .22, contactReset: 1,
   brakeSlipDamping: 4, brakeSpringGain: 8, edgeGrace: .55,
   slipDistance: .38, slipAngle: .48, settleRate: 8, lossSpeed: 1.2,
+  packingSlotExposure: .12,
   response: Object.freeze({ central: .65, light: .55, round: 1.65 }),
 });

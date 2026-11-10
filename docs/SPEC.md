@@ -2,11 +2,11 @@
 
 Nov 1, 2026 · @Robert
 
-## Current direction — H2 player test (2026-11-08)
+## Current direction — H3 acquisition test (2026-11-10)
 
-The user found H1 very easy and is happy with the current wobble. They requested removal of misleading decorative instructions, banking selection and manual repositioning, then authorized H2. `/haul.html` now offers First haul, Rough shortcut and One more thing, with immediate Next/Retry and access to any trip. All use final checkout only. Pause explains rules and retains sound/reduced motion; a collapsed Debug tuning section retains wobble. The simulation parameters are unchanged. [H2-PLAYTEST.md](H2-PLAYTEST.md) describes the next test. H3 waits for feedback.
+The user found H1 very easy, accepted the steering and wobble, and approved staged design tests. `/haul.html` retains the three H2 driving challenges and adds an H3 comparison on One more thing: collect the same offered goods while driving, or choose their order in four constrained cart slots before driving. Quick pack records packing and driving time separately, preserves the exact load on Retry, and offers Change load on the receipt. Collection and packing session bests remain separate. [H3-PLAYTEST.md](H3-PLAYTEST.md) describes the next test; H4 waits for an explicit choice of collection, packing, or a defined hybrid.
 
-Keep manual four-caster handling, the existing procedural renderer, deterministic simulation and all current engineering budgets. Banking/recovery code remains available for future experiments but is not exposed in the H2 player flow. Quick packing remains proposed work. Do not treat One Trip's assumed hand-stacking physics, automatic speed schedule, new dependencies or relaxed budgets as adopted requirements. The root prototype remains available for comparison; physical phone checks and new-player appeal remain unproven.
+Keep manual four-caster handling, the existing procedural renderer, deterministic simulation and all current engineering budgets. Banking/recovery code remains available for future experiments but is not exposed in the player flow. H3 packing is deliberately constrained rather than freeform physics. Do not treat One Trip's assumed hand-stacking physics, automatic speed schedule, new dependencies or relaxed budgets as adopted requirements. The root prototype remains available for comparison; physical phone checks, new-player appeal and the preferred acquisition loop remain unproven.
 
 The sections below record the earlier builds and design history. Where gameplay scope differs, use the linked H plan; retained engineering constraints and frozen references still apply.
 

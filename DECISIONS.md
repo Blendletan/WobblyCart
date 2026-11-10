@@ -1,5 +1,13 @@
 # Decisions
 
+## H3 acquisition comparison — 2026-11-10
+
+- Compare acquisition on the existing One more thing route: keep its offered goods, values, handling, hazards and checkout, while changing only whether cargo is collected during driving or chosen before the drive.
+- Use four constrained bottom-to-top slots and tap-or-drag placement. Do not introduce freeform 3D packing, a physics library, timed loading, rotation or a conveyor during this design test.
+- Slot order has a small deterministic handling consequence: each position above the bottom adds 12% to that item's slip response. This makes arrangement a choice without changing collection-mode handling.
+- Separate packing time from driving time and keep collection/packing bests distinct. Retry preserves the exact load and order; Change load returns to packing. A cancelled pointer gesture cannot place cargo or start the run.
+- Stop after H3 player testing and explicitly choose collection, packing or one precisely defined hybrid before H4. Automated correctness is not evidence that packing is more enjoyable.
+
 ## H2 and H1 feedback — 2026-11-08
 
 - User found H1 very easy, is happy with current wobble, and authorized the UI cleanup followed by H2. Remove decorative ONE MORE?/TAKE IT EASY signs, banking selection, manual repositioning and comparison links from the H2 flow. Keep rules, accessibility toggles and a collapsed debug section. Keep the existing internal banking/recovery implementations and original entries.

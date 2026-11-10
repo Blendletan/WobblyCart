@@ -4,7 +4,7 @@ import { createHaulDriver } from '../tools/haul-route.mjs';
 import { createChallengeDriver } from '../tools/challenge-route.mjs';
 import { haulChallenges } from '../src/content/haul-challenges.js';
 
-test('haul app: three trips, pause, exact retry, next, per-trip bests and isolated debug settings', async () => {
+test('haul app: three trips, quick packing, exact retries, separate mode bests and isolated debug settings', async () => {
   let scheduled, draws = 0;
   const context = new Proxy({}, {
     get: (_, name) => (...args) => {
@@ -78,6 +78,28 @@ test('haul app: three trips, pause, exact retry, next, per-trip bests and isolat
     drive(createChallengeDriver(haulChallenges[2], { route: 'cashout' }), () => app.readState().status === 'complete'); advance(.1);
     assert.equal(get('receipt-score').textContent, '65'); assert.equal(get('next').textContent, 'Choose a trip');
     click('next'); assert.equal(get('trips-dialog').open, true);
+    click('trip-one-more-thing-pack');
+    assert.equal(get('packing-dialog').open, true);
+    assert.deepEqual(app.readPacking().itemIds, ['milk', 'bread', 'melon']);
+    get('pack-item-tv').dispatchEvent(new Event('pointerdown'));
+    assert.equal(get('packing-go').disabled, true, 'dragging cannot accidentally start the run');
+    get('pack-item-tv').dispatchEvent(new Event('pointercancel'));
+    assert.equal(get('packing-go').disabled, false); assert.deepEqual(app.readPacking().itemIds, ['milk', 'bread', 'melon']);
+    click('pack-item-tv'); click('pack-slot-3');
+    assert.deepEqual(app.readPacking().itemIds, ['milk', 'bread', 'melon', 'tv']);
+    assert.equal(get('packing-total').textContent, '165 loaded');
+    click('packing-go'); advance(.1);
+    const packedInitial = structuredClone(app.readState());
+    assert.equal(packedInitial.acquisition, 'pack'); assert.deepEqual(packedInitial.initialLoad, ['milk', 'bread', 'melon', 'tv']);
+    assert.equal(app.readBest(), null, 'collection best does not leak into packing mode');
+    drive(createChallengeDriver(haulChallenges[2], { route: 'cashout' }), () => app.readState().status === 'complete'); advance(.1);
+    assert.equal(get('receipt-score').textContent, '165'); assert.equal(app.readBest(), 165);
+    click('retry'); advance(.1); assert.deepEqual(app.readState(), packedInitial, 'Retry same load restores the exact packed arrangement');
+    drive(createChallengeDriver(haulChallenges[2], { route: 'cashout' }), () => app.readState().status === 'complete'); advance(.1);
+    click('change-load'); assert.equal(get('packing-dialog').open, true);
+    assert.deepEqual(app.readPacking().itemIds, ['milk', 'bread', 'melon', 'tv']);
+    click('packing-clear'); assert.deepEqual(app.readPacking().itemIds, []); assert.equal(get('packing-go').disabled, true);
+    click('packing-cancel'); assert.equal(get('trips-dialog').open, true);
     click('trip-first-haul'); advance(.1); assert.equal(app.readBest(), 65);
     assert.deepEqual(app.readState(), initial, 'reselecting restores the original shop and initial cargo');
     click('pause'); get('wobble').value = '0'; click('apply'); advance(.1);

@@ -6,7 +6,7 @@
 
 Find a short, funny shopping game that strangers understand, voluntarily replay and could support a portal release. The pitch we are testing is: **Load an unreasonable amount onto a terrible shopping cart, then try to get it out intact.**
 
-The user accepts the steering and visual direction. After finding H1 very easy, they requested a simpler pause page and removal of misleading signs, then authorized H2. All three challenges are implemented at `/haul.html`; automated and desktop browser evidence is in `STATE.md` and `TUNING.md`. The next step is the [H2 player test](H2-PLAYTEST.md), including five fresh players when available. H3 waits for that review.
+The user accepts the steering and visual direction. After H2, they authorized H3. The One more thing route now compares collection during driving with a constrained four-slot quick pack using the same goods, values, handling, route and checkout. The next step is the [H3 acquisition test](H3-PLAYTEST.md), including five fresh players when available. H4 waits for an explicit acquisition choice.
 
 The user's H1 feedback supersedes earlier UI defaults below: final checkout only, no player-facing bank switch or reposition button, and wobble retained under collapsed Debug tuning. Free restart remains. Banking/recovery stay available in the simulation and original prototype for future design changes. The accepted 100% handling is unchanged.
 
@@ -198,4 +198,4 @@ Historical H1 starting prompt:
 
 > Read AGENTS.md, STATE.md and the current section of docs/SPEC.md. Follow docs/GAMEPLAY-PLAN.md, including its defaults and technical boundaries. Implement H1 only: one recoverable haul. Preserve the existing playable entries and adjustable rules. Complete the H1 checks, update the handoff documents, commit, and stop for the H1 playtest. Do not start H2.
 
-For later stages, name that stage and any decisions from the preceding playtest. The current next action is the **H2 player test**, not H3 implementation.
+For later stages, name that stage and any decisions from the preceding playtest. The current next action is the **H3 player test**, not H4 implementation.

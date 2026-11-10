@@ -8,6 +8,21 @@ New data-only content: Rough shortcut starts with 65, goal 65, optional bowling 
 
 The new route diagnostic initially orbited intermediate goals at a .65 m arrival radius. Changing only its steering waypoint radius to .95 m lets the driver progress; no game parameter or test threshold changed. The old H1 driver and its .60 s minimum warning check are retained.
 
+## H3 acquisition comparison (2026-11-10)
+
+| Decision | Tested or untested | Evidence |
+| --- | --- | --- |
+| Collection and quick packing use the same One more thing route, offer, values, handling and checkout. | Automated | Simulation and app-flow tests compare the content and accounting; packed runs begin with the chosen goods and cannot recollect hidden floor copies. |
+| Packing arrangements reproduce exactly on Retry and cannot contain duplicate/unknown goods. | Automated | Pure placement tests and the app-flow test cover legal placement, cancellation, exact retry and Change load. |
+| Higher slots create a modest risk difference. | Automated mechanically; human readability untested | Packing-only item response changes from absent to +12% per slot above the bottom, capped naturally at +36% in slot 4. Identical deterministic input makes the higher item respond more. Collection mode remains unchanged. |
+| Packing is more enjoyable or replayable than collection. | Untested | Run `docs/H3-PLAYTEST.md`; alternate mode order and record voluntary replay. |
+
+### H3 parameter log
+
+| Parameter | Before | After | Reason |
+| --- | --- | --- | --- |
+| `packingSlotExposure` | Absent | 0.12 response multiplier per position above the bottom | Give constrained ordering a small, testable gameplay consequence without retuning the accepted collection handling. |
+
 | Decision | Tested or untested | Evidence |
 | --- | --- | --- |
 | H1 is an easy opening; present caster wobble is acceptable to the author. | User feedback | User called it VERY easy and said they are happy with the wobble. This does not establish new-player comfort. |

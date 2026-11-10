@@ -139,7 +139,7 @@ export function createCargoScene(canvas, shop = defaultShop) {
         add(closed ? gpu.banks[index].gray : gpu.banks[index].mesh,identity(),0,false);
       }
       for (const item of shop.items) {
-        if (current.collected.includes(item.id)) continue;
+        if (current.acquisition === 'pack' || current.collected.includes(item.id)) continue;
         if (Math.hypot(x-item.x,y-item.y) > 11) continue;
         const bob = reducedMotion ? 0 : Math.sin(cart.time*2.5+item.y)*.035;
         add(gpu.items[item.id],transform(item.x,item.y,.10+bob,item.id === 'bread' ? -.18 : .12),.18);
@@ -202,7 +202,7 @@ export function createCargoScene(canvas, shop = defaultShop) {
         if (visible(position)) label(sign.label,...position,{color:sign.color,ink:'#fff9e9',size:10});
       }
       for (const item of shop.items) {
-        if (current.collected.includes(item.id)) continue;
+        if (current.acquisition === 'pack' || current.collected.includes(item.id)) continue;
         const [px,py] = engine.project(item.x,item.y,.90);
         if (!visible([px,py])) continue;
         const close = Math.hypot(x-item.x,y-item.y) < item.radius+1;

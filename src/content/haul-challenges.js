@@ -31,7 +31,7 @@ export const roughShortcut = Object.freeze({
 });
 
 export const oneMoreThing = Object.freeze({
-  id: 'one-more-thing', contentVersion: 1, title: 'One more thing', targetValue: 65, stretchValue: 165,
+  id: 'one-more-thing', contentVersion: 2, title: 'One more thing', targetValue: 65, stretchValue: 165,
   prompt: 'Checkout or television?',
   intro: 'Checkout is ahead on the left. Your 65 is enough — or go around the long shelf for a television worth 100 more.',
   carryingHint: 'The television is beyond the far end of the shelf on the right. Bring it back to the checkout you passed.',

@@ -174,7 +174,7 @@ export function createCargoScene(canvas, shop = defaultShop) {
       }
 
       for (const item of shop.items) {
-        if (current.collected.includes(item.id) || !near(project(item.x,item.y),scale*1.45)) continue;
+        if (current.acquisition === 'pack' || current.collected.includes(item.id) || !near(project(item.x,item.y),scale*1.45)) continue;
         polygon(c,circle(item.x,item.y,item.radius),'#f8d79373','#ac7749',1.5);
         const [x,y] = project(item.x,item.y);
         oval(c,x,y,scale*.29,scale*.095,'#634a3038');

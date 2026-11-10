@@ -2,6 +2,7 @@ import { createFixedStepper } from './core/loop.js';
 import { bindInput, createInputState } from './core/input.js';
 import { haulChallenges } from './content/haul-challenges.js';
 import { createHaulRun, stepHaulRun } from './sim/haul-run.js';
+import { placePackedItem, removePackedItem } from './sim/packing.js';
 import { cargoParams, haulParams } from './sim/params.js';
 import { createCargoScene } from './render/cargo-scene.js';
 import { stageSize } from './render/layout.js';
@@ -9,7 +10,7 @@ import { createDevAdapter } from './platform/dev.js';
 import { createShopAudio } from './audio/shop.js';
 
 const settingsKey = 'wobbly-cart:haul-settings:v1';
-const build = 'H2-2026-11-08';
+const build = 'H3-2026-11-10';
 const value = items => items.reduce((sum, item) => sum + item.value, 0);
 const timeLabel = seconds => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
 const names = items => items.map(item => item.name).join(', ') || '—';
@@ -26,22 +27,25 @@ function loadSettings(platform) {
 async function startHaulApp() {
   const el = id => document.getElementById(id), canvas = el('game');
   const text = (id, message) => { if (el(id).textContent !== message) el(id).textContent = message; };
-  const rulesDialog = el('rules-dialog'), receipt = el('receipt-dialog'), tripsDialog = el('trips-dialog');
+  const rulesDialog = el('rules-dialog'), receipt = el('receipt-dialog'), tripsDialog = el('trips-dialog'), packingDialog = el('packing-dialog');
   const controls = { left: el('steer-left'), right: el('steer-right'), push: el('push'), pull: el('pull'), brake: el('brake') };
   const input = createInputState({ manualPush: true });
   const platform = createDevAdapter(); await platform.init();
   const audio = createShopAudio(), best = new Map(), attempts = [];
-  let index = 0, shop = haulChallenges[index], settings = loadSettings(platform);
+  let index = 0, shop = haulChallenges[index], settings = loadSettings(platform), mode = 'collect';
+  let packedIds = [], packingStarted = 0, packingSeconds = 0, selectedItem = null, dragItem = null;
   let scene = createCargoScene(canvas, shop), current = createHaulRun(settings, shop), previous = current;
   let paused = false, receiptShown = false, noticeUntil = 0, shareText = '', events = [];
   audio.mute(settings.muted);
   const practice = () => current.wobble !== cargoParams.defaultWobble;
-  const rulesLabel = () => `${shop.title} · ${Math.round(current.wobble * 100)}% wobble${practice() ? ' · Practice' : ''}`;
+  const resultKey = () => `${shop.id}:${current.acquisition}`;
+  const rulesLabel = () => `${shop.title} · ${current.acquisition === 'pack' ? 'Quick pack' : 'Collect while driving'} · ${Math.round(current.wobble * 100)}% wobble${practice() ? ' · Practice' : ''}`;
   const snapshot = action => ({ build, challenge: shop.id, contentVersion: current.contentVersion,
     acquisition: current.acquisition, wobble: current.wobble, banking: current.banking,
     assisted: current.assisted, seconds: current.elapsed, result: current.status, delivered: value(current.banked),
     carried: value(current.cargo), goal: shop.targetValue, lost: current.spilled.map(item => item.id),
-    firstPickup: events.find(event => event.type === 'pickup')?.seconds ?? null,
+    packingSeconds: current.acquisition === 'pack' ? packingSeconds : null,
+    initialLoad: [...current.initialLoad], firstPickup: events.find(event => event.type === 'pickup')?.seconds ?? null,
     events: [...events], nextAction: action });
   function record(action) {
     if (current.started) { attempts.push(snapshot(action)); if (attempts.length > 100) attempts.shift(); }
@@ -76,7 +80,7 @@ async function startHaulApp() {
     paused = true; previous = current; input.clear(); stepper.resetClock(); platform.gameplayStop(); audio.suspend();
     dialog.showModal();
   }
-  function openRules() { if (tripsDialog.open) return; syncSettingsForm(); openDialog(rulesDialog); }
+  function openRules() { if (tripsDialog.open || packingDialog.open) return; syncSettingsForm(); openDialog(rulesDialog); }
   function closeDialog(dialog) {
     if (!dialog.open) return;
     dialog.close(); paused = false; input.clear(); stepper.resetClock();
@@ -84,14 +88,16 @@ async function startHaulApp() {
     canvas.focus({ preventScroll: true }); audio.unlock();
     if (current.started) platform.gameplayStart();
   }
-  function restart(nextIndex = index, action = 'retry') {
+  function restart(nextIndex = index, action = 'retry', nextMode = mode, nextPacked = packedIds) {
     record(action);
-    for (const dialog of [rulesDialog, receipt, tripsDialog]) if (dialog.open) dialog.close();
+    for (const dialog of [rulesDialog, receipt, tripsDialog, packingDialog]) if (dialog.open) dialog.close();
     platform.gameplayStop(); input.clear(); stepper.resetClock();
     if (index !== nextIndex) {
       scene.dispose?.(); index = nextIndex; shop = haulChallenges[index]; scene = createCargoScene(canvas, shop); resize();
     }
-    current = createHaulRun(settings, shop); previous = current; events = [];
+    mode = nextMode; packedIds = [...nextPacked];
+    current = createHaulRun(settings, shop, mode === 'pack' ? { acquisition: 'pack', itemIds: packedIds } : null);
+    previous = current; events = [];
     paused = false; receiptShown = false; noticeUntil = 0;
     el('notice').hidden = true; el('share-text').hidden = true; text('copy-status', '');
     el('test-text').hidden = true; text('test-status', '');
@@ -100,30 +106,89 @@ async function startHaulApp() {
   }
   bindInput({ target: window, canvas, buttons: controls, state: input, canvasSteering: false,
     onPause: () => {
-      if (tripsDialog.open) closeDialog(tripsDialog);
+      if (packingDialog.open) closeDialog(packingDialog);
+      else if (tripsDialog.open) closeDialog(tripsDialog);
       else if (rulesDialog.open) closeDialog(rulesDialog);
       else if (current.status === 'shopping') openRules();
     },
     isPaused: () => paused || current.status !== 'shopping', onInput: () => audio.unlock(),
   });
-  for (const dialog of [rulesDialog, tripsDialog]) dialog.addEventListener('cancel', event => { event.preventDefault(); closeDialog(dialog); });
+  for (const dialog of [rulesDialog, tripsDialog, packingDialog]) dialog.addEventListener('cancel', event => { event.preventDefault(); closeDialog(dialog); });
   receipt.addEventListener('cancel', event => event.preventDefault());
   for (const id of ['pause', 'receipt-rules']) el(id).addEventListener('click', openRules);
   el('resume').addEventListener('click', () => closeDialog(rulesDialog));
-  for (const id of ['reset', 'retry']) el(id).addEventListener('click', () => restart());
+  el('reset').addEventListener('click', () => restart());
+  el('retry').addEventListener('click', () => restart(index, 'retry-same-load'));
   for (const id of ['trips', 'receipt-trips']) el(id).addEventListener('click', () => openDialog(tripsDialog));
   el('close-trips').addEventListener('click', () => closeDialog(tripsDialog));
   el('next').addEventListener('click', () => {
-    if (index < haulChallenges.length - 1) restart(index + 1, 'next');
+    if (index < haulChallenges.length - 1) restart(index + 1, 'next', 'collect', []);
     else openDialog(tripsDialog);
   });
   haulChallenges.forEach((challenge, i) => {
     const button = document.createElement('button');
     button.id = `trip-${challenge.id}`; button.type = 'button';
     button.textContent = `${i + 1}. ${challenge.title} · ${challenge.targetValue} goal / ${challenge.stretchValue} full haul`;
-    button.addEventListener('click', () => restart(i, `choose:${challenge.id}`));
+    button.addEventListener('click', () => restart(i, `choose:${challenge.id}:collect`, 'collect', []));
     el('trip-list').append(button);
   });
+  const packChoice = document.createElement('button');
+  packChoice.id = 'trip-one-more-thing-pack'; packChoice.type = 'button';
+  packChoice.textContent = 'Compare acquisition · One more thing quick pack';
+  packChoice.addEventListener('click', () => openPacking('choose:one-more-thing:pack'));
+  el('trip-list').append(packChoice);
+
+  const packShop = haulChallenges[2], packItems = packShop.items;
+  function renderPacking() {
+    for (const item of packItems) {
+      const button = el(`pack-item-${item.id}`);
+      button.dataset.packed = String(packedIds.includes(item.id));
+      button.setAttribute('aria-pressed', String(selectedItem === item.id));
+    }
+    for (let slot = 0; slot < packItems.length; slot++) {
+      const item = packItems.find(candidate => candidate.id === packedIds[slot]);
+      const button = el(`pack-slot-${slot}`);
+      button.textContent = item ? `${slot + 1}. ${item.name} · ${item.value}` : `${slot + 1}. Empty`;
+      button.dataset.filled = String(Boolean(item));
+    }
+    text('packing-total', `${value(packItems.filter(item => packedIds.includes(item.id)))} loaded`);
+    el('packing-go').disabled = packedIds.length === 0;
+  }
+  function placePacked(itemId, slot) {
+    packedIds = placePackedItem(packedIds, itemId, slot, packItems); selectedItem = null; renderPacking();
+  }
+  for (const item of packItems) {
+    const button = document.createElement('button');
+    button.id = `pack-item-${item.id}`; button.type = 'button'; button.className = 'packing-item';
+    button.textContent = `${item.name} · ${item.value}`; button.setAttribute('aria-pressed', 'false');
+    button.addEventListener('click', () => { selectedItem = selectedItem === item.id ? null : item.id; renderPacking(); });
+    button.addEventListener('pointerdown', () => { dragItem = item.id; el('packing-go').disabled = true; });
+    button.addEventListener('pointerup', () => { dragItem = null; renderPacking(); });
+    button.addEventListener('pointercancel', () => { dragItem = null; renderPacking(); });
+    el('packing-offer').append(button);
+  }
+  for (let slot = 0; slot < packItems.length; slot++) {
+    const button = document.createElement('button');
+    button.id = `pack-slot-${slot}`; button.type = 'button'; button.className = 'packing-slot';
+    button.addEventListener('click', () => { if (selectedItem) placePacked(selectedItem, slot); else if (packedIds[slot]) { packedIds = removePackedItem(packedIds, slot, packItems); renderPacking(); } });
+    button.addEventListener('pointerenter', () => { button.dataset.drop = String(Boolean(dragItem)); });
+    button.addEventListener('pointerleave', () => { button.dataset.drop = 'false'; });
+    button.addEventListener('pointerup', () => { if (dragItem) placePacked(dragItem, slot); dragItem = null; button.dataset.drop = 'false'; });
+    el('packing-slots').append(button);
+  }
+  function openPacking(action = 'change-load') {
+    record(action); packedIds = current.acquisition === 'pack' ? [...current.initialLoad] : [...packShop.preloaded];
+    selectedItem = null; dragItem = null; packingStarted = performance.now(); renderPacking();
+    if (tripsDialog.open) tripsDialog.close();
+    openDialog(packingDialog);
+  }
+  el('packing-go').addEventListener('click', () => {
+    packingSeconds = Math.max(0, (performance.now() - packingStarted) / 1000);
+    restart(2, 'packed-go', 'pack', packedIds);
+  });
+  el('packing-clear').addEventListener('click', () => { packedIds = []; selectedItem = null; dragItem = null; renderPacking(); });
+  el('packing-cancel').addEventListener('click', () => { packingDialog.close(); tripsDialog.showModal(); });
+  el('change-load').addEventListener('click', () => openPacking('change-load'));
   const savePreferences = () => {
     platform.storageSet(settingsKey, JSON.stringify(settings)); audio.mute(settings.muted);
   };
@@ -158,20 +223,22 @@ async function startHaulApp() {
   function showReceipt() {
     receiptShown = true;
     const delivered = value(current.banked), skipped = shop.items.filter(item => !current.collected.includes(item.id));
-    if (!practice()) best.set(shop.id, Math.max(best.get(shop.id) ?? 0, delivered));
+    if (!practice()) best.set(resultKey(), Math.max(best.get(resultKey()) ?? 0, delivered));
     text('receipt-title', delivered >= shop.stretchValue ? 'Everything made it!' : delivered >= shop.targetValue ? 'A good haul!' : delivered ? 'Something made it home.' : 'An empty checkout.');
     text('receipt-score', String(delivered));
     text('receipt-goal', delivered >= shop.targetValue ? `Goal reached · ${shop.targetValue} needed / ${shop.stretchValue} full haul.` : `Goal: ${shop.targetValue}. Try a slower corner or a different route.`);
     text('receipt-banked', names(current.banked)); text('receipt-spilled', names(current.spilled)); text('receipt-skipped', names(skipped));
-    text('receipt-time', timeLabel(current.elapsed)); text('receipt-best', best.has(shop.id) ? String(best.get(shop.id)) : 'No challenge result yet');
+    text('receipt-time', timeLabel(current.elapsed)); text('receipt-best', best.has(resultKey()) ? String(best.get(resultKey())) : 'No result in this mode yet');
+    el('receipt-packing-row').hidden = current.acquisition !== 'pack'; text('receipt-packing', timeLabel(packingSeconds));
+    el('change-load').hidden = current.acquisition !== 'pack';
     text('receipt-mode', `${rulesLabel()}${practice() ? ' · Does not change session best' : ''}`);
     text('next', index < haulChallenges.length - 1 ? `Next: ${haulChallenges[index + 1].title} →` : 'Choose a trip');
-    shareText = `Wobbly Cart · ${build}\n${rulesLabel()} · content ${current.contentVersion}\nDelivered ${delivered} / goal ${shop.targetValue} in ${timeLabel(current.elapsed)}\nDelivered: ${names(current.banked)}\nLost: ${names(current.spilled)}\nLeft behind: ${names(skipped)}`;
+    shareText = `Wobbly Cart · ${build}\n${rulesLabel()} · content ${current.contentVersion}\nDelivered ${delivered} / goal ${shop.targetValue}\nDriving ${timeLabel(current.elapsed)}${current.acquisition === 'pack' ? ` · Packing ${timeLabel(packingSeconds)}` : ''}\nDelivered: ${names(current.banked)}\nLost: ${names(current.spilled)}\nLeft behind: ${names(skipped)}`;
     receipt.showModal(); el('next').focus();
   }
   function updateHud() {
     text('carried', String(value(current.cargo))); text('secured', String(value(current.banked)));
-    text('goal-line', `${index + 1}/3 · ${shop.title} · Goal ${shop.targetValue}${practice() ? ' · Practice' : ''}`);
+    text('goal-line', `${index + 1}/3 · ${shop.title} · ${current.acquisition === 'pack' ? 'Quick pack' : 'Collect'} · Goal ${shop.targetValue}${practice() ? ' · Practice' : ''}`);
     el('lean').value = Math.min(1, current.risk);
     text('active-rules', practice() ? `Debug wobble: ${Math.round(current.wobble * 100)}%` : '');
     el('active-rules').hidden = !practice();
@@ -219,6 +286,6 @@ async function startHaulApp() {
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-  return { readState: () => current, readBest: () => best.get(shop.id) ?? null };
+  return { readState: () => current, readBest: () => best.get(resultKey()) ?? null, readPacking: () => ({ itemIds: [...packedIds], packingSeconds }) };
 }
 export const app = await startHaulApp();

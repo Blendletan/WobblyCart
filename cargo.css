@@ -83,6 +83,18 @@ dialog select { margin-top: 6px; padding: .7rem; border: 2px solid #d0dec9; bord
 #test-status { font-size: .75rem; }
 .trip-list { display: grid; gap: 12px; margin: 1.2rem 0; }
 .trip-list button { text-align: left; line-height: 1.5; font-size: .88rem; }
+.packing-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 1rem; }
+.packing-layout b { display: block; margin-bottom: .55rem; font-size: .76rem; }
+.packing-offer, .packing-slots { display: grid; gap: 8px; }
+.packing-item, .packing-slot { min-height: 46px; padding: 8px 10px; border: 2px solid #d2d9c6; border-radius: 10px; background: #fffdf1; color: #416b65; font-weight: 900; touch-action: none; user-select: none; }
+.packing-item { display: flex; align-items: center; justify-content: space-between; cursor: grab; }
+.packing-item[aria-pressed="true"] { border-color: #ed8a54; background: #fff0c4; }
+.packing-item[data-packed="true"] { opacity: .45; }
+.packing-slot { width: 100%; text-align: left; box-shadow: none; }
+.packing-slot[data-filled="true"] { background: #e4f2d9; border-color: #76af86; }
+.packing-slot[data-drop="true"] { outline: 3px solid #ed8a54; }
+.packing-total { font-weight: 900; color: #397d72; }
+@media (max-width: 420px) { .packing-layout { gap: 8px; } .packing-item, .packing-slot { min-height: 42px; padding: 6px; font-size: .72rem; } }
 [data-mode="haul"] #notice { top: 124px; }
 [data-mode="haul"] button:disabled { opacity: .45; cursor: default; }
 @media (orientation: portrait) {
