@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pack the cart · Wobbly Cart</title><link rel="icon" href="assets/cart.svg"><link rel="stylesheet" href="packing.css"></head>
+<body>
+  <main class="workshop">
+    <header><div><span class="eyebrow">WOBBLY CART / PACKING PLAYGROUND</span><h1>Will it all fit?</h1><p>Make room. Build a pile. Give it a shake.</p></div><div class="value"><span>IN THE CART</span><strong id="total">140</strong><span id="count">4 objects</span></div></header>
+    <section class="workspace" aria-label="Packing playground">
+      <div class="cart-panel">
+        <div class="scene-heading"><span class="pill">6 × 4 basket</span><span id="pile-status">Ready to rearrange</span></div>
+        <div class="test-controls"><button id="gentle" type="button">Gentle shake</button><button id="rough" type="button" class="primary">Bumpy ride</button><button id="restore" type="button" hidden>Restore pile</button><button id="undo" type="button" disabled>Undo</button></div>
+        <canvas id="packing-view" tabindex="0" aria-label="Three dimensional cart. Choose an object, then tap a basket position. Arrow keys move the preview, R rotates, Enter places, Escape cancels."></canvas>
+        <div class="selection-bar"><div><strong id="selection-name">Pick an object</strong><span id="selection-help">Tap a grocery in the cart or on the shelf.</span></div><button id="cancel" type="button" hidden>Cancel</button></div>
+        <div class="edit-tools" id="edit-tools" hidden><button id="rotate" type="button">Rotate ↻</button><button id="park" type="button">Park on shelf</button><button id="place" type="button" class="accent">Place here</button></div>
+        <p id="feedback" role="status">Try moving the groceries off the TV. Covered objects must be uncovered first.</p>
+        <div id="test-result" class="test-result" hidden aria-live="polite"></div>
+        <div class="examples"><span>Compare the same groceries:</span><button id="low" type="button">TV underneath</button><button id="high" type="button">TV on top</button><button id="empty" type="button">Empty basket</button></div>
+      </div>
+      <aside>
+        <section class="shelf"><div class="shelf-title"><h2>Take your pick</h2><span>8 different shapes</span></div><div id="supply" class="goods-list"></div></section>
+        <section class="bench"><div class="shelf-title"><h2>Parking shelf</h2><span id="bench-count">0 / 2</span></div><p>Two spaces to make room while you rearrange.</p><div id="bench" class="bench-slots"></div></section>
+        <details><summary>How this little experiment works</summary><p>Tap an object, then tap where it belongs. You can also drag it, rotate its footprint, or park it beside the cart. It settles onto whatever is underneath.</p><p>Big, heavy objects on small supports wobble more. Height, overhang and shape matter. The shake repeats exactly so you can compare piles.</p><p>For now, lift objects out from the top. Squeezing something underneath a pile and taking this arrangement into the driving game are later experiments.</p></details>
+      </aside>
+    </section>
+    <footer><span>PACKING SKETCH 01 · Cartoon rules, room to experiment.</span><span>Tap / drag · R rotate · Esc cancel · arrows + Enter also work</span></footer>
+  </main>
+  <script type="module" src="src/packing-main.js"></script>
+</body></html>

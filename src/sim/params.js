@@ -74,3 +74,14 @@ export const haulParams = Object.freeze({
   packingSlotExposure: .12,
   response: Object.freeze({ central: .65, light: .55, round: 1.65 }),
 });
+
+/** Spatial packing sketch: deliberately exaggerated, deterministic cartoon rules. */
+export const packingLabParams = Object.freeze({
+  width: 6, depth: 4, maxHeight: 7, benchSpaces: 2,
+  minSupport: .20, heightPenalty: .09, tallPenalty: .08,
+  supportPenalty: .7, offCenterPenalty: .3, heavyOnLightPenalty: .12,
+  roundPenalty: .13, minResistance: .12,
+  shakeSeconds: 3, shakeFrequency: 1.4, gentleShake: .34, roughShake: .72,
+  fallGrace: .23, warningStress: .72, swaySpring: 48, swayDamping: 9,
+  swayAngle: .15, strainRecovery: .5, steadyResistance: .72, wobblyResistance: .43,
+});

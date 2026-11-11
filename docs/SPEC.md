@@ -2,7 +2,13 @@
 
 Nov 1, 2026 · @Robert
 
-## Current direction — H3 acquisition test (2026-11-10)
+## Current direction — spatial packing sketch (2026-11-10)
+
+The user wants a small experiment in manipulating differently sized goods in three dimensions, with readable cartoon stability. `/packing.html` now provides placement, footprint rotation, constrained rearrangement, two parking spaces and repeatable shakes. See [PACKING-LAB.md](PACKING-LAB.md) for the implemented scope and next questions. H4 is on hold. The intended sequence is to establish packing and stability, connect the same arrangement to driving, design one or two trips, then settle the specification before a future visual rebuild. Larger campaign counts, a closing timer and realistic rigid-body simulation have not been approved.
+
+The existing driving entries remain available. This experiment adds no dependency and retains deterministic simulation, tuning logs, frozen references and existing budgets. Stop after the packing sketch for user feedback.
+
+## Previous direction — H3 acquisition test (2026-11-10)
 
 The user found H1 very easy, accepted the steering and wobble, and approved staged design tests. `/haul.html` retains the three H2 driving challenges and adds an H3 comparison on One more thing: collect the same offered goods while driving, or choose their order in four constrained cart slots before driving. Quick pack records packing and driving time separately, preserves the exact load on Retry, and offers Change load on the receipt. Collection and packing session bests remain separate. [H3-PLAYTEST.md](H3-PLAYTEST.md) describes the next test; H4 waits for an explicit choice of collection, packing, or a defined hybrid.
 

@@ -1,6 +1,10 @@
 # Wobbly Cart: build plan
 
-## Current plan — cargo gameplay experiments
+## Current task — spatial packing sketch
+
+2026-11-10. Follow [PACKING-LAB.md](PACKING-LAB.md). Explore three-dimensional placement and rearrangement with cartoon stability at `/packing.html`, then get user feedback. The intended later steps are connecting the same pile to driving, designing one or two complete trips, and settling specs for a rebuild. Do not start those automatically. H4 expansion is on hold.
+
+## Previous plan — cargo gameplay experiments
 
 2026-11-10. Use [GAMEPLAY-PLAN.md](GAMEPLAY-PLAN.md) for the next work. H3 is implemented at `/haul.html`: the One more thing route can be played with collection during driving or a constrained quick pack. Run [the H3 acquisition playtest](H3-PLAYTEST.md), choose collection, packing, or a defined hybrid, and do not start H4 before that choice. H1–H5 replace the remaining proposed C1–C3 milestones for this cargo experiment.
 

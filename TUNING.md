@@ -1,5 +1,23 @@
 # Tuning
 
+## Spatial packing sketch — 2026-11-10
+
+All values below were absent before this sketch and apply only to `packingLabParams`; the driving profiles and H3 values are unchanged. These are cartoon starting values, not real-world measurements.
+
+| Parameter group | Before | After | Why |
+| --- | --- | --- | --- |
+| Space | Absent | Basket 6 × 4 × 7 cells; 2 parking spaces; minimum support .20 | Give rearrangement limited room while allowing precarious choices. |
+| Stability | Absent | Height penalty .09/cell; tall ratio .08; uncovered base .7; offset .3; heavy/light excess .12; round shape .13; resistance floor .12 | Make large high objects on small/light supports visibly worse than a broad low base. |
+| Shake | Absent | 3 seconds, 1.4 Hz; gentle .34, rough .72; loss grace .23 s; warning stress .72; sway spring 48, damping 9, angle gain .15; strain recovery .5 | Repeatable, readable comparison with time to see the endangered object. |
+| Ratings | Absent | Steady resistance ≥ .72; Wobbly ≥ .43; otherwise Precarious | Use the same resistance for static cues and shake consequences. |
+
+| Decision | Tested or untested | Evidence |
+| --- | --- | --- |
+| Same goods packed low versus on a narrow support behave differently. | Automated and desktop browser | Both start at 140. Standard bumpy ride retains 140 low; high loses TV, milk and bread and retains cereal worth 15. Exact repeat and inventory conservation checked. |
+| Spatial placement and rearrangement respect volume and access. | Automated and desktop browser | Rotation, bounds, no overlap, buried-item blocking and two-space capacity checked. Browser parked milk/bread, rotated TV and moved it to the floor alongside cereal. Real pointer drag placed TV from shelf. |
+| Mobile layout and edit cancellation. | Emulated browser | 390×844 and 320×568 have no horizontal overflow. Tap selection, placement, Undo and Escape cancellation exercised. Physical touch/performance are still untested. |
+| Packing enjoyment and later driving connection. | Untested | User playtest next; shake is an isolated packing test. No production/campaign readiness claim. |
+
 ## H2 content and feedback — 2026-11-08
 
 No simulation parameters changed. The user is happy with the current wobble and calls H1 very easy. Keep all chassis, slip and warning settings from H1; change the route decisions and optional cargo. H1 geometry/rewards are unchanged; content version 1 → 2 records removal of decorative signs and addition of challenge instructions.

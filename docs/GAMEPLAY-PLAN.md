@@ -1,5 +1,7 @@
 # Cargo game: staged design plan
 
+**2026-11-10: H4 is on hold.** The user chose to explore three-dimensional packing and rearrangement with cartoon stability, then one or two complete trips before agreeing specs for a rebuild. The active task is [PACKING-LAB.md](PACKING-LAB.md); the stage sequence below is retained as design history.
+
 2026-11-07. Working project name: **Wobbly Cart**. Final title remains open.
 
 ## Purpose and status

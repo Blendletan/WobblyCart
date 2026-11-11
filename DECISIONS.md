@@ -1,5 +1,13 @@
 # Decisions
 
+## Spatial packing sketch — 2026-11-10
+
+- User rejects the current demo as a complete game and wants to explore spatial rearrangement plus cartoon stability before designing one or two trips and agreeing the specs for a future rebuild. Pause H4. Do not adopt the proposed closing timer, eighteen-level campaign or full physics library merely because they appeared in discussion.
+- Add a separate `/packing.html` so the experiment is directly accessible and the accepted driving mechanic remains available. Use a fixed isometric illustration of real three-axis box dimensions, footprint rotation and top-down settling; eight existing-themed goods, no dependency.
+- Items buried beneath others must be uncovered. Two parking spaces create a small rearrangement puzzle; Undo and Restore keep it forgiving. Direct under-pile shoving and free rotation await feedback on the basic controls.
+- Use support coverage/offset, height, aspect ratio, shape and relative weight as deterministic cartoon stability. Repeatable shake choices test the same pile; lost supports propagate losses upward. UI ratings, rocking and loss derive from the same stability result.
+- This sketch does not connect cargo to the driving simulation yet. The next work depends on the user's packing feedback, followed by driving and one or two complete trips before a visual rebuild.
+
 ## H3 acquisition comparison — 2026-11-10
 
 - Compare acquisition on the existing One more thing route: keep its offered goods, values, handling, hazards and checkout, while changing only whether cargo is collected during driving or chosen before the drive.

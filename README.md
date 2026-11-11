@@ -1,5 +1,11 @@
 # Wobbly Cart
 
+## Spatial packing playground
+
+Play [the packing sketch](https://blendletan.github.io/WobblyCart/packing.html). Move and rotate eight differently sized goods in a three-dimensional basket, use two parking spaces to rearrange buried cargo, and compare repeatable shakes. **TV underneath** and **TV on top** carry the same goods but react differently to support, height and relative weight. Undo and Restore pile keep experimentation quick.
+
+This is a packing/stability experiment before connecting the arrangement to driving. See [the scope and playtest](docs/PACKING-LAB.md). Run `node tools/serve.mjs` for local play; checks include `node --test` and `node tools/budget.mjs packing.html`. The existing driving entries remain below.
+
 ## H2: Three shopping trips
 
 Play [the new experiment](https://blendletan.github.io/WobblyCart/haul.html), or run `node tools/serve.mjs` and open <http://127.0.0.1:4175/haul.html>. First haul introduces an optional melon. Rough shortcut offers a bumpy direct route or a longer smooth aisle with a bowling ball. One more thing lets you cash out immediately or fetch a television and bring it back. Individual goods can slip out; brake and straighten to save them, or deliver what remains.

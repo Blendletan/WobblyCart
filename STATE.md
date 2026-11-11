@@ -1,12 +1,11 @@
 # State
 
-- **H3 implemented, awaiting player testing (2026-11-10).** One more thing now compares collection during driving with a constrained quick pack before the same drive. H4 has not started.
-- Quick pack offers the same milk, bread, melon and television in four bottom-to-top slots. Tap or drag to place; Go requires cargo. Packing and driving time are separate, Retry preserves the exact ordered load, and Change load reopens packing.
-- Packed goods begin on the cart and their floor copies are absent. Each position above the bottom adds 12% to that item's slip response; collection handling is unchanged. Collection and packing session bests are separate.
-- Automated coverage checks legal unique placement, pointer cancellation, no accidental Go, deterministic stack reproduction, slot-risk ordering, exact retry/change-load flow, same route/offer/value/handling/checkout, score separation and absence of duplicate floor pickups.
-- The three H2 trips, pause/rules/debug controls, original `/`, `/tutorial.html` and `/playground.html` remain available. Banking and assisted recovery remain internal only. No dependency, analytics, SDK or persistent progression was added.
-- Verification: **74/74 tests passed**. Root budget **34 files / 191,896 bytes**; haul budget **22 files / 142,537 bytes**. Runtime network checks and `git diff --check` pass. Frozen golden tree remains `6f325ab866e7d9ef69cc31752c4624d63a4408ca`.
-- Browser/phone: H2 browser layouts and driving flow remain regression-covered, but browser-control tooling was unavailable for a fresh interactive pass on the packing dialog. Physical Android/iPhone usability, frame rate and human understanding remain untested.
-- The user's untracked One Trip source remains untouched.
-- **Not done:** H3 human preference result, five-person alternated-order test, physical Android/iPhone usability/performance, demonstrated replay appeal, or a collection/packing/hybrid decision.
-- **Next:** playtest <https://blendletan.github.io/WobblyCart/haul.html> using `docs/H3-PLAYTEST.md`. Stop and choose the acquisition loop before authorizing H4.
+- **Spatial packing sketch 01 implemented (2026-11-10).** The user wants three-dimensional rearrangement with cartoon stability, then driving, one or two trips, and settled specs before a future rebuild. H4 expansion is on hold; active scope is `docs/PACKING-LAB.md`.
+- `/packing.html` has a 6 × 4 × 7 basket, eight goods with width/depth/height, 90-degree footprint rotation, tap/drag placement, blocked lifting of buried objects, two temporary parking spaces, Undo and Restore pile.
+- Stability uses support area/offset, height, aspect ratio, shape and relative support weight. The same result drives ratings, sway and deterministic losses. A lost support can cause a cascade. No rigid-body library or new dependency.
+- TV underneath and TV on top start with the same four goods and 140 value. In the standard bumpy test, the low arrangement retains 140; the high arrangement loses TV, milk and bread and retains 15. Exact repeat and inventory conservation pass.
+- **Verification:** 79/79 tests passed. Root budget 34 files / 192,484 bytes; haul 22 / 143,155; packing 9 / 45,241. Runtime network and diff checks pass. Golden tree remains `6f325ab866e7d9ef69cc31752c4624d63a4408ca`.
+- Browser checks exercised actual shelf-to-basket drag, both comparison shakes, restore, buried-item blocking, two parked objects, TV rotation/repositioning, tap placement, Undo and Escape cancellation. No captured console errors/warnings. Emulated 390×844 and 320×568 layouts have no horizontal overflow.
+- Existing `/`, `/haul.html`, `/tutorial.html` and `/playground.html` remain available. Accepted driving rules are unchanged. The user's untracked One Trip source is untouched.
+- **Not done:** physical touch-device checks, user judgment of packing feel, under-pile shoving, sideways insertion, free-axis rotation, driving integration, new levels, campaign, or commercial rebuild. The shake is a repeatable packing test, not driving validation.
+- **Next:** play `/packing.html`, compare the two TV arrangements, then repair the high pile using parking spaces and rotation. Discuss controls and packing choices before expanding the experiment.
